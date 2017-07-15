@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from questions.views import index, answersbyid
 
 urlpatterns = [
+    url(r'^$', index),
+    url(r'^answersbyid/(?P<questionid>\d+)$', answersbyid),
     url(r'^admin/', admin.site.urls),
 ]

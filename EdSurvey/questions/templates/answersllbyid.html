@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% block mainblock %}
+<h2>Задание: {{question.description}}</h2>
+    <table border="1">
+        <tr>
+            <th>№</th>
+            <th>#</th>
+            <th>Вопрос</th>
+            <th>#</th>
+            <th>Ответа</th>
+            <th>Оценка</th>
+        </tr>
+{% for answer in answers %}
+        <tr>
+            <td>{{answer.id}}</td>
+            <td>{{answer.ordernum1}}</td>
+            <td>{{answer.content1}}</td>
+            <td>{{answer.ordernum2}}</td>
+            <td>{{answer.content2}}</td>
+            <td>{{answer.score}}</td>
+        </tr>
+{% endfor%}
+    </table>
+{% endblock%}

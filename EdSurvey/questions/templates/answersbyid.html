@@ -1,0 +1,21 @@
+{% extends 'index.html' %}
+{% block mainblock %}
+<h2>Вопрос: {{question.description}}</h2>
+<h2>Варианты ответов:</h2>
+    <table border="1">
+        <tr>
+            <th>№</th>
+            <th>#</th>
+            <th>Текст ответа</th>
+            <th>Порядок</th>
+        </tr>
+{% for answer in answers %}
+        <tr>
+            <td>{{answer.id}}</td>
+            <td>{{answer.ordernum}}</td>
+            <td>{{answer.content}}</td>
+            <td>{{answer.score}}</td>
+        </tr>
+{% endfor%}
+    </table>
+{% endblock%}
