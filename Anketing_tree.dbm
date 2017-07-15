@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.8.1" last-position="0,0" last-zoom="0.8"
+	 default-schema="public" default-owner="postgres">
+<database name="anketing">
+</database>
+
+<schema name="public" protected="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<table name="user">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[предполагается, что это таблица Django]]></comment>
+	<position x="0" y="411"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="email" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_users" type="pk-constr" table="public.&quot;user&quot;">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="roles">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Под какими ролями может входить на сайт пользователь. Влияет на доступную функциональность.]]></comment>
+	<position x="0" y="5"/>
+	<column name="id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="16"/>
+	</column>
+</table>
+
+<table name="organisation">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1573" y="782.75"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<column name="supervisors">
+		<type name="smallint"/>
+		<comment><![CDATA[группа супер-пользователей данной организации -> groups.id]]></comment>
+	</column>
+	<constraint name="pk_organisations" type="pk-constr" table="public.organisation">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="group">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1814.5" y="437"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+</table>
+
+<table name="usergroups">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="286.25" y="585.75"/>
+	<column name="user" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="group" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<column name="organisation" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_usergroups" type="pk-constr" table="public.usergroups">
+		<columns names="user,group" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="test">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[упорядоченость вопросов; возомжность редактировать свои ответы; количество попыток и т.п.]]></comment>
+	<position x="843.75" y="498.75"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="description">
+		<type name="text"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<column name="authors" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="params">
+		<type name="xml"/>
+	</column>
+	<column name="anketa" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_tests" type="pk-constr" table="public.test">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="userorgs">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[В какие организации входит пользователь.]]></comment>
+	<position x="271.25" y="824.25"/>
+	<column name="user" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="organisation" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_userorgs" type="pk-constr" table="public.userorgs">
+		<columns names="user,organisation" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="task">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1360.25" y="102.75"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="teachers" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="students" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="organisation" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="test" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_tasks" type="pk-constr" table="public.task">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="schedule">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="958.75" y="155"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="task" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="duration" not-null="true">
+		<type name="daterange"/>
+	</column>
+	<constraint name="pk_schedules" type="pk-constr" table="public.schedule">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="question">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="1048.25" y="306.75"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="qtype" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<column name="content" not-null="true">
+		<type name="xml"/>
+	</column>
+	<column name="organisation" not-null="true">
+		<type name="smallint"/>
+		<comment><![CDATA[Кому принадлежит. Возможно public или организация самого сайта]]></comment>
+	</column>
+	<column name="authors" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="inverse">
+		<type name="smallint"/>
+		<comment><![CDATA[обратный вопрос для кросс-проверок]]></comment>
+	</column>
+	<constraint name="pk_questions" type="pk-constr" table="public.question">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="qtype">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[тип вопроса: radio, check, relations]]></comment>
+	<position x="301.75" y="244.75"/>
+	<column name="id" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="16"/>
+	</column>
+	<constraint name="pk_qtypes" type="pk-constr" table="public.qtype">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="anketas">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Контейнер из вопросов для конкретного теста.]]></comment>
+	<position x="300" y="426.5"/>
+	<column name="test" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="question" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="order">
+		<type name="smallint"/>
+		<comment><![CDATA[порядок, если он важен]]></comment>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_anketas" type="pk-constr" table="public.anketas">
+		<columns names="test,question" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="activities">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[журнал активности пользователей]]></comment>
+	<position x="0" y="75"/>
+	<column name="when" not-null="true" default-value="now()">
+		<type name="date"/>
+	</column>
+	<column name="what">
+		<type name="text"/>
+		<comment><![CDATA[какое действие выполнялось]]></comment>
+	</column>
+	<column name="role" not-null="true">
+		<type name="smallint"/>
+		<comment><![CDATA[под какой ролью]]></comment>
+	</column>
+	<column name="who" not-null="true">
+		<type name="smallint"/>
+	</column>
+</table>
+
+<table name="answer">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<position x="531.25" y="181.5"/>
+	<column name="id" not-null="true">
+		<type name="serial"/>
+	</column>
+	<column name="question" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="content" not-null="true">
+		<type name="text"/>
+	</column>
+	<column name="order">
+		<type name="smallint"/>
+	</column>
+	<column name="score">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_answers" type="pk-constr" table="public.answer">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="surveys">
+	<schema name="public"/>
+	<role name="postgres"/>
+	<comment><![CDATA[Ответы пользователей на анкеты]]></comment>
+	<position x="288.75" y="11.25"/>
+	<column name="user" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="task" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="question" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="attempt" not-null="true">
+		<type name="smallint"/>
+		<comment><![CDATA[номер попытки. datetime поптыки искать в журнале.]]></comment>
+	</column>
+	<column name="answer" not-null="true">
+		<type name="smallint"/>
+	</column>
+	<column name="score">
+		<type name="smallint"/>
+	</column>
+	<column name="status">
+		<type name="smallint"/>
+	</column>
+	<constraint name="pk_surveys" type="pk-constr" table="public.surveys">
+		<columns names="user,task,question,attempt" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_organisations_supervisors" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.organisation">
+	<columns names="supervisors" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_usergroups_users" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;user&quot;" table="public.usergroups">
+	<columns names="user" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_usergroups_groups" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.usergroups">
+	<columns names="group" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_usergroups_organisation" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.usergroups">
+	<columns names="organisation" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tests_authors" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.test">
+	<columns names="authors" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_userorgs_user" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;user&quot;" table="public.userorgs">
+	<columns names="user" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_userorgs_organisation" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.userorgs">
+	<columns names="organisation" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tasks_organisation" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.task">
+	<columns names="organisation" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tasks_teachers" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.task">
+	<columns names="teachers" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tasks_students" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.task">
+	<columns names="students" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tasks_test" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.test" table="public.task">
+	<columns names="test" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_schedules_task" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.task" table="public.schedule">
+	<columns names="task" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_questions_qtype" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.qtype" table="public.question">
+	<columns names="qtype" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_questions_organisation" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.question">
+	<columns names="organisation" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_questions_authors" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.question">
+	<columns names="authors" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_questions_inverse" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.question">
+	<columns names="inverse" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_anketa_question" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.anketas">
+	<columns names="question" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_anketas_test" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.test" table="public.anketas">
+	<columns names="test" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_answers_question" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.answer">
+	<columns names="question" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_surveys_user" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;user&quot;" table="public.surveys">
+	<columns names="user" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_surveys_task" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.task" table="public.surveys">
+	<columns names="task" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_surveys_question" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.surveys">
+	<columns names="question" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_surveys_answer" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.answer" table="public.surveys">
+	<columns names="answer" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_usergroups_users" type="relfk"
+	 src-table="public.usergroups"
+	 dst-table="public.&quot;user&quot;"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="234.85" y="614.35"/>
+	<position x="234.85" y="439.6"/>
+	</line>
+</relationship>
+
+<relationship name="rel_usergroups_groups" type="relfk"
+	 src-table="public.usergroups"
+	 dst-table="public.&quot;group&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_organisations_groups" type="relfk"
+	 src-table="public.organisation"
+	 dst-table="public.&quot;group&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tests_groups" type="relfk"
+	 src-table="public.test"
+	 dst-table="public.&quot;group&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_usergroups_organisations" type="relfk"
+	 src-table="public.usergroups"
+	 dst-table="public.organisation"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="110.979" y="-15.4485"/>
+	</label>
+</relationship>
+
+<relationship name="rel_userorgs_users" type="relfk"
+	 src-table="public.userorgs"
+	 dst-table="public.&quot;user&quot;"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="198.75" y="853.75"/>
+	</line>
+</relationship>
+
+<relationship name="rel_userorgs_organisations" type="relfk"
+	 src-table="public.userorgs"
+	 dst-table="public.organisation"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tasks_organisations" type="relfk"
+	 src-table="public.task"
+	 dst-table="public.organisation"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tasks_groups" type="relfk"
+	 src-table="public.task"
+	 dst-table="public.&quot;group&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_tasks_tests" type="relfk"
+	 src-table="public.task"
+	 dst-table="public.test"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_schedules_tasks" type="relfk"
+	 src-table="public.schedule"
+	 dst-table="public.task"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="1260.83" y="197.6"/>
+	<position x="1260.83" y="131.35"/>
+	</line>
+</relationship>
+
+<relationship name="rel_questions_qtypes" type="relfk"
+	 src-table="public.question"
+	 dst-table="public.qtype"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_questions_organisations" type="relfk"
+	 src-table="public.question"
+	 dst-table="public.organisation"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_questions_groups" type="relfk"
+	 src-table="public.question"
+	 dst-table="public.&quot;group&quot;"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_anketa_questions" type="relfk"
+	 src-table="public.anketas"
+	 dst-table="public.question"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_anketas_tests" type="relfk"
+	 src-table="public.anketas"
+	 dst-table="public.test"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_questions_questions" type="relfk"
+	 src-table="public.question"
+	 dst-table="public.question"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="1272.02" y="355.31"/>
+	<position x="1272.02" y="296.75"/>
+	<position x="1190.76" y="296.75"/>
+	</line>
+</relationship>
+
+<relationship name="rel_answers_questions" type="relfk"
+	 src-table="public.answer"
+	 dst-table="public.question"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_surveys_users" type="relfk"
+	 src-table="public.surveys"
+	 dst-table="public.&quot;user&quot;"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="236.1" y="39.85"/>
+	<position x="256.25" y="435"/>
+	</line>
+</relationship>
+
+<relationship name="rel_surveys_tasks" type="relfk"
+	 src-table="public.surveys"
+	 dst-table="public.task"
+	 src-required="false" dst-required="false">
+	<line>
+		<position x="869.764" y="53.85"/>
+	<position x="869.764" y="131.35"/>
+	</line>
+</relationship>
+
+<relationship name="rel_surveys_questions" type="relfk"
+	 src-table="public.surveys"
+	 dst-table="public.question"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_surveys_answers" type="relfk"
+	 src-table="public.surveys"
+	 dst-table="public.answer"
+	 src-required="false" dst-required="false"/>
+
+</dbmodel>
