@@ -1,0 +1,3 @@
+alias manage='python manage.py'
+alias makemigrations='python manage.py makemigrations'
+alias migrate='python manage.py migrate'

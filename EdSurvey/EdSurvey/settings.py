@@ -32,14 +32,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'home.apps.HomeConfig',
+    'questions.apps.QuestionsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'questions.apps.QuestionsConfig',
-    # 'answers.apps.AnswersConfig',
 ]
 
 MIDDLEWARE = [

@@ -1,12 +1,4 @@
-{% load static %}
-<!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <title>EdSurvey</title>
-    <link rel="stylesheet" href="{% static 'main.css' %}" >
-</head>
-<body>
-<h1>Опросник</h1>
+{% extends 'home.htm' %}
 {% block mainblock %}
     <h2>Вопросы</h2>
     <table border="2">
@@ -19,11 +11,9 @@
 {% for question in questions %}
         <tr>
             <td>{{question.id}}</td>
-            <td><a href="/answersbyid/{{question.id}}"> {{question.description}} </a></td>
+            <td><a href="./answersbyquestion/{{question.id}}"> {{question.description}} </a></td>
             <td>{{question.qtype}}</td>
         </tr>
-{% endfor%}
+{% endfor %}
     </table>
 {% endblock %}
-</body>
-</html>
