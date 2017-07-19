@@ -1,22 +1,42 @@
 from django.contrib import admin
 from .models import Question, Answer, AnswerLL
 
-# настройки для админки приложения
+
+class AnswerAdmin(admin.StackedInline):
+    # list_display = ('content', 'ordernum', 'score')
+    model = Answer
 
 
+class AnswerLLAdmin(admin.StackedInline):
+    # list_display = ('content1', 'content2', 'ordernum1', 'ordernum2', 'score')
+    model = AnswerLL
+
+
+@admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('description', 'qtype')
+    list_display = ('id', 'description', 'qtype')
+    fieldsets = [
+        (None,               {'fields': ['description', 'qtype']}),
+        # ('Date information', {'fields': ['id'], 'classes': ['collapse']}),
+    ]
+    inlines = [
+        AnswerAdmin,
+        AnswerLLAdmin,
+    ]
 
-admin.site.register(Question, QuestionAdmin)
 
 
-class AnswerAdmin(admin.ModelAdmin):
-    list_display = ('question', 'content', 'ordernum', 'score')
-
-admin.site.register(Answer, AnswerAdmin)
 
 
-class AnswerLLAdmin(admin.ModelAdmin):
-    list_display = ('question', 'content1', 'content2', 'ordernum1', 'ordernum2', 'score')
+# @admin.register(Question)
+# class QuestionAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'description', 'qtype')
 
-admin.site.register(AnswerLL, AnswerLLAdmin)
+
+
+# @admin.register(Question)
+# class AnswerLLAdmin(admin.StackedInline):
+#     list_display = ('question', 'content1', 'content2', 'ordernum1', 'ordernum2', 'score')
+#     model = AnswerLL
+
+# admin.site.register(AnswerLL, AnswerLLAdmin)
