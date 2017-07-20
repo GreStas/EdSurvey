@@ -6,6 +6,9 @@ class Question(models.Model):
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
 
+    def __str__(self):
+        return "{}.{}.{}".format(self.id, self.qtype, self.description[:15])
+
     RADIOBUTTON = 'RB'  # (*) One -from- List
     CHECKBOX = 'CB'     # [v] Some -from- List
     LINKEDLISTS = 'LL'   # Link One from first list -to- One from other list
