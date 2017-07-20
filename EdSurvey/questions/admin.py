@@ -25,13 +25,9 @@ class QuestionAdmin(admin.ModelAdmin):
     ]
 
 
-
-
-
 # @admin.register(Question)
 # class QuestionAdmin(admin.ModelAdmin):
 #     list_display = ('id', 'description', 'qtype')
-
 
 
 # @admin.register(Question)
