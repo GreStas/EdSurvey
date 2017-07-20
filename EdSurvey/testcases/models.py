@@ -11,7 +11,7 @@ class TestCase(models.Model):
         return "{}.{}".format(self.id, self.name)
 
     name = models.CharField(max_length=64)
-    description = models.TextField
+    description = models.TextField()
     # status = models.IntegerField(null=True)
     # authors = models.ForeignKey('auth.User')
     # params xml
