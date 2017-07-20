@@ -6,7 +6,7 @@ def index(request):
     questions = Question.objects.all()
     return render(
         request,
-        'index.html',
+        'questions.html',
         {'questions': questions},
     )
 

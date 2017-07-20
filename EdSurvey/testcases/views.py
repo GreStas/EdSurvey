@@ -5,6 +5,6 @@ def index(request):
     testcases = TestCase.objects.all()
     return render(
         request,
-        'index.html',
+        'testcases.html',
         {'testcases': testcases},
     )
