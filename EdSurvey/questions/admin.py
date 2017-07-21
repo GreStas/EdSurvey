@@ -2,12 +2,14 @@ from django.contrib import admin
 from .models import Question, Answer, AnswerLL
 
 
-class AnswerAdmin(admin.StackedInline):
+# class AnswerAdmin(admin.StackedInline):
+class AnswerAdmin(admin.TabularInline):
     # list_display = ('content', 'ordernum', 'score')
     model = Answer
 
 
-class AnswerLLAdmin(admin.StackedInline):
+# class AnswerLLAdmin(admin.StackedInline):
+class AnswerLLAdmin(admin.TabularInline):
     # list_display = ('content1', 'content2', 'ordernum1', 'ordernum2', 'score')
     model = AnswerLL
 
