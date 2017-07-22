@@ -1,40 +1,44 @@
 from django.contrib import admin
-from .models import Question, Answer, AnswerLL
+from .models import Question, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
-# class AnswerAdmin(admin.StackedInline):
-class AnswerAdmin(admin.TabularInline):
-    # list_display = ('content', 'ordernum', 'score')
+class AnswerAdmin(admin.ModelAdmin):
+    # list_display = ('id', 'question', 'score', 'ordernum', 'content')
     model = Answer
 
 
-# class AnswerLLAdmin(admin.StackedInline):
+class AnswerRBAdmin(admin.TabularInline):
+    # list_display = ('id', 'question', 'score', 'ordernum', 'content')
+    model = AnswerRB
+
+# admin.site.register(AnswerRB, AnswerRBAdmin)
+
+
+class AnswerCBAdmin(admin.TabularInline):
+    # list_display = ('id', 'question', 'score', 'ordernum', 'content')
+    model = AnswerCB
+
+# admin.site.register(AnswerCB, AnswerCBAdmin)
+
+
 class AnswerLLAdmin(admin.TabularInline):
-    # list_display = ('content1', 'content2', 'ordernum1', 'ordernum2', 'score')
+    # list_display = ('id', 'question', 'score', 'ordernum', 'content', 'linkeditem', 'ordernumitem')
     model = AnswerLL
 
+# admin.site.register(AnswerLL, AnswerLLAdmin)
 
-@admin.register(Question)
+
 class QuestionAdmin(admin.ModelAdmin):
+    # model = Question
     list_display = ('id', 'description', 'qtype')
+    ordering = ('id',)
     fieldsets = [
         (None,               {'fields': ['description', 'qtype']}),
-        # ('Date information', {'fields': ['id'], 'classes': ['collapse']}),
     ]
     inlines = [
-        AnswerAdmin,
+        AnswerRBAdmin,
+        AnswerCBAdmin,
         AnswerLLAdmin,
     ]
 
-
-# @admin.register(Question)
-# class QuestionAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'description', 'qtype')
-
-
-# @admin.register(Question)
-# class AnswerLLAdmin(admin.StackedInline):
-#     list_display = ('question', 'content1', 'content2', 'ordernum1', 'ordernum2', 'score')
-#     model = AnswerLL
-
-# admin.site.register(AnswerLL, AnswerLLAdmin)
+admin.site.register(Question, QuestionAdmin)
