@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'questions.apps.QuestionsConfig',
     'testcases.apps.TestcasesConfig',
+    'schedules.apps.SchedulesConfig',
+    'surveys.apps.SurveysConfig',
 ]
 
 MIDDLEWARE = [
