@@ -1,0 +1,36 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+<h4>Вы выбрали задание:</h4>
+<h3>{{schedule}}</h3>
+<table>
+    <tr>
+        <td align="RIGHT"><strong>Доступен:</strong></td>
+        <td>C {{schedule.start}} по {{schedule.finish}}</td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong>Задание:</strong></td>
+        <td>{{schedule.task.description}}</td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong></strong></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong>Комментарий:</strong></td>
+        <td>{{schedule.description}}</td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong>Тест-кейс:</strong></td>
+        <td>{{schedule.task.testcase.name}}</td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong>Допустимо попыток:</strong></td>
+        <td>{{schedule.task.attempts}}</td>
+    </tr>
+    <tr>
+        <td align="RIGHT"><strong>Выполнено попыток:</strong></td>
+        <td>TODO: посчитать и передать значение начатых попыток</td>
+    </tr>
+</table>
+[Выполнить тест-кейс] [Отмена]
+{% endblock%}
