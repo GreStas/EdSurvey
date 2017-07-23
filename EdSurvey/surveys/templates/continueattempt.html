@@ -1,0 +1,11 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+<h3>{{schedule}}</h3>
+<h4>Нет доступных попыток пройти это задание.</h4>
+<h4>Обратитесь, пожалуйста, к менеджеру.</h4>
+Доступен: C {{schedule.start}} по {{schedule.finish}}
+Задание: {{schedule.task.description}}
+Комментарий: {{schedule.description}}
+Количество доступных попыток: {{schedule.task.attempts}}
+Название тест-кейса: {{schedule.task.testcase.name}}
+{% endblock%}

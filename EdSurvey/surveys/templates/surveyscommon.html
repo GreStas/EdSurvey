@@ -1,0 +1,7 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+    <h2><a href="./choicerun/">Назначенных заданий</a> - {{cnt_avalaible}}</h2>
+    <h3>* Не начатых заданий - {{cnt_notstarted}}</h3>
+    <h3>* Незавершённых заданий - {{cnt_notfinished}}</h3>
+    <h2><a href="./choicedone/">Пройденных заданий</a> - {{cnt_done}}</h2>
+{% endblock %}

@@ -13,11 +13,11 @@ class Attempt(models.Model):
         unique_together = ('schedule', 'attempt')
 
     def __str__(self):
-        return "#{}.{}".format(self.attempt, str(self.schedule))
+        return "#{}.{}".format(str(self.started), str(self.schedule))
 
     # user = models.ForeignKey('auth.user')
     schedule = models.ForeignKey(Schedule)
-    attempt = models.PositiveIntegerField()
+    attempt = models.PositiveIntegerField(null=True)
     started = models.DateTimeField()    # not null, now(), noeditable
     finished = models.DateTimeField(blank=True, null=True)   # null, noeditable
     # status = models.SmallIntegerField()
