@@ -8,8 +8,8 @@ class Task(models.Model):
     Задача может быть поставлена в рамках конкретной организации
     """
     class Meta:
-        verbose_name = 'Задание на тестирвоание'
-        verbose_name_plural = 'Задания на тестирвоание'
+        verbose_name = 'Задание на тестирование'
+        verbose_name_plural = 'Задания на тестирование'
 
     def __str__(self):
         return "{}({})".format(self.description, self.testcase.name)
@@ -26,7 +26,7 @@ class Task(models.Model):
 class Schedule(models.Model):
     """ Расписание задач """
     class Meta:
-        verbose_name = 'Назначеное тестирвоание'
+        verbose_name = 'Назначеное тестирование'
         verbose_name_plural = 'Расписание заданий'
 
     def __str__(self):
