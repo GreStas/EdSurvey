@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.1" last-position="0,0" last-zoom="0.8"
+<dbmodel pgmodeler-ver="0.8.1" last-position="378,0" last-zoom="1.1"
 	 default-schema="public" default-owner="postgres">
 <database name="anketing">
 </database>
@@ -104,7 +104,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="test">
+<table name="testcase">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<comment><![CDATA[упорядоченость вопросов; возомжность редактировать свои ответы; количество попыток и т.п.]]></comment>
@@ -130,7 +130,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="anketa" not-null="true">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_tests" type="pk-constr" table="public.test">
+	<constraint name="pk_testcase" type="pk-constr" table="public.testcase">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -247,7 +247,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="anketas">
+<table name="testcontent">
 	<schema name="public"/>
 	<role name="postgres"/>
 	<comment><![CDATA[Контейнер из вопросов для конкретного теста.]]></comment>
@@ -265,7 +265,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_anketas" type="pk-constr" table="public.anketas">
+	<constraint name="pk_testcontent" type="pk-constr" table="public.testcontent">
 		<columns names="test,question" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -374,8 +374,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_tests_authors" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.test">
+<constraint name="fk_testcase_authors" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.testcase">
 	<columns names="authors" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -411,7 +411,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="fk_tasks_test" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.test" table="public.task">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.testcase" table="public.task">
 	<columns names="test" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -446,14 +446,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_anketa_question" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.anketas">
+<constraint name="fk_testcontent_question" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.testcontent">
 	<columns names="question" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="fk_anketas_test" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.test" table="public.anketas">
+<constraint name="fk_testcontent_testcase" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.testcase" table="public.testcontent">
 	<columns names="test" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -509,7 +509,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_tests_groups" type="relfk"
-	 src-table="public.test"
+	 src-table="public.testcase"
 	 dst-table="public.&quot;group&quot;"
 	 src-required="false" dst-required="false"/>
 
@@ -548,7 +548,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 
 <relationship name="rel_tasks_tests" type="relfk"
 	 src-table="public.task"
-	 dst-table="public.test"
+	 dst-table="public.testcase"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_schedules_tasks" type="relfk"
@@ -577,13 +577,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_anketa_questions" type="relfk"
-	 src-table="public.anketas"
+	 src-table="public.testcontent"
 	 dst-table="public.question"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_anketas_tests" type="relfk"
-	 src-table="public.anketas"
-	 dst-table="public.test"
+	 src-table="public.testcontent"
+	 dst-table="public.testcase"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_questions_questions" type="relfk"

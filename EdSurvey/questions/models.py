@@ -54,6 +54,9 @@ class Answer(models.Model):
         verbose_name = 'Простой Ответ'
         verbose_name_plural = 'Простые Ответы'
 
+    def __str__(self):
+        return self.content
+
     question = models.ForeignKey('Question')
     content = models.TextField()
     ordernum = models.PositiveIntegerField(null=True, blank=True)
