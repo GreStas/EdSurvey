@@ -24,12 +24,18 @@ def task_info(request, taskid):
 
 def schedule_info(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
-    return render(request, 'scheduleinfo.html', {'schedule': schedule})
+    return render(request,
+                  'scheduleinfo.html',
+                  {
+                      'infoblock': render_schedule_info(schedule),
+                      'taskinfoblock': render_task_info(schedule.task)
+                  },
+                  )
 
-def render_task_info(request, task):
+def render_task_info(task):
     """ Генерация HTML-блока с описанием параметров задания"""
-    return render_to_string(request, 'taskinfo.html', {'task': task})
+    return render_to_string('taskinfoblock.html', {'task': task})
 
-def render_schedule_info(request, schedule):
+def render_schedule_info(schedule):
     """ Генерация HTML-блока с описанием параметров расписания"""
-    return render_to_string(request, 'scheduleinfo.html', {'schedule': schedule})
+    return render_to_string('scheduleinfoblock.html', {'schedule': schedule})

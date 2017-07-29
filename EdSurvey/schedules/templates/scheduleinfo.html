@@ -1,10 +1,7 @@
-<table>
-    <tr>
-        <td align="RIGHT"><strong>Доступен:</strong></td>
-        <td>C {{schedule.start}} по {{schedule.finish}}</td>
-    </tr>
-    <tr>
-        <td align="RIGHT"><strong>Комментарий:</strong></td>
-        <td>{{schedule.description}}</td>
-    </tr>
-</table>
+{% extends 'home.htm' %}
+{% block mainblock %}
+    <h3>Параметры задания:</h3>
+    {{taskinfoblock}}
+    <h3>Доступное расписание</h3>
+    {{infoblock}}
+{% endblock%}
