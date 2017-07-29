@@ -1,11 +1,14 @@
 <table>
     <tr>
-        <td align="LEFT"><strong>Задание:</strong></td>
-        <td>{{task.description}}</td>
+        <td align="LEFT" valign="TOP"><strong>Задание:</strong></td>
+        <td>{{task.description|linebreaks}}</td>
     </tr>
     <tr>
-        <td align="LEFT"><strong>Тест-кейс:</strong></td>
-        <td>{{task.querylist.name}}</td>
+        <td align="LEFT" valign="TOP"><strong>Тест-кейс:</strong></td>
+        <td>
+            {{task.querylist.name}} <br>
+            {{task.querylist.description|linebreaks}}
+        </td>
     </tr>
     <tr>
         <td align="LEFT"><strong>Разрешено попыток:</strong></td>

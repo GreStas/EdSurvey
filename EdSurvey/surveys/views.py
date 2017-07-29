@@ -1,6 +1,29 @@
 from django.shortcuts import render, get_object_or_404
-from schedules.models import Schedule, Task
+from django.template.loader import render_to_string
+from django.utils.timezone import now
+
+from schedules.models import Schedule
 from .models import Attempt
+
+
+def render_runattempt(schedule):
+    """ Генерирует HTML-код для отображения возможности запуска попытки пройти тест"""
+    # проверить, что мы в сроках
+    if schedule.start < now() < schedule.finish:
+        # найти незавершённую попытку
+        attempt = Attempt.objects.all().filter(schedule=schedule,
+                                               finished__isnull=True).oreder_by('-started')
+        if attempt:
+            # и вернуть HTML-код запуска теста
+            return render_to_string('runattemptblock.html', {'attempt': attempt[0]})
+        # TODO Если незавершённой попытки нет, то Вычислить количество доступных попыток
+        elif schedule.task.attempts > Attempt.objects.all().filter(schedule=schedule,
+                                                                   finished__isnull=False).count():
+            # TODO Если есть досупные попытки, то вернуть HTML-код запуска теста
+            return render_to_string('newattemptblock.html', {'attempt': attempt})
+        else:
+            # TODO Если все попытки использованы, то сообщить об остутсвие доступных попыток из _имеющихся_
+            return render_to_string('noattemptblock.html', {'attempts': schedule.attempts})
 
 
 def index(request):

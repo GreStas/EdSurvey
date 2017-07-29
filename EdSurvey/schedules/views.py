@@ -18,24 +18,25 @@ def index(request):
         }
     )
 
-def task_info(request, taskid):
-    task = get_object_or_404(Task, pk=taskid)
-    return render(request, 'taskinfo.html', {'task': task})
-
 def schedule_info(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
     return render(request,
                   'scheduleinfo.html',
                   {
                       'infoblock': render_schedule_info(schedule),
-                      'taskinfoblock': render_task_info(schedule.task)
+                      'taskinfoblock': render_task_info(schedule.task),
+                      # 'runattemptblock': surveys.views.render_runattempt(schedule),
                   },
                   )
+
+def render_schedule_info(schedule):
+    """ Генерация HTML-блока с описанием параметров расписания"""
+    return render_to_string('scheduleinfoblock.html', {'schedule': schedule})
 
 def render_task_info(task):
     """ Генерация HTML-блока с описанием параметров задания"""
     return render_to_string('taskinfoblock.html', {'task': task})
 
-def render_schedule_info(schedule):
-    """ Генерация HTML-блока с описанием параметров расписания"""
-    return render_to_string('scheduleinfoblock.html', {'schedule': schedule})
+# def task_info(request, taskid):
+#     task = get_object_or_404(Task, pk=taskid)
+#     return render(request, 'taskinfo.html', {'task': task})
