@@ -6,15 +6,6 @@ from schedules.models import Task, Schedule
 
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
-    class Meta:
-        verbose_name = 'Попытка сдать тест-кейс'
-        verbose_name_plural = 'Попытки сдать тест-кейс'
-        # unique_together = ('user', schedule', 'attempt')
-        unique_together = ('schedule', 'attempt')
-
-    def __str__(self):
-        return "#{}.{}".format(str(self.started), str(self.schedule))
-
     # user = models.ForeignKey('auth.user')
     schedule = models.ForeignKey(Schedule)
     attempt = models.PositiveIntegerField(null=True)
@@ -22,9 +13,25 @@ class Attempt(models.Model):
     finished = models.DateTimeField(blank=True, null=True)   # null, noeditable
     # status = models.SmallIntegerField()
 
+    class Meta:
+        verbose_name = 'Попытка пройти тест'
+        verbose_name_plural = 'Попытки пройти тест'
+        # unique_together = ('user', schedule', 'attempt')
+        unique_together = ('schedule', 'attempt')
+
+    def __str__(self):
+        return "#{}.{}".format(str(self.started), str(self.schedule))
+
 
 class Result(models.Model):
     """ Ответы пользователей на анкеты """
+    # user = models.ForeignKey('auth.user') # Пользоватеь
+    attempt = models.ForeignKey(Attempt)    #   в ходе попытки
+    question = models.ForeignKey(Question)  #     на вопрос
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    # status = models.SmallIntegerField()
+
     class Meta:
         verbose_name = 'Результат'
         verbose_name_plural = 'Результаты'
@@ -33,13 +40,6 @@ class Result(models.Model):
 
     def __str__(self):
         return "#{}.{}".format(self.attempt, str(self.question))
-
-    # user = models.ForeignKey('auth.user') # Пользоватеь
-    attempt = models.ForeignKey(Attempt)    #   в ходе попытки
-    question = models.ForeignKey(Question)  #     на вопрос
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-    # status = models.SmallIntegerField()
 
 
 class ResultRB(Result):

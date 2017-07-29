@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^$', homepage),
     url(r'^home/', include('home.urls')),
     url(r'^questions/', include('questions.urls')),
-    url(r'^testcases/', include('testcases.urls')),
+    url(r'^querylists/', include('querylists.urls')),
     url(r'^surveys/', include('surveys.urls')),
     url(r'^admin/', admin.site.urls),
 ]
