@@ -11,8 +11,8 @@ class QueryList(models.Model):
     # params xml
 
     class Meta:
-        verbose_name = 'Опросный лист'
-        verbose_name_plural = 'Опросные листы'
+        verbose_name = 'Анкета'
+        verbose_name_plural = 'Анкеты'
 
     def __str__(self):
         return "{}.{}".format(self.id, self.name)
@@ -25,8 +25,8 @@ class QueryContent(models.Model):
     # status = models.IntegerField(null=True)
 
     class Meta:
-        verbose_name = 'Состав Опросного листа'
-        verbose_name_plural = verbose_name
+        verbose_name = 'Состав Анкеты'
+        verbose_name_plural = 'Состав Анкет'
         unique_together = ('querylist', 'question')
 
     def __str__(self):

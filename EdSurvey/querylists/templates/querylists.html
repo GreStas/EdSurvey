@@ -1,0 +1,18 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+    <h2>Анкеты</h2>
+    <table border="2">
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Описание</th>
+        </tr>
+{% for querylist in querylists %}
+        <tr>
+            <td>{{querylist.id}}</td>
+            <td>{{querylist.name}}</td>
+            <td>{{querylist.description}}</td>
+        </tr>
+{% endfor %}
+    </table>
+{% endblock %}
