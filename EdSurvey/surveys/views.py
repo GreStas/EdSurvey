@@ -1,16 +1,76 @@
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
+from django.db import transaction
 
-from .models import Attempt
-from schedules.models import Schedule
-from schedules.views import render_task_info
-# from querylists.views import render_querylist_info
+from random import shuffle
+
+from .models import Result, ResultRB, ResultCB, ResultLL
+from schedules.models import Schedule, Task, Attempt
+from querylists.models import QueryContent
+
+
+def generate_result_list(attempt):
+    """ Генерирует последовательность Result
+    1. Выбрать упорядоченные
+select * from querylists_querycontent where ordernum is not null and querylist_id in
+(select id from querylists_querylist where id in
+	(select querylist_id from schedules_task where id in
+		(select task_id from schedules_schedule where id in
+			(select schedule_id from schedules_attempt where id = 3)
+		)
+	)
+)
+order by ordernum
+
+    2. Выбрать неупорядоченные
+select * from querylists_querycontent where ordernum is null and querylist_id in
+(select id from querylists_querylist where id in
+	(select querylist_id from schedules_task where id in
+		(select task_id from schedules_schedule where id in
+			(select schedule_id from schedules_attempt where id = 3)
+		)
+	)
+)
+
+    3. Перемешать неупорядоченный список.
+
+    4. Соединить два списка - сначала упорядоченные.
+
+    5. BEGIN TRANSACTION ( Создать последовательность Result по [].question.id ) END TRANSACTION
+    """
+    task = Task.objects.get(schedule__attempt=attempt)
+    ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
+    unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
+    shuffle(unordered_contents)
+    contents = ordered_contents.union(unordered_contents)
+
+    with transaction.atomic():
+        for i,content in enumerate(contents):
+            r = Result(
+                attempt=attempt,
+                question=content.question,
+                ordernum=i,
+            )
+            r.save()
+
+
+def prev_result(attempt, curr_result):
+    """ Перемещается назад по Anketa """
+    result = None
+    return result
+
+
+def next_result(attempt, curr_result):
+    """ Перемещается вперёд по Anketa """
+    result = None
+    return result
 
 
 def run_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
     return render(request, 'runattempt.html', {'attempt': attempt,})
+
 
 def index(request):
     """ Показать количество
@@ -33,74 +93,3 @@ def index(request):
             'cnt_done': cnt_done,
         },
     )
-
-
-def choice_run(request):
-    schedules = Schedule.objects.all()
-    return render(
-        request,
-        'choicerun.html',
-        {'schedules': schedules},
-    )
-
-
-def choice_done(request):
-    schedules = Schedule.objects.all()
-    return render(
-        request,
-        'choicedone.html',
-        {'schedules': schedules},
-    )
-
-
-def choice_attempt(request, scheduleid):
-    """ Выбор варианта дальнейших действий в зависимости от наличия доступных попыток.
-    1. Если есть незавершённая попытка, то предложить продолжить выполнение.
-    2. Если нет незавершённых попыток и есть ещё неиспользованные поптки, то предложить начать выполнение.
-    3. Если попыток нет, то вывести сообщение "Обратитесь к менеджеру."
-    """
-    CONTINUE_ATTEMPT = 1
-    NEW_ATTEMPT = 2
-    NO_ATTEMPT = 3
-
-    schedule = get_object_or_404(Schedule, pk=scheduleid)
-    var = NO_ATTEMPT  # TODO Заменить на код по определению выбору варианта дальнейших действий
-
-    if var == CONTINUE_ATTEMPT:    # Продолжить выполнение - continueattempt
-        # Форма выбора
-        # [Продолжить] - вызовет run_attempt(schedule, attempt)
-        # [Отмена] - вызовет index()
-        attempts = Attempt.objects.all().filter(schedule=schedule)
-        return render(
-            request,
-            'continueattempt.html',
-            {
-                'schedule': schedule,
-                'attempts': attempts,
-            },
-        )
-    elif var == NEW_ATTEMPT:  # Новая попытка - newattempt
-        # Форма выбора
-        # [Начать] - Создаст новую попытку и вызовет run_attempt(schedule, attempt)
-        # [Отмена] - вызовет index()
-        attempts = Attempt.objects.all().filter(schedule=schedule)  # проверку на достаточность попыток сделает валидатор или *save() в Attempt
-        return render(
-            request,
-            'newattempt.html',
-            {
-                'schedule': schedule,
-                'attempts': attempts,
-            },
-        )
-    elif var == NO_ATTEMPT:
-        # Покажет параметры расписания, совершённые попытки и соответствующее сообщение
-        attempts = Attempt.objects.all().filter(schedule=schedule).order_by('-started')
-        return render(
-            request,
-            'noattempt.html',
-            {
-                'schedule': schedule,
-                'attempts': attempts,
-            },
-        )
-    # TODO return Что-нибудь про внутреннюю ошибку.

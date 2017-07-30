@@ -4,23 +4,17 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
 
+RADIOBUTTON = 'RB'  # (*) One -from- List
+CHECKBOX = 'CB'  # [v] Some -from- List
+LINKEDLISTS = 'LL'  # Link One from first list -to- One from other list
+QUESTION_TYPE_CHOICES = (
+    (RADIOBUTTON, 'Один из ...'),
+    (CHECKBOX, 'Несколько из ...'),
+    (LINKEDLISTS, "Путанка"),
+)
+
+
 class Question(models.Model):
-    class Meta:
-        verbose_name = 'Вопрос'
-        verbose_name_plural = 'Вопросы'
-
-    def __str__(self):
-        return "{}.{}.{}".format(self.id, self.qtype, self.description[:15])
-
-    RADIOBUTTON = 'RB'  # (*) One -from- List
-    CHECKBOX = 'CB'     # [v] Some -from- List
-    LINKEDLISTS = 'LL'   # Link One from first list -to- One from other list
-    QUESTION_TYPE_CHOICES = (
-        (RADIOBUTTON, 'Один из ...'),
-        (CHECKBOX, 'Несколько из ...'),
-        (LINKEDLISTS, "Путанка"),
-    )
-
     qtype = models.CharField(
         max_length=2,
         choices=QUESTION_TYPE_CHOICES,
@@ -32,6 +26,14 @@ class Question(models.Model):
     # organisation = models.ForeignKey('organisations.organisation')
     # authors = models.ForeignKey('auth.User')
 
+    class Meta:
+        verbose_name = 'Вопрос'
+        verbose_name_plural = 'Вопросы'
+
+    def __str__(self):
+        return "{}.{}.{}".format(self.id, self.qtype, self.description[:15])
+
+
 def question_pre_save(instance, **kwargs):
     # Проверка на изменение типа вопроса (qtype)
     # select 1 from Answer where Answer.question = self.id limit 1
@@ -39,17 +41,28 @@ def question_pre_save(instance, **kwargs):
     cntCB = AnswerCB.objects.all().filter(question=instance)[:1].count()
     cntLL = AnswerLL.objects.all().filter(question=instance)[:1].count()
     print(instance.qtype, cntRB, cntCB, cntLL)
-    if instance.qtype not in ('RB', 'CB', 'LL'):
+    if instance.qtype not in QUESTION_TYPE_CHOICES[0]:
         raise ValidationError(_("Unknown QType"))
-    elif (instance.qtype == 'RB' and (cntCB + cntLL) > 0) or \
-        (instance.qtype == 'CB' and (cntRB + cntLL) > 0) or \
-        (instance.qtype == 'LL' and (cntRB + cntCB) > 0) :
+    elif (instance.qtype == RADIOBUTTON and (cntCB + cntLL) > 0) or \
+        (instance.qtype == CHECKBOX and (cntRB + cntLL) > 0) or \
+        (instance.qtype == LINKEDLISTS and (cntRB + cntCB) > 0) :
         raise ValidationError("Нельзя изменять тип вопроса, если вопрос всё ещё имеет ответы.")
 
 pre_save.connect(question_pre_save, sender=Question)
 
 
 class Answer(models.Model):
+    question = models.ForeignKey('Question')
+    content = models.TextField()
+    ordernum = models.PositiveIntegerField(null=True, blank=True)
+    score = models.PositiveIntegerField(null=True, blank=True)
+    qtype = models.CharField(
+        max_length=2,
+        choices=QUESTION_TYPE_CHOICES,
+        default=RADIOBUTTON,
+    )
+    # status = models.IntegerField(null=True)
+
     class Meta:
         verbose_name = 'Простой Ответ'
         verbose_name_plural = 'Простые Ответы'
@@ -57,25 +70,25 @@ class Answer(models.Model):
     def __str__(self):
         return self.content
 
-    question = models.ForeignKey('Question')
-    content = models.TextField()
-    ordernum = models.PositiveIntegerField(null=True, blank=True)
-    score = models.PositiveIntegerField(null=True, blank=True)
-    # status = models.IntegerField(null=True)
+
+def answer_pre_save(instance, **kwargs):
+    instance.qtype = instance.question.qtype
+
+pre_save.connect(answer_pre_save, sender=Answer)
 
 
 class AnswerRB(Answer):
     """ qtype == RB
         необходим для создания отдельных валидаторов
     """
-    class Meta:
-        verbose_name = 'Одиночный Ответ (RadioButton)'
-        verbose_name_plural = 'Одиночные Ответы (RadioButton)'
-
     answer_ptr = models.OneToOneField(
         Answer, on_delete=models.CASCADE,
         parent_link=True,
     )
+
+    class Meta:
+        verbose_name = 'Одиночный Ответ (RadioButton)'
+        verbose_name_plural = 'Одиночные Ответы (RadioButton)'
 
     def clean(self):
         qtype = self.question.qtype
@@ -87,14 +100,14 @@ class AnswerCB(Answer):
     """ qtype == CB
         необходим для создания отдельных валидаторов
     """
-    class Meta:
-        verbose_name = 'Множественный Ответ (CheckBox)'
-        verbose_name_plural = 'Множественные Ответы (CheckBox)'
-
     answer_ptr = models.OneToOneField(
         Answer, on_delete=models.CASCADE,
         parent_link=True,
     )
+
+    class Meta:
+        verbose_name = 'Множественный Ответ (CheckBox)'
+        verbose_name_plural = 'Множественные Ответы (CheckBox)'
 
     def clean(self):
         qtype = self.question.qtype
@@ -103,16 +116,16 @@ class AnswerCB(Answer):
 
 
 class AnswerLL(Answer):
-    class Meta:
-        verbose_name = 'Ответ-Путанка'
-        verbose_name_plural = 'Ответы-Путанки'
-
     answer_ptr = models.OneToOneField(
         Answer, on_delete=models.CASCADE,
         parent_link=True,
     )
     linkeditem = models.TextField()
     ordernumitem = models.PositiveIntegerField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Ответ-Путанка'
+        verbose_name_plural = 'Ответы-Путанки'
 
     def clean(self):
         qtype = self.question.qtype

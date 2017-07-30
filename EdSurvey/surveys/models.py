@@ -12,6 +12,7 @@ class Result(models.Model):
     question = models.ForeignKey(Question)  #     на вопрос
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    ordernum = models.PositiveIntegerField()    # Номер под которым задаётся вопрос.
     # status = models.SmallIntegerField()
 
     class Meta:
@@ -65,16 +66,16 @@ class ResultCB(Result):
 
 
 class ResultLL(Result):
-    class Meta:
-        verbose_name = 'Ответ-Путанка'
-        verbose_name_plural = 'Ответы-Путанки'
-
     result_ptr = models.OneToOneField(
         Result, on_delete=models.CASCADE,
         parent_link=True,
     )
     answerLL = models.ForeignKey(AnswerLL)  #       дал ответ
     itemLL = models.ForeignKey(AnswerLL, related_name='+')    #         выбрав вариант
+
+    class Meta:
+        verbose_name = 'Ответ-Путанка'
+        verbose_name_plural = 'Ответы-Путанки'
 
     def clean(self):
         qtype = self.question.qtype
