@@ -1,0 +1,13 @@
+<table border="1">
+    <tr>
+        <th>Начато</th>
+        <th>Закончено</th>
+
+    </tr>
+{% for attempt in attempts %}
+    <tr>
+        <td>{{attempt.started}}</td>
+        <td>{{attempt.finished}}</td>
+    </tr>
+{% endfor %}
+</table>

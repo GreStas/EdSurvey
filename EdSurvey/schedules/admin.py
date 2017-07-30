@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task, Schedule
+from .models import Task, Schedule, Attempt
 
 
 class ScheduleAdmin(admin.TabularInline):
@@ -17,3 +17,13 @@ class TaskAdmin(admin.ModelAdmin):
     ]
 
 admin.site.register(Task, TaskAdmin)
+
+
+class AttemptAdmin(admin.ModelAdmin):
+    # list_display = ('id', 'description', 'qtype')
+    ordering = ('schedule', '-started')
+    # fieldsets = [
+    #     (None, {'fields': ['attempt', 'question', 'answer']}),
+    # ]
+
+admin.site.register(Attempt, AttemptAdmin)

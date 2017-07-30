@@ -1,8 +1,16 @@
 {% extends 'home.htm' %}
 {% block mainblock %}
+
     <h3>Параметры задания:</h3>
     {{taskinfoblock}}
-    <h3>Доступное расписание</h3>
-    {{infoblock}}
+    <p> </p>
+    {{querylistinfoblock}}
+
     <h3>{{runattemptblock}} &gt;&gt;</h3>
+
+    <h3>Доступное расписание</h3>
+    {{scheduleinfoblock}}
+
+    <h3>Попытки</h3>
+    {{attemptlistblock}}
 {% endblock%}

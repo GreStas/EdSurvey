@@ -20,8 +20,8 @@ from home.views import index as homepage
 urlpatterns = [
     url(r'^$', homepage),
     url(r'^home/', include('home.urls')),
-    url(r'^questions/', include('questions.urls')),
-    url(r'^querylists/', include('querylists.urls')),
+    url(r'^questions/', include('questions.urls', namespace='questions')),
+    url(r'^querylists/', include('querylists.urls', namespace='querylists')),
     url(r'^schedules/', include('schedules.urls', namespace='schedules')),
     url(r'^surveys/', include('surveys.urls', namespace='surveys')),
     url(r'^admin/', admin.site.urls),

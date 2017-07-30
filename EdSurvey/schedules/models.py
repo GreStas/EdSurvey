@@ -46,3 +46,19 @@ class Schedule(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.task.description, self.description)
+
+
+class Attempt(models.Model):
+    """ Попытки сдать тест-кейс """
+    # user = models.ForeignKey('auth.user')
+    schedule = models.ForeignKey(Schedule)
+    started = models.DateTimeField(auto_now_add=True, auto_now=False)
+    finished = models.DateTimeField(blank=True, null=True)
+    # status = models.SmallIntegerField()
+
+    class Meta:
+        verbose_name = 'Попытка пройти тест'
+        verbose_name_plural = 'Попытки пройти тест'
+
+    def __str__(self):
+        return "#{}.{}".format(str(self.started), str(self.schedule))

@@ -1,26 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+
 from questions.models import Question, AnswerRB, AnswerCB, AnswerLL
-from schedules.models import Task, Schedule
-
-
-class Attempt(models.Model):
-    """ Попытки сдать тест-кейс """
-    # user = models.ForeignKey('auth.user')
-    schedule = models.ForeignKey(Schedule)
-    attempt = models.PositiveIntegerField(null=True, blank=True)
-    started = models.DateTimeField(auto_now_add=True, auto_now=False)
-    finished = models.DateTimeField(blank=True, null=True)
-    # status = models.SmallIntegerField()
-
-    class Meta:
-        verbose_name = 'Попытка пройти тест'
-        verbose_name_plural = 'Попытки пройти тест'
-        # unique_together = ('user', schedule', 'attempt')
-        unique_together = ('schedule', 'attempt')
-
-    def __str__(self):
-        return "#{}.{}".format(str(self.started), str(self.schedule))
+from schedules.models import Attempt
 
 
 class Result(models.Model):
