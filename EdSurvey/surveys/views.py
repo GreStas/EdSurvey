@@ -8,6 +8,10 @@ from schedules.views import render_task_info
 # from querylists.views import render_querylist_info
 
 
+def run_attempt(request, attemptid):
+    attempt = get_object_or_404(Attempt, pk=attemptid)
+    return render(request, 'runattempt.html', {'attempt': attempt,})
+
 def index(request):
     """ Показать количество
     - Назначенных аданий        [подробнее >] переход на view выбора задания choice_run с соответсвующим фильтром
