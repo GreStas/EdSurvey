@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 from django.db import transaction
@@ -8,6 +8,7 @@ from random import shuffle
 from .models import Result, ResultRB, ResultCB, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
+from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS
 
 
 def generate_result_list(attempt):
@@ -69,7 +70,22 @@ def next_result(attempt, curr_result):
 
 def run_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
-    return render(request, 'runattempt.html', {'attempt': attempt,})
+    generate_result_list(attempt)
+    result = get_object_or_404(Result, attempt=attempt, ordernum=0)
+    if result.question.qtype == RADIOBUTTON:
+        return redirect(
+            request,
+            'radiobutton.html',
+            {
+                'result': result,
+            }
+        )
+    elif result.question.qtype == CHECKBOX:
+        pass
+    elif result.question.qtype == LINKEDLISTS:
+        pass
+    # else:
+    #     return internal_error
 
 
 def index(request):
