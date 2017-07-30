@@ -8,9 +8,9 @@ class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
     # user = models.ForeignKey('auth.user')
     schedule = models.ForeignKey(Schedule)
-    attempt = models.PositiveIntegerField(null=True)
-    started = models.DateTimeField()    # not null, now(), noeditable
-    finished = models.DateTimeField(blank=True, null=True)   # null, noeditable
+    attempt = models.PositiveIntegerField(null=True, blank=True)
+    started = models.DateTimeField(auto_now_add=True, auto_now=False)
+    finished = models.DateTimeField(blank=True, null=True)
     # status = models.SmallIntegerField()
 
     class Meta:
@@ -46,15 +46,15 @@ class ResultRB(Result):
     """ qtype == CB
         необходим для создания отдельных валидаторов
     """
-    class Meta:
-        verbose_name = 'Одиночный Ответ (RadioButton)'
-        verbose_name_plural = 'Одиночные Ответы (RadioButton)'
-
     result_ptr = models.OneToOneField(
         Result, on_delete=models.CASCADE,
         parent_link=True,
     )
     answerRB = models.ForeignKey(AnswerRB)  #       дал ответ
+
+    class Meta:
+        verbose_name = 'Одиночный Ответ (RadioButton)'
+        verbose_name_plural = 'Одиночные Ответы (RadioButton)'
 
     def clean(self):
         qtype = self.question.qtype
@@ -66,15 +66,15 @@ class ResultCB(Result):
     """ qtype == CB
         необходим для создания отдельных валидаторов
     """
-    class Meta:
-        verbose_name = 'Множественный Ответ (CheckBox)'
-        verbose_name_plural = 'Множественные Ответы (CheckBox)'
-
     result_ptr = models.OneToOneField(
         Result, on_delete=models.CASCADE,
         parent_link=True,
     )
     answerCB = models.ForeignKey(AnswerCB)  #       дал ответ
+
+    class Meta:
+        verbose_name = 'Множественный Ответ (CheckBox)'
+        verbose_name_plural = 'Множественные Ответы (CheckBox)'
 
     def clean(self):
         qtype = self.question.qtype

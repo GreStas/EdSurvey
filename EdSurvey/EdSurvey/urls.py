@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^questions/', include('questions.urls')),
     url(r'^querylists/', include('querylists.urls')),
     url(r'^schedules/', include('schedules.urls', namespace='schedules')),
-    url(r'^surveys/', include('surveys.urls')),
+    url(r'^surveys/', include('surveys.urls', namespace='surveys')),
     url(r'^admin/', admin.site.urls),
 ]
