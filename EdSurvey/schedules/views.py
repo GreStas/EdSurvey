@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.timezone import now
 
-from schedules.models import Schedule   # , Task
+from .models import Schedule   # , Task
 # from surveys.views import render_run_attempt
 
 

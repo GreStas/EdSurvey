@@ -1,11 +1,7 @@
 from django.contrib import admin
-from .models import Attempt, Result, ResultRB, ResultCB, ResultLL
+from .models import Result, ResultRB, ResultCB, ResultLL
 
 # В проде не будет админки, так как это будет приложение для пользователей
-
-
-class ResultAdmin(admin.ModelAdmin):
-    model = Result
 
 
 class ResultRBAdmin(admin.TabularInline):
@@ -20,16 +16,12 @@ class ResultLLAdmin(admin.TabularInline):
     model = ResultLL
 
 
-class AttemptAdmin(admin.ModelAdmin):
-    # list_display = ('id', 'description', 'qtype')
-    ordering = ('schedule', 'attempt')
-    # fieldsets = [
-    #     (None, {'fields': ['attempt', 'question', 'answer']}),
-    # ]
+class ResultAdmin(admin.ModelAdmin):
+    model = Result
     inlines = [
         ResultRBAdmin,
         ResultCBAdmin,
         ResultLLAdmin,
     ]
 
-admin.site.register(Attempt, AttemptAdmin)
+admin.site.register(Result, ResultAdmin)
