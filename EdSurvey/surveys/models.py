@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from questions.models import Question, AnswerRB, AnswerCB, AnswerLL
+from questions.models import Question, Answer
 from schedules.models import Attempt
 
 
@@ -24,3 +24,8 @@ class Anketa(models.Model):
     def __str__(self):
         return "#{}.{}".format(self.attempt, str(self.question))
 
+class Result(models.Model):
+    anketa = models.ForeignKey(Anketa)
+    answer = models.ForeignKey(Answer)
+    created = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
