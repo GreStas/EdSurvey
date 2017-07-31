@@ -16,7 +16,7 @@ def render_run_attempt(schedule):
         # найти незавершённую попытку
         attempt = Attempt.objects.all().filter(schedule=schedule,
                                                finished__isnull=True).order_by('-started')
-        if attempt:
+        if len(attempt):
             # и вернуть HTML-код запуска теста
             return render_to_string('runattemptblock.html', {'attempt': attempt[0]})
         # Если незавершённой попытки нет, то Вычислить количество доступных попыток

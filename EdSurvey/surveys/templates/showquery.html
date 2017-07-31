@@ -2,40 +2,50 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
-    <title>Номер вопроса и сокращённое содержание</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="{% static 'main.css' %}" >
+
+    <title>{{query.ordernum}} и сокращённое содержание</title>
+
 </head>
 <body>
 
 <div class="page-header">
-    <h2><a href="/">НАЗВАНИЕ ЗАДАНИЯ НА ТЕСТИРОВАНИЕ</a></h2>
-    <p>БЛОК КРАТКОГО ОПИСАНИЯ ЗАДАНИЯ</p>
+    <h2>{{query.attempt.schedule.task.description|linebreaks}}</h2>
+    <h3>{{query.attempt.schedule.task.querylist.name}}</h3>
+    <p>{{query.attempt.schedule.task.querylist.description|linebreaks}}</p>
 </div>
 
-    <h4>Вопрос ordernum из query_counts</h4>
+    <h4>Вопрос {{query.ordernum}} из {{maxquerynum}}</h4>
 
 {% block queryblock %}
-    <h3> Тут должен быть текст вопроса</h3>
+    <h3>{{query.question.description|linebreaks}}</h3>
 {% endblock %}
 
 <hr border-color="#7b6b6b">
+
+
+<form action="{% url 'surveys:showquery' query.id %}" method="post">
+    {% csrf_token %}
 
 {% block resultblock %}
     <p>Тут должена быть форма с ответами</p>
 {% endblock %}
 
-<hr border-color="#7b6b6b">
+    <hr border-color="#7b6b6b">
 
-<div class="page-footer">
-    <input type="submit" value="<< Предыдущий" name="prev_query" {% if query.ordernum <= 0 %} disabled {% endif %} >
-    <input type="submit" value="Очистить" name="clear_query">
-    <input type="submit" value="Прервать" name="pause_query">
-    <input type="submit" value="Завершить" name="exit_query">
-    <input type="submit" value="Следующий >>" name="next_query" {% if query.ordernum >= maxquerynum %} disabled {% endif %} >
+    <div class="page-footer">
+        <input type="submit" value="<< Предыдущий" name="prev_query" {% if query.ordernum <= 1 %} disabled {% endif %} >
+        <input type="submit" value="Очистить" name="clear_query">
+        <input type="submit" value="Прервать" name="pause_query">
+        <input type="submit" value="Завершить" name="exit_query">
+        <input type="submit" value="Следующий >>" name="next_query" {% if query.ordernum >= maxquerynum %} disabled {% endif %} >
 
-</div>
+    </div>
+
+</form>
+
 
 </body>
 </html>

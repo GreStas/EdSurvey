@@ -1,3 +1,4 @@
+# surveys.views
 from django.db.models.aggregates import Max
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -53,7 +54,7 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
             a = Anketa(
                 attempt=attempt,
                 question=content.question,
-                ordernum=i,
+                ordernum=i+1,
             )
             a.save()
 
@@ -61,66 +62,46 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
 def run_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
     # if Anketa.objects.all().filter(attempt=attempt).count() == 0:
-    if not len(Anketa.objects.all().filter(attempt=attempt)):
+    if len(Anketa.objects.all().filter(attempt=attempt)) == 0:
         generate_anketa(attempt)
-    query = get_object_or_404(Anketa, attempt=attempt, ordernum=0)
+    query = get_object_or_404(Anketa, attempt=attempt, ordernum=1)
     return redirect(reverse('surveys:showquery', args=[query.id]))
 
 
-def render_prev_query_button(query):
-    return render_to_string(
-        '<input type="submit" value="<< Предыдущий" name="prev_query"' + \
-        (' disabled' if query.ordernum <= 0 else '') + \
-        '>'
-    )
-
-
-def render_next_query_button(query):
-    return '<input type="submit" value="Следующий >>" name="next_query"' + \
-           (' disabled' if query.ordernum <= 0 else '') + \
-           '>'
-
-
-def render_pause_button(query):
-    # TODO проверить, что можно сохранять промежуточные результаты
-    return '<input type="submit" value="Прервать" name="pause_query">'
-
-
-def render_exit_button(query):
-    # TODO проверить, что на все вопросы получены ответы
-    return '<input type="submit" value="Завершить" name="exit_query">'
-
-
-def render_reset(query):
-    # TODO проверить условия тестирования на возможность изменить уже сохранённый ответ
-    return '<input type="submit" value="Очистить" name="clear_query">'
-
-def get_result_form(query):
+def reneder_result_form(query):
     if query.question.qtype == RADIOBUTTON:
         return
+    elif query.question.qtype == CHECKBOX:
+        return
+    elif query.question.qtype == LINKEDLISTS:
+        return
+
 
 def show_query(request, queryid):
-    # TODO
-    # TODO
-    # TODO
-    # TODO
-    # TODO
     query = get_object_or_404(Anketa, pk=queryid)
-    maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))
-    form = get_result_form(query)
+    maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
+
+    if request.POST.get("prev_query"):
+        query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum-1)
+        return redirect(reverse('surveys:showquery', args=[query.id]))
+    elif request.POST.get("next_query"):
+        query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1)
+        return redirect(reverse('surveys:showquery', args=[query.id]))
+
     return render(
         request,
         'showquery.html',
         {
             'query': query,
             'maxquerynum': maxquerynum,
-            'form': form,
+            # 'form': form,
             # 'prev_query': render_prev_query_button(query),
             # 'pause_query': render_pause_button(query),
             # 'exit_query': render_exit_button(query),
             # 'next_query': render_next_query_button(query),
         }
     )
+
 
 def index(request):
     """ Показать количество
@@ -143,3 +124,32 @@ def index(request):
             'cnt_done': cnt_done,
         },
     )
+
+
+# def render_prev_query_button(query):
+#     return render_to_string(
+#         '<input type="submit" value="<< Предыдущий" name="prev_query"' + \
+#         (' disabled' if query.ordernum <= 0 else '') + \
+#         '>'
+#     )
+#
+#
+# def render_next_query_button(query):
+#     return '<input type="submit" value="Следующий >>" name="next_query"' + \
+#            (' disabled' if query.ordernum <= 0 else '') + \
+#            '>'
+#
+#
+# def render_pause_button(query):
+#     # TODO проверить, что можно сохранять промежуточные результаты
+#     return '<input type="submit" value="Прервать" name="pause_query">'
+#
+#
+# def render_exit_button(query):
+#     # TODO проверить, что на все вопросы получены ответы
+#     return '<input type="submit" value="Завершить" name="exit_query">'
+#
+#
+# def render_reset(query):
+#     # TODO проверить условия тестирования на возможность изменить уже сохранённый ответ
+#     return '<input type="submit" value="Очистить" name="clear_query">'
