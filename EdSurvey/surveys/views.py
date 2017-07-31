@@ -7,7 +7,7 @@ from django.db import transaction
 
 from random import shuffle
 
-from .models import Anketa, Result  #, ResultRB, ResultCB, ResultLL
+from .models import Anketa  # , Result, ResultRB, ResultCB, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question
