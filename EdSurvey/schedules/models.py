@@ -1,4 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
+from django.db.models.signals import pre_save
+
 from querylists.models import QueryList
 
 
@@ -50,10 +53,10 @@ class Schedule(models.Model):
 
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
-    # user = models.ForeignKey('auth.user')
     schedule = models.ForeignKey(Schedule)
     started = models.DateTimeField(auto_now_add=True, auto_now=False)
     finished = models.DateTimeField(blank=True, null=True)
+    # user = models.ForeignKey('auth.user')
     # status = models.SmallIntegerField()
 
     class Meta:
@@ -62,3 +65,13 @@ class Attempt(models.Model):
 
     def __str__(self):
         return "#{}.{}".format(str(self.started), str(self.schedule))
+
+
+def attempt_pre_save(instance, **kwargs):
+    try:
+        Attempt.objects.get(schedule=instance.schedule, finished__isnull=True)
+    except ObjectDoesNotExist:
+        return
+    raise ValidationError("Нельзя сделать новую попытку пока существует незавершённая.")
+
+pre_save.connect(attempt_pre_save, sender=Attempt)

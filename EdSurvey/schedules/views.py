@@ -1,12 +1,12 @@
 # from django.db.models.query_utils import Q
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse
 from django.utils.timezone import now
 
-from .models import Schedule, Attempt   # , Task
+from .models import Schedule, Attempt
 from querylists.views import render_querylist_info
-# from surveys.views import render_run_attempt
 
 
 def render_run_attempt(schedule):
@@ -15,7 +15,7 @@ def render_run_attempt(schedule):
     if schedule.start < now() < schedule.finish:
         # найти незавершённую попытку
         attempt = Attempt.objects.all().filter(schedule=schedule,
-                                               finished__isnull=True)   # .oreder_by('-started')
+                                               finished__isnull=True).order_by('-started')
         if attempt:
             # и вернуть HTML-код запуска теста
             return render_to_string('runattemptblock.html', {'attempt': attempt[0]})
@@ -61,14 +61,16 @@ def render_task_info(task):
 
 
 def run_attempt(request, attemptid):
-    print('attemptid=', attemptid)
     return redirect(reverse('surveys:runattempt', args=[attemptid]))
 
 
 def new_attempt(request, scheduleid):
-    attempt = Attempt(schedule=get_object_or_404(Schedule, pk=scheduleid))
-    attempt.save()
-    print('attempt=', str(attempt))
+    schedule = get_object_or_404(Schedule, pk=scheduleid)
+    try:
+        attempt = Attempt.objects.get(schedule=schedule, finished__isnull=True)
+    except ObjectDoesNotExist:
+        attempt = Attempt(schedule=schedule)
+        attempt.save()
     return run_attempt(request, attempt.id)
 
 
