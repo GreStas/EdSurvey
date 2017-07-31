@@ -1,6 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-# form_rb
+class ResultRBform(forms.RadioSelect):
+    pass
+
 # form_cb
 # form_ll

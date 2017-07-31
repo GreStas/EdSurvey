@@ -4,9 +4,8 @@ from django.template.loader import render_to_string
 from django.urls.base import reverse
 from django.utils.timezone import now
 
-from .models import Schedule, Attempt   # , Task
+from .models import Schedule, Attempt
 from querylists.views import render_querylist_info
-# from surveys.views import render_run_attempt
 
 
 def render_run_attempt(schedule):
@@ -15,14 +14,16 @@ def render_run_attempt(schedule):
     if schedule.start < now() < schedule.finish:
         # найти незавершённую попытку
         attempt = Attempt.objects.all().filter(schedule=schedule,
-                                               finished__isnull=True)   # .oreder_by('-started')
+                                               finished__isnull=True).order_by('-started')
         if attempt:
             # и вернуть HTML-код запуска теста
+            print('runattemptblock')
             return render_to_string('runattemptblock.html', {'attempt': attempt[0]})
         # Если незавершённой попытки нет, то Вычислить количество доступных попыток
         elif schedule.task.attempts > Attempt.objects.all().filter(schedule=schedule,
                                                                    finished__isnull=False).count():
             # Если есть досупные попытки, то вернуть HTML-код запуска теста
+            print('newattemptblock')
             return render_to_string('newattemptblock.html', {'schedule': schedule})
         else:
             # Если все попытки использованы, то сообщить об остутсвие доступных попыток из _имеющихся_
@@ -61,7 +62,6 @@ def render_task_info(task):
 
 
 def run_attempt(request, attemptid):
-    print('attemptid=', attemptid)
     return redirect(reverse('surveys:runattempt', args=[attemptid]))
 
 
