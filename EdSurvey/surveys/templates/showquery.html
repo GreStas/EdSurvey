@@ -14,7 +14,7 @@
 <div class="page-header">
     <h2>{{query.attempt.schedule.task.description|linebreaks}}</h2>
     <h3>{{query.attempt.schedule.task.querylist.name}}</h3>
-    <p>{{query.attempt.schedule.task.querylist.description|linebreaks}}</p>
+    <h4>{{query.attempt.schedule.task.querylist.description|linebreaks}}</h4>
 </div>
 
     <h4>Вопрос {{query.ordernum}} из {{maxquerynum}}</h4>
@@ -30,7 +30,7 @@
     {% csrf_token %}
 
 {% block resultblock %}
-    <p>Тут должена быть форма с ответами</p>
+    {{form}}
 {% endblock %}
 
     <hr border-color="#7b6b6b">

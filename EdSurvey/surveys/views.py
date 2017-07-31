@@ -11,7 +11,7 @@ from random import shuffle
 from .models import Anketa  # , Result, ResultRB, ResultCB, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
-from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question
+from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
 def generate_anketa(attempt):
@@ -68,18 +68,32 @@ def run_attempt(request, attemptid):
     return redirect(reverse('surveys:showquery', args=[query.id]))
 
 
-def reneder_result_form(query):
+def render_result_form(query):
     if query.question.qtype == RADIOBUTTON:
-        return
+        answers = AnswerRB.objects.all().filter(question=query.question).order_by('ordernum')
+        return render_to_string(
+            'resultrbblock.html',
+            {'answers': answers},
+        )
     elif query.question.qtype == CHECKBOX:
-        return
+        answers = AnswerCB.objects.all().filter(question=query.question)
+        return render_to_string(
+            'resultcbblock.html',
+            {'answers': answers},
+        )
     elif query.question.qtype == LINKEDLISTS:
-        return
+        answers = AnswerLL.objects.all().filter(question=query.question)
+        return render_to_string(
+            'resultllblock.html',
+            {'answers': answers},
+        )
 
 
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
+
+    form = render_result_form(query)
 
     if request.POST.get("prev_query"):
         query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum-1)
@@ -88,13 +102,14 @@ def show_query(request, queryid):
         query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1)
         return redirect(reverse('surveys:showquery', args=[query.id]))
 
+
     return render(
         request,
         'showquery.html',
         {
             'query': query,
             'maxquerynum': maxquerynum,
-            # 'form': form,
+            'form': form,
             # 'prev_query': render_prev_query_button(query),
             # 'pause_query': render_pause_button(query),
             # 'exit_query': render_exit_button(query),

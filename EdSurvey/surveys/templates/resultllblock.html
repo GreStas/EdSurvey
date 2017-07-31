@@ -1,0 +1,13 @@
+<table border="0"
+{% for answer in answers %}
+    <tr>
+        <td>
+
+        </td>
+        <td>
+            <input type="radio" name="choice" id="choice{{answer.id}}" value="{{answer.id}}" />
+            <label for="choice{{answer.id}}">{{answer.content|linebreaks}}</label>
+        </td>
+    </tr>
+{% endfor %}
+</table>
