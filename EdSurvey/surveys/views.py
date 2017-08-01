@@ -88,6 +88,7 @@ def render_result_form(query):
             result = None
         except MultipleObjectsReturned:
             # Жёстко удаляем всю халтуру! RB должен быть один!!!
+            result = None
             Result.objects.all().filter(anketa=query).delete()
         return render_to_string(
             'resultrbblock.html',
@@ -154,6 +155,33 @@ def render_result_form(query):
         )
 
 
+def save_result(query, request):
+    """ Сохраняет данные из формы без проверки валидности данных на форме """
+    if query.question.qtype == RADIOBUTTON:
+        choice = request.POST.get('choice')
+        print('choice=', choice)
+        if choice:
+            answer = get_object_or_404(Answer, pk=int(request.POST.get('choice')))
+            # Найти уже существующй ответ и внести в него правку, если необходимо
+            try:
+                result = Result.objects.get(anketa=query)
+                if result.answer != answer:
+                    result.answer = answer
+            except ObjectDoesNotExist:
+                # Так как ответа ранее не было, то создать новый ответ
+                result = Result(
+                    anketa=query,
+                    answer=answer,
+                )
+            result.save()
+        else:
+            Result.objects.all().filter(anketa=query).delete()
+    elif query.question.qtype == CHECKBOX:
+        pass
+    elif query.question.qtype == LINKEDLISTS:
+        pass
+
+
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
@@ -161,12 +189,17 @@ def show_query(request, queryid):
     form = render_result_form(query)
 
     if request.POST.get("prev_query"):
-        query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum-1)
-        return redirect(reverse('surveys:showquery', args=[query.id]))
+        save_result(query, request)
+        return redirect(reverse(
+            'surveys:showquery',
+            args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum-1).id])
+        )
     elif request.POST.get("next_query"):
-        query = get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1)
-        return redirect(reverse('surveys:showquery', args=[query.id]))
-
+        save_result(query, request)
+        return redirect(reverse(
+            'surveys:showquery',
+            args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1).id])
+        )
 
     return render(
         request,
