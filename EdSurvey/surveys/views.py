@@ -127,15 +127,22 @@ def render_result_form(query):
         cntlen = len(str(cnt))
         data = []
         for i in range(cnt):
+            content, answer = contents[i], answers[i]
             # Вычитать ранее полученный результат, если его нет, то вернуть None
             try:
-                result = Result.objects.get(anketa=query, answer=contents[i].answer_ptr).answer.id
+                result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
             except ObjectDoesNotExist:
                 result = None
             except MultipleObjectsReturned:
                 # Жёстко удаляем всю халтуру!
                 Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
-            data.append((contents[i], answers[i]), result)
+            # Найти номер соответсвующего ответа в answers
+            value = None
+            for j in range(cnt):
+                if answers[j].id == result:
+                    value = j+1
+                    break
+            data.append((content, answer, value))
 
         return render_to_string(
             'resultllblock.html',
