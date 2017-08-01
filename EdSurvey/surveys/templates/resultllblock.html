@@ -1,12 +1,18 @@
+Для каждого вопроса введите номер наиболее подходящего ответа:
 <table border="0"
-{% for answer in answers %}
+{% for answer,query in data %}
     <tr>
         <td>
-
+            {{query.content}}
         </td>
         <td>
-            <input type="radio" name="choice" id="choice{{answer.id}}" value="{{answer.id}}" />
-            <label for="choice{{answer.id}}">{{answer.content|linebreaks}}</label>
+            <input type="number" name="choice{{forloop.counter}}" min="1" max="{{cnt}}">
+        </td>
+        <td align="rigth">
+            <strong>{{forloop.counter}}.</strong>
+        </td>
+        <td>
+            {{answer.linkeditem}}
         </td>
     </tr>
 {% endfor %}

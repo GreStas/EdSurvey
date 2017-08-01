@@ -82,10 +82,32 @@ def render_result_form(query):
             {'answers': answers},
         )
     elif query.question.qtype == LINKEDLISTS:
-        answers = AnswerLL.objects.all().filter(question=query.question)
+        # Формирует перечень вопросов в паутинке
+        ordered_contents = [query for query in AnswerLL.objects.all().filter(question=query.question, ordernum__isnull=False)]
+        unordered_contents = [query for query in AnswerLL.objects.all().filter(question=query.question, ordernum__isnull=True)]
+        shuffle(unordered_contents)
+        contents = ordered_contents + unordered_contents
+
+        # Формируем перечень ответов в паутинке
+        answers = contents.copy()  # TODO почему не работает копирование?
+        # answers = [item for item in AnswerLL.objects.all().filter(question=query.question)]
+        shuffle(answers)
+
+        cnt = len(answers)
+        cntlen = len(str(cnt))
+        data = []
+        for i in range(cnt):
+            data.append((contents[i], answers[i]))
+
         return render_to_string(
             'resultllblock.html',
-            {'answers': answers},
+            {
+                # 'contents': contents,
+                # 'answers': answers,
+                'data': data,
+                'cnt': cnt,
+                'cntlen': cntlen,
+            },
         )
 
 

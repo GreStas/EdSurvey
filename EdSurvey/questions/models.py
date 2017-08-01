@@ -40,8 +40,8 @@ def question_pre_save(instance, **kwargs):
     cntRB = AnswerRB.objects.all().filter(question=instance)[:1].count()
     cntCB = AnswerCB.objects.all().filter(question=instance)[:1].count()
     cntLL = AnswerLL.objects.all().filter(question=instance)[:1].count()
-    print(instance.qtype, cntRB, cntCB, cntLL)
-    if instance.qtype not in QUESTION_TYPE_CHOICES[0]:
+    # print(instance.qtype, cntRB, cntCB, cntLL)
+    if instance.qtype not in [qtype for qtype,txt in QUESTION_TYPE_CHOICES]:
         raise ValidationError(_("Unknown QType"))
     elif (instance.qtype == RADIOBUTTON and (cntCB + cntLL) > 0) or \
         (instance.qtype == CHECKBOX and (cntRB + cntLL) > 0) or \
