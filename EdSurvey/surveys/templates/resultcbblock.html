@@ -1,8 +1,10 @@
 <table border="0"
-{% for answer in answers %}
+{% for content,result in data %}
     <tr><td>
-        <input type="checkbox" name="choice" id="choice{{answer.id}}" value="{{answer.id}}" />
-        <label for="choice{{answer.id}}">{{answer.content|linebreaks}}</label>
+        <input type="checkbox" name="choice" id="choice{{content.id}}" value="{{content.id}}"
+               {% if content.id == result %} checked {% endif %}
+        />
+        <label for="choice{{content.id}}">{{content.content|linebreaks}}</label>
     </td></tr>
 {% endfor %}
 </table>

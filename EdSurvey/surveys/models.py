@@ -29,3 +29,5 @@ class Result(models.Model):
     answer = models.ForeignKey(Answer)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+# TODO pre_save_Result - добавить проверку, что RB может по анкете быть только один.

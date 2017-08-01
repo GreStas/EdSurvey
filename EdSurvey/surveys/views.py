@@ -1,4 +1,5 @@
 # surveys.views
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.db.models.aggregates import Max
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -8,7 +9,7 @@ from django.db import transaction
 
 from random import shuffle
 
-from .models import Anketa  # , Result, ResultRB, ResultCB, ResultLL
+from .models import Anketa, Result  # , ResultRB, ResultCB, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
@@ -69,41 +70,76 @@ def run_attempt(request, attemptid):
 
 
 def render_result_form(query):
+    def get_answer_contents(answer_model, question):
+        """Формирует перечень вариантов ответов"""
+        ordered_contents = [query for query in
+                            answer_model.objects.all().filter(question=question, ordernum__isnull=False).order_by('ordernum')]
+        unordered_contents = [query for query in
+                              answer_model.objects.all().filter(question=question, ordernum__isnull=True)]
+        shuffle(unordered_contents)
+        return ordered_contents + unordered_contents
+
     if query.question.qtype == RADIOBUTTON:
-        answers = AnswerRB.objects.all().filter(question=query.question).order_by('ordernum')
+        contents = get_answer_contents(AnswerRB, query.question)
+        # Вычитать ранее полученный результат, если его нет, то вернуть None
+        try:
+            result = Result.objects.get(anketa=query).answer.id
+        except ObjectDoesNotExist:
+            result = None
+        except MultipleObjectsReturned:
+            # Жёстко удаляем всю халтуру! RB должен быть один!!!
+            Result.objects.all().filter(anketa=query).delete()
         return render_to_string(
             'resultrbblock.html',
-            {'answers': answers},
+            {
+                'contents': contents,
+                'result': result,
+            },
         )
     elif query.question.qtype == CHECKBOX:
-        answers = AnswerCB.objects.all().filter(question=query.question)
+        contents = get_answer_contents(AnswerCB, query.question)
+        data = []
+        for content in contents:
+            # Вычитать ранее полученный результат, если его нет, то вернуть None
+            try:
+                result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
+            except ObjectDoesNotExist:
+                result = None
+            except MultipleObjectsReturned:
+                # Жёстко удаляем всю халтуру!
+                Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
+            data.append((content,result))
+
         return render_to_string(
             'resultcbblock.html',
-            {'answers': answers},
+            {
+                # 'contents': contents,
+                'data': data,
+            },
         )
     elif query.question.qtype == LINKEDLISTS:
-        # Формирует перечень вопросов в паутинке
-        ordered_contents = [query for query in AnswerLL.objects.all().filter(question=query.question, ordernum__isnull=False)]
-        unordered_contents = [query for query in AnswerLL.objects.all().filter(question=query.question, ordernum__isnull=True)]
-        shuffle(unordered_contents)
-        contents = ordered_contents + unordered_contents
-
+        contents = get_answer_contents(AnswerLL, query.question)
         # Формируем перечень ответов в паутинке
-        answers = contents.copy()  # TODO почему не работает копирование?
-        # answers = [item for item in AnswerLL.objects.all().filter(question=query.question)]
+        answers = contents.copy()
         shuffle(answers)
 
         cnt = len(answers)
         cntlen = len(str(cnt))
         data = []
         for i in range(cnt):
-            data.append((contents[i], answers[i]))
+            # Вычитать ранее полученный результат, если его нет, то вернуть None
+            try:
+                result = Result.objects.get(anketa=query, answer=contents[i].answer_ptr).answer.id
+            except ObjectDoesNotExist:
+                result = None
+            except MultipleObjectsReturned:
+                # Жёстко удаляем всю халтуру!
+                Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
+            data.append((contents[i], answers[i]), result)
 
         return render_to_string(
             'resultllblock.html',
             {
-                # 'contents': contents,
-                # 'answers': answers,
                 'data': data,
                 'cnt': cnt,
                 'cntlen': cntlen,

@@ -1,18 +1,20 @@
 Для каждого вопроса введите номер наиболее подходящего ответа:
 <table border="0"
-{% for answer,query in data %}
+{% for content,item in data %}
     <tr>
         <td>
-            {{query.content}}
+            {{content.content}}
         </td>
         <td>
-            <input type="number" name="choice{{forloop.counter}}" min="1" max="{{cnt}}">
+            <input type="number" name="choice{{forloop.counter}}" min="1" max="{{cnt}}"
+               {% if result %} value="{{result}}" {% endif %}
+            />
         </td>
         <td align="rigth">
             <strong>{{forloop.counter}}.</strong>
         </td>
         <td>
-            {{answer.linkeditem}}
+            {{item.linkeditem}}
         </td>
     </tr>
 {% endfor %}
