@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="{% static 'main.css' %}" >
+    <link rel="stylesheet" href="{% static 'main.css' %}">
 
-    <title>{{query.ordernum}} и сокращённое содержание</title>
+    <title>{{query.attempt.schedule.task.querylist.name}}-{{query.ordernum}}/{{maxquerynum}}</title>
 
 </head>
 <body>

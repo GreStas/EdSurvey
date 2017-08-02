@@ -71,7 +71,7 @@ def run_attempt(request, attemptid):
 
 def render_result_form(query):
     def get_answer_contents(answer_model, question):
-        """Формирует перечень вариантов ответов"""
+        """ Формирует перечень вариантов ответов - list(answer_model objects) """
         ordered_contents = [query for query in
                             answer_model.objects.all().filter(question=question, ordernum__isnull=False).order_by('ordernum')]
         unordered_contents = [query for query in
@@ -157,9 +157,10 @@ def render_result_form(query):
 
 def save_result(query, request):
     """ Сохраняет данные из формы без проверки валидности данных на форме """
+
     if query.question.qtype == RADIOBUTTON:
         choice = request.POST.get('choice')
-        print('choice=', choice)
+        # print('choice=', choice)
         if choice:
             answer = get_object_or_404(Answer, pk=int(request.POST.get('choice')))
             # Найти уже существующй ответ и внести в него правку, если необходимо
@@ -176,8 +177,24 @@ def save_result(query, request):
             result.save()
         else:
             Result.objects.all().filter(anketa=query).delete()
+
     elif query.question.qtype == CHECKBOX:
-        pass
+        choices = [int(c) for c in request.POST.getlist('choice')]
+        # Зачистим те, которые не выбраны в этот раз
+        for result in Result.objects.all().filter(anketa=query):
+            if result.id not in choices:
+                result.delete()
+        for answerid in choices:   # answerid - это AnswerCB.id
+            try:
+                result = Result.objects.get(anketa=query, answer_id=answerid)
+            except ObjectDoesNotExist:
+                # Такого ответа ранее не было, то создать новый ответ
+                result = Result(
+                    anketa=query,
+                    answer=get_object_or_404(AnswerCB, pk=answerid)
+                )
+                result.save()
+
     elif query.question.qtype == LINKEDLISTS:
         pass
 
