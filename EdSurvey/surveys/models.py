@@ -40,3 +40,9 @@ class ResultLL(Result):
         parent_link=True,
     )
     choice = models.ForeignKey(AnswerLL)
+
+    def __str__(self):
+        return "id{}.anketa{}.answer{}.choice{}".format(self.result_ptr.id,
+                                                        self.result_ptr.anketa.id,
+                                                        self.result_ptr.answer.id,
+                                                        self.choice.id)

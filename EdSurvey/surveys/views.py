@@ -123,11 +123,12 @@ def render_result_form(query):
         )
 
     elif query.question.qtype == LINKEDLISTS:
+        # Формируем перечень вопросов в паутинке
         contents = get_answer_contents(AnswerLL, query.question)
         # Формируем перечень ответов в паутинке
-        answers = get_answer_contents(AnswerLL, query.question)
-        # answers = contents.copy()
-        # shuffle(answers)
+        # answers = get_answer_contents(AnswerLL, query.question)
+        answers = contents.copy()
+        shuffle(answers)
 
         cnt = len(answers)
         cntlen = len(str(cnt))
@@ -135,20 +136,22 @@ def render_result_form(query):
         for i in range(cnt):
             content, answer = contents[i], answers[i]
             # Вычитать ранее полученный результат, если его нет, то вернуть None
-            try:
-                result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
-            except ObjectDoesNotExist:
-                result = None
-            except MultipleObjectsReturned:
-                # Жёстко удаляем всю халтуру!
-                Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
-            # Найти номер соответсвующего ответа в answers
-
             value = None
-            for j in range(cnt):
-                if answers[j].id == result:
-                    value = j+1
-                    break
+            try:
+                result = ResultLL.objects.get(anketa=query, answer=content.answer_ptr)  #.answer.id
+                # Если ранее уже давался ответ, то Result.choice уже его хранит
+                # Найти номер соответсвующего ответа в answers
+                for j in range(cnt):
+                    # print(answers[j].id, result.choice.id)
+                    if answers[j] == result.choice:
+                        value = j+1
+                        break
+            except ObjectDoesNotExist:
+                pass    # value = None
+            except MultipleObjectsReturned:
+                # # Жёстко удаляем всю халтуру!
+                # ResultLL.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
+                pass    # value = None
             data.append((content, answer, value))
 
         return render_to_string(
@@ -216,27 +219,26 @@ def save_result(query, request):
                 means.append(int(mean)-1)   # Because forloop.counter starts from 1
             else:
                 means.append(None)
-            print('({}) content, mean, answer = {}, {}, {}'.format(forloop_count, contents[i], means[i], answers[i]))
+            # print('({}) content, mean, answer = {}, {}, {}'.format(forloop_count, contents[i], means[i], answers[i]))
 
         # Проходим по таблице
+        # print('Проходим по таблице')
         for i in range(cnt):
-            if means[i]:
-                pass
-                result = ResultLL(
-                    anketa=query,
-                    answer=get_object_or_404(Answer, pk=contents[i]),
-                    choice=get_object_or_404(AnswerLL, pk=answers[means[i]]),
-                )
-                result.save()
+            # print('({}) content, mean, answer = {}, {}, {}'.format(i, contents[i], means[i], answers[i]))
+            if means[i] is not None:
+                answer = get_object_or_404(Answer, pk=contents[i])
+                choice = get_object_or_404(AnswerLL, pk=answers[means[i]])
+                try:
+                    result = ResultLL.objects.get(anketa=query, answer=answer)
+                    if result.choice.id != choice.id:
+                        result.choice = choice
+                        result.save()
+                except ObjectDoesNotExist:
+                    result = ResultLL(anketa=query, answer=answer, choice=choice)
+                    result.save()
             else:
                 # Если ничего не введено, то стереть такие результаты
                 ResultLL.objects.all().filter(anketa=query, answer=contents[i]).delete()
-
-        # for answer in AnswerLL.objects.all().filter(question=query.question):
-        #     choice = request.POST.get('choice{}'.format(answer.id))
-        #     if choice:
-        #         print(int(choice))
-            # result = Result.objects.get(anketa=query, answer=answer)
 
 
 def show_query(request, queryid):

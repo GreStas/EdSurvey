@@ -4,7 +4,7 @@
 {% for content,item,result in data %}
     <tr>
         <td>
-            {{content.content}} ({{content.id}})
+            {{content.content}} {% comment "for debug" %}({{content.id}}){% endcomment %}
             <input type="hidden" name="content{{forloop.counter}}" value="{{content.id}}">
         </td>
         <td>
@@ -16,7 +16,7 @@
             <strong>{{forloop.counter}}.</strong>
         </td>
         <td>
-            {{item.linkeditem}} ({{item.id}})
+            {{item.linkeditem}} {% comment "for debug" %}({{item.id}}){% endcomment %}
             <input type="hidden" name="answer{{forloop.counter}}" value="{{item.id}}">
         </td>
     </tr>
