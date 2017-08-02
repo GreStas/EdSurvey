@@ -9,7 +9,7 @@ from django.db import transaction
 
 from random import shuffle
 
-from .models import Anketa, Result  # , ResultRB, ResultCB, ResultLL
+from .models import Anketa, Result, ResultLL  # , ResultRB, ResultCB
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
@@ -69,15 +69,17 @@ def run_attempt(request, attemptid):
     return redirect(reverse('surveys:showquery', args=[query.id]))
 
 
+def get_answer_contents(answer_model, question):
+    """ Формирует перечень вариантов ответов - list(answer_model objects) """
+    ordered_contents = [query for query in
+                        answer_model.objects.all().filter(question=question, ordernum__isnull=False).order_by('ordernum')]
+    unordered_contents = [query for query in
+                          answer_model.objects.all().filter(question=question, ordernum__isnull=True)]
+    shuffle(unordered_contents)
+    return ordered_contents + unordered_contents
+
+
 def render_result_form(query):
-    def get_answer_contents(answer_model, question):
-        """ Формирует перечень вариантов ответов - list(answer_model objects) """
-        ordered_contents = [query for query in
-                            answer_model.objects.all().filter(question=question, ordernum__isnull=False).order_by('ordernum')]
-        unordered_contents = [query for query in
-                              answer_model.objects.all().filter(question=question, ordernum__isnull=True)]
-        shuffle(unordered_contents)
-        return ordered_contents + unordered_contents
 
     if query.question.qtype == RADIOBUTTON:
         contents = get_answer_contents(AnswerRB, query.question)
@@ -97,6 +99,7 @@ def render_result_form(query):
                 'result': result,
             },
         )
+
     elif query.question.qtype == CHECKBOX:
         contents = get_answer_contents(AnswerCB, query.question)
         data = []
@@ -118,11 +121,13 @@ def render_result_form(query):
                 'data': data,
             },
         )
+
     elif query.question.qtype == LINKEDLISTS:
         contents = get_answer_contents(AnswerLL, query.question)
         # Формируем перечень ответов в паутинке
-        answers = contents.copy()
-        shuffle(answers)
+        answers = get_answer_contents(AnswerLL, query.question)
+        # answers = contents.copy()
+        # shuffle(answers)
 
         cnt = len(answers)
         cntlen = len(str(cnt))
@@ -138,6 +143,7 @@ def render_result_form(query):
                 # Жёстко удаляем всю халтуру!
                 Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
             # Найти номер соответсвующего ответа в answers
+
             value = None
             for j in range(cnt):
                 if answers[j].id == result:
@@ -196,7 +202,41 @@ def save_result(query, request):
                 result.save()
 
     elif query.question.qtype == LINKEDLISTS:
-        pass
+        cnt = int(request.POST.get('cnt'))
+        contents = []
+        means = []
+        answers = []
+        # Воссоздаём значения в форме
+        for i in range(cnt):
+            forloop_count = str(i+1)    # Because forloop.counter starts from 1
+            contents.append(int(request.POST.get('content{}'.format(forloop_count))))
+            answers.append(int(request.POST.get('answer{}'.format(forloop_count))))
+            mean = request.POST.get('choice{}'.format(forloop_count))
+            if mean:
+                means.append(int(mean)-1)   # Because forloop.counter starts from 1
+            else:
+                means.append(None)
+            print('({}) content, mean, answer = {}, {}, {}'.format(forloop_count, contents[i], means[i], answers[i]))
+
+        # Проходим по таблице
+        for i in range(cnt):
+            if means[i]:
+                pass
+                result = ResultLL(
+                    anketa=query,
+                    answer=get_object_or_404(Answer, pk=contents[i]),
+                    choice=get_object_or_404(AnswerLL, pk=answers[means[i]]),
+                )
+                result.save()
+            else:
+                # Если ничего не введено, то стереть такие результаты
+                ResultLL.objects.all().filter(anketa=query, answer=contents[i]).delete()
+
+        # for answer in AnswerLL.objects.all().filter(question=query.question):
+        #     choice = request.POST.get('choice{}'.format(answer.id))
+        #     if choice:
+        #         print(int(choice))
+            # result = Result.objects.get(anketa=query, answer=answer)
 
 
 def show_query(request, queryid):

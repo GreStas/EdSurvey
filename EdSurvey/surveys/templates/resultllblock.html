@@ -1,9 +1,11 @@
-Для каждого вопроса введите номер наиболее подходящего ответа:
+<i>Для каждого вопроса введите номер наиболее подходящего варианта ответа:</i>
+<input type="hidden" name="cnt" value="{{cnt}}">
 <table border="0"
 {% for content,item,result in data %}
     <tr>
         <td>
-            {{content.content}}
+            {{content.content}} ({{content.id}})
+            <input type="hidden" name="content{{forloop.counter}}" value="{{content.id}}">
         </td>
         <td>
             <input type="number" name="choice{{forloop.counter}}" min="1" max="{{cnt}}"
@@ -14,7 +16,8 @@
             <strong>{{forloop.counter}}.</strong>
         </td>
         <td>
-            {{item.linkeditem}}
+            {{item.linkeditem}} ({{item.id}})
+            <input type="hidden" name="answer{{forloop.counter}}" value="{{item.id}}">
         </td>
     </tr>
 {% endfor %}

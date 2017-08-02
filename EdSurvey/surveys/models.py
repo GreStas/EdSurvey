@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from questions.models import Question, Answer
+from questions.models import Question, Answer, AnswerLL
 from schedules.models import Attempt
 
 
@@ -24,6 +24,7 @@ class Anketa(models.Model):
     def __str__(self):
         return "#{}.{}".format(self.attempt, str(self.question))
 
+
 class Result(models.Model):
     anketa = models.ForeignKey(Anketa)
     answer = models.ForeignKey(Answer)
@@ -31,3 +32,11 @@ class Result(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
 # TODO pre_save_Result - добавить проверку, что RB может по анкете быть только один.
+
+
+class ResultLL(Result):
+    result_ptr = models.OneToOneField(
+        Result, on_delete=models.CASCADE,
+        parent_link=True,
+    )
+    choice = models.ForeignKey(AnswerLL)
