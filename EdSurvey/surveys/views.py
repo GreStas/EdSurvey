@@ -15,6 +15,52 @@ from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
+def finish_attempt(attemptid):
+    """ Финализация попытки
+     Проверяет, что на все вопросы получены ответы.
+     Записывает finished=now()
+    """
+    attempt = get_object_or_404(Attempt, pk=attemptid)
+    messages = []
+    for query in Anketa.objects.all().filter(attempt=attempt):
+        # Для простых вопросов (RB и CB) проверяем, что есть хотя-бы один ответ
+        cnt = Result.objects.all().filter(anketa=query).count()
+        qtype = query.question.qtype
+        if qtype == RADIOBUTTON and cnt != 1:
+            messages.append(
+                "Для вопроса {} должен быть единственный ответ ({}).".format(
+                    query,
+                    cnt,
+                )
+            )
+        elif qtype == CHECKBOX and cnt == 0:
+            messages.append(
+                "Для вопроса {} должен быть хотя-бы один ответ ({}).".format(
+                    query,
+                    cnt,
+                )
+            )
+        elif qtype in (LINKEDLISTS):
+            # Сколько должно быть ответов?
+            answers_cnt = AnswerLL.objects.all().filter(question=query.question).count()
+            results_cnt = ResultLL.objects.all().filter(question=query.question, choice__isnull=False).count()
+            if answers_cnt != results_cnt:
+                messages.append(
+                    "Для вопроса {} должны быть заполены все варианты ({}).".format(
+                        query,
+                        answers_cnt,
+                    )
+                )
+    # Если была хоть какая-то ошибка, то вернуться обратно на showquery
+    if messages:
+        # TODO вернуться обратно на showquery
+        return
+    attempt.finished=now()
+    attempt.save()
+    # TODO Показать финальную страницу попытки
+    return
+
+
 def generate_anketa(attempt):
     """ Генерирует последовательность Result
     1. Выбрать упорядоченные
@@ -258,6 +304,12 @@ def show_query(request, queryid):
         return redirect(reverse(
             'surveys:showquery',
             args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1).id])
+        )
+    elif request.POST.get("exit_query"):
+        save_result(query, request)
+        return redirect(reverse(
+            'schedules:finishattempt',
+            args=[get_object_or_404(Attempt, pk=query.attempt).id])
         )
 
     return render(
