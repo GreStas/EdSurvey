@@ -69,9 +69,28 @@ class Attempt(models.Model):
 
 def attempt_pre_save(instance, **kwargs):
     try:
-        Attempt.objects.get(schedule=instance.schedule, finished__isnull=True)
+        # opened_attempt =
+        Attempt.objects.get(
+            schedule=instance.schedule,
+            finished__isnull=True,
+        )
     except ObjectDoesNotExist:
+        # Открытых попыток нет.
         return
-    raise ValidationError("Нельзя сделать новую попытку пока существует незавершённая.")
+    try:
+        # считываем предыдущее состояние
+        attempt = Attempt.objects.get(pk=instance.id)
+    except ObjectDoesNotExist:
+        # Создаётся новая попытка, но есть opened_attempt
+        raise ValidationError("Нельзя сделать новую попытку пока существует незавершённая.")
+
+    # Проверяем на внесение изменений
+    if attempt.finished:
+        raise ValidationError("Нельзя вносить изменения в завершённую попытку.")
+    elif instance.started > instance.finished:
+        raise ValidationError("Дата завершения должна быть позже даты начала.")
+
+
+
 
 pre_save.connect(attempt_pre_save, sender=Attempt)

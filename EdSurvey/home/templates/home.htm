@@ -11,7 +11,12 @@
 <div class="page-header">
     <h1><a href="/">Опросы и тестирование</a></h1>
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
-    <div align="right">[Роль v] [Организация v] [Пользователь v] [выйти]</div>
+    <div align="right">
+        [Роль v]
+        [Организация v]
+        [ {{user}} ]
+        {# <a href="{% url 'logout' %}">выйти</a> #} [выйти]
+    </div>
     <a href="/surveys/">Пройти тест</a> |
     <a href="/questions/">Вопросы</a> |
     <a href="/querylists/">Тест-кейсы</a> |
@@ -19,6 +24,17 @@
     <a href="/schedules/">Расписание</a> |
     <a href="/admin/" target="_blank">Админка</a>
 </div>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 {% block mainblock %}
     <h2>...тут будет дополнительная информация и новостная лента...</h2>
 {% endblock %}

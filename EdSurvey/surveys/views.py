@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.urls.base import reverse
 from django.utils.timezone import now
 from django.db import transaction
+from django.contrib import messages
 
 from random import shuffle
 
@@ -15,26 +16,32 @@ from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
-def finish_attempt(attemptid):
+def finish_attempt(request, attemptid):
     """ Финализация попытки
      Проверяет, что на все вопросы получены ответы.
      Записывает finished=now()
     """
+    errors = False
     attempt = get_object_or_404(Attempt, pk=attemptid)
-    messages = []
     for query in Anketa.objects.all().filter(attempt=attempt):
         # Для простых вопросов (RB и CB) проверяем, что есть хотя-бы один ответ
         cnt = Result.objects.all().filter(anketa=query).count()
         qtype = query.question.qtype
         if qtype == RADIOBUTTON and cnt != 1:
-            messages.append(
+            errors = True
+            messages.add_message(
+                request,
+                messages.INFO,
                 "Для вопроса {} должен быть единственный ответ ({}).".format(
                     query,
                     cnt,
                 )
             )
         elif qtype == CHECKBOX and cnt == 0:
-            messages.append(
+            errors = True
+            messages.add_message(
+                request,
+                messages.INFO,
                 "Для вопроса {} должен быть хотя-бы один ответ ({}).".format(
                     query,
                     cnt,
@@ -42,23 +49,36 @@ def finish_attempt(attemptid):
             )
         elif qtype in (LINKEDLISTS):
             # Сколько должно быть ответов?
-            answers_cnt = AnswerLL.objects.all().filter(question=query.question).count()
-            results_cnt = ResultLL.objects.all().filter(question=query.question, choice__isnull=False).count()
+            answers_cnt = Answer.objects.all().filter(question=query.question).count()
+            results_cnt = ResultLL.objects.all().filter(
+                anketa=query,
+                choice__isnull=False,
+            ).count()
             if answers_cnt != results_cnt:
-                messages.append(
+                errors = True
+                messages.add_message(
+                    request,
+                    messages.INFO,
                     "Для вопроса {} должны быть заполены все варианты ({}).".format(
                         query,
                         answers_cnt,
                     )
                 )
     # Если была хоть какая-то ошибка, то вернуться обратно на showquery
-    if messages:
+    if errors:
+        print(messages.get_messages(request))
         # TODO вернуться обратно на showquery
-        return
+        return show_query(
+            request,
+            queryid=Anketa.objects.all().get(attempt=attempt, ordernum=1).id,
+        )
     attempt.finished=now()
     attempt.save()
-    # TODO Показать финальную страницу попытки
-    return
+    # TODO Вернуться на описание задания в расписании
+    return redirect(reverse(
+        'schedules:scheduleinfo',
+        args=[attempt.schedule.id]
+    ))
 
 
 def generate_anketa(attempt):
@@ -308,9 +328,9 @@ def show_query(request, queryid):
     elif request.POST.get("exit_query"):
         save_result(query, request)
         return redirect(reverse(
-            'schedules:finishattempt',
-            args=[get_object_or_404(Attempt, pk=query.attempt).id])
-        )
+            'surveys:finishattempt',
+            args=[query.attempt.id]
+        ))
 
     return render(
         request,
