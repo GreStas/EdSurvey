@@ -26,7 +26,7 @@ def render_run_attempt(schedule):
             return render_to_string('newattemptblock.html', {'schedule': schedule})
         else:
             # Если все попытки использованы, то сообщить об остутсвие доступных попыток из _имеющихся_
-            return render_to_string('noattemptblock.html', {'attempts': schedule.attempts})
+            return render_to_string('noattemptblock.html', {'attempts': schedule.task.attempts})
     else:
         return render_to_string('outofdateblock.html', {'attempts': schedule.attempts})
 

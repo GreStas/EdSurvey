@@ -331,6 +331,12 @@ def show_query(request, queryid):
             'surveys:finishattempt',
             args=[query.attempt.id]
         ))
+    elif request.POST.get("pause_query"):
+        save_result(query, request)
+        return redirect(reverse(
+            'schedules:scheduleinfo',
+            args=[query.attempt.schedule.id]
+        ))
 
     return render(
         request,
