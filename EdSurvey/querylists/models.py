@@ -19,8 +19,8 @@ class QueryList(models.Model):
 
 
 class QueryContent(models.Model):
-    querylist = models.ForeignKey(QueryList)
-    question = models.ForeignKey(Question)
+    querylist = models.ForeignKey(QueryList, on_delete=models.PROTECT)
+    question = models.ForeignKey(Question, on_delete=models.PROTECT)
     ordernum = models.PositiveIntegerField(null=True, blank=True)
     # status = models.IntegerField(null=True)
 

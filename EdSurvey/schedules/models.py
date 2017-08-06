@@ -19,7 +19,7 @@ class Task(models.Model):
     # teachers = models.ForeignKey('auth.group')
     # students = models.ForeignKey('auth.group')
     # organization = models.ForeignKey(Organization)
-    querylist = models.ForeignKey(QueryList)
+    querylist = models.ForeignKey(QueryList, on_delete=models.PROTECT)
     attempts = models.PositiveIntegerField(default=1)
     viewable = models.BooleanField(default=False)   # можно-ли просматривать свои ответы
     editable = models.BooleanField(default=False)   # можно-ли редактировать уже данные ответы
@@ -34,20 +34,10 @@ class Task(models.Model):
     def __str__(self):
         return "{}({})".format(self.description, self.querylist.name)
 
-def task_pre_save(instance, **kwargs):
-    """ Validation
-    - Нельзя изменять Задание, если по нему уже существует расписание.
-    """
-    if Task.objects.all().filter(pk=instance.id).count() > 0:
-        if Schedule.objects.all().filter(task=instance).count() > 0:
-            raise ValidationError("Нельзя изменять задание, если по нему уже существует расписание.")
-
-pre_save.connect(task_pre_save, sender=Task)
-
 
 class Schedule(models.Model):
     """ Расписание задач """
-    task = models.ForeignKey(Task)
+    task = models.ForeignKey(Task, on_delete=models.PROTECT)
     start = models.DateTimeField()
     finish = models.DateTimeField()
     description = models.CharField(max_length=30, blank=True, null=True)
@@ -73,7 +63,7 @@ pre_save.connect(schedule_pre_save, sender=Schedule)
 
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
-    schedule = models.ForeignKey(Schedule)
+    schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT)
     started = models.DateTimeField(auto_now_add=True, auto_now=False)
     finished = models.DateTimeField(blank=True, null=True)
     # user = models.ForeignKey('auth.user')
@@ -111,3 +101,16 @@ def attempt_pre_save(instance, **kwargs):
         raise ValidationError("Дата завершения должна быть позже даты начала.")
 
 pre_save.connect(attempt_pre_save, sender=Attempt)
+
+
+# Cross-Models Validations
+
+def task_pre_save(instance, **kwargs):
+    """ Validation
+    - Нельзя изменять Задание, если по нему уже существует расписание.
+    """
+    if Task.objects.all().filter(pk=instance.id).count() > 0:
+        if Schedule.objects.all().filter(task=instance).count() > 0:
+            raise ValidationError("Нельзя изменять задание, если по нему уже существует расписание.")
+
+pre_save.connect(task_pre_save, sender=Task)

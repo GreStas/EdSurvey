@@ -52,7 +52,7 @@ pre_save.connect(question_pre_save, sender=Question)
 
 
 class Answer(models.Model):
-    question = models.ForeignKey('Question')
+    question = models.ForeignKey(Question, on_delete=models.PROTECT)
     content = models.TextField()
     ordernum = models.PositiveIntegerField(null=True, blank=True)
     score = models.PositiveIntegerField(null=True, blank=True)

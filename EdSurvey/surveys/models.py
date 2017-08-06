@@ -8,7 +8,7 @@ from schedules.models import Attempt
 class Anketa(models.Model):
     """ Сгенерированые вопросы анкеты """
     # user = models.ForeignKey('auth.user') # Пользоватеь
-    attempt = models.ForeignKey(Attempt)    #   в ходе попытки
+    attempt = models.ForeignKey(Attempt, on_delete=models.PROTECT)    #   в ходе попытки
     question = models.ForeignKey(Question)  #     на вопрос
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
@@ -26,8 +26,8 @@ class Anketa(models.Model):
 
 
 class Result(models.Model):
-    anketa = models.ForeignKey(Anketa)
-    answer = models.ForeignKey(Answer)
+    anketa = models.ForeignKey(Anketa, on_delete=models.PROTECT)
+    answer = models.ForeignKey(Answer, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
@@ -39,7 +39,7 @@ class ResultLL(Result):
         Result, on_delete=models.CASCADE,
         parent_link=True,
     )
-    choice = models.ForeignKey(AnswerLL)
+    choice = models.ForeignKey(AnswerLL, on_delete=models.PROTECT)
 
     def __str__(self):
         return "id{}.anketa{}.answer{}.choice{}".format(self.result_ptr.id,
