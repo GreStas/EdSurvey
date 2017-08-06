@@ -34,6 +34,16 @@ class Task(models.Model):
     def __str__(self):
         return "{}({})".format(self.description, self.querylist.name)
 
+def task_pre_save(instance, **kwargs):
+    """ Validation
+    - Нельзя изменять Задание, если по нему уже существует расписание.
+    """
+    if Task.objects.all().filter(pk=instance.id).count() > 0:
+        if Schedule.objects.all().filter(task=instance).count() > 0:
+            raise ValidationError("Нельзя изменять задание, если по нему уже существует расписание.")
+
+pre_save.connect(task_pre_save, sender=Task)
+
 
 class Schedule(models.Model):
     """ Расписание задач """
@@ -54,7 +64,7 @@ def schedule_pre_save(instance, **kwargs):
     """ Validation
     - Нельзя менять расписание, если по нему уже есть начатые попытки.
     """
-    if Schedule.objects.all().filter(pk=instance).count() > 0:
+    if Schedule.objects.all().filter(pk=instance.id).count() > 0:
         if Attempt.objects.all().filter(schedule=instance).count() > 0:
             raise ValidationError("Нельзя изменять расписание, если по нему уже есть начатые попытки.")
 
