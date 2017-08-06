@@ -50,6 +50,16 @@ class Schedule(models.Model):
     def __str__(self):
         return "{} {}".format(self.task.description, self.description)
 
+def schedule_pre_save(instance, **kwargs):
+    """ Validation
+    - Нельзя менять расписание, если по нему уже есть начатые попытки.
+    """
+    if Schedule.objects.all().filter(pk=instance).count() > 0:
+        if Attempt.objects.all().filter(schedule=instance).count() > 0:
+            raise ValidationError("Нельзя изменять расписание, если по нему уже есть начатые попытки.")
+
+pre_save.connect(schedule_pre_save, sender=Schedule)
+
 
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
@@ -89,8 +99,5 @@ def attempt_pre_save(instance, **kwargs):
         raise ValidationError("Нельзя вносить изменения в завершённую попытку.")
     elif instance.started > instance.finished:
         raise ValidationError("Дата завершения должна быть позже даты начала.")
-
-
-
 
 pre_save.connect(attempt_pre_save, sender=Attempt)
