@@ -35,7 +35,7 @@
         <tr>
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
-            <td>{{schedule.description}}</td>
+            <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}"> {{schedule.description}}</a></td>
         </tr>
 {% endfor %}
     </table>

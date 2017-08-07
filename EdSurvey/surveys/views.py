@@ -1,5 +1,5 @@
 # surveys.views
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.db.models.aggregates import Max
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -14,6 +14,55 @@ from .models import Anketa, Result, ResultLL  # , ResultRB, ResultCB
 from schedules.models import Schedule, Task, Attempt
 from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
+
+
+class AttemptError(RuntimeError):
+    pass
+
+
+class ScheduleError(RuntimeError):
+    pass
+
+
+def validate_modify_attempt(attempt):
+    """ Валидация - нельзя вносить изменения в объекты,
+    которые ссылаются на попытку, если:
+    - попытыка закрыта
+    - не в сроках расписания
+
+    :param attempt: sueveys.models.Attempt
+    :return:
+    """
+    if attempt.finished:
+        raise AttemptError("попытыка уже закрыта")
+    elif now() < attempt.schedule.start:
+        raise ScheduleError("срок расписания ещё не наступил")
+    elif now() > attempt.schedule.finish:
+        raise ScheduleError("срок расписания уже завершился")
+    # print('instance.id=', instance.id)
+    # try:
+    #     result = Result.objects.get(pk=instance.id)
+    #     print('result.id=', result.id)
+    # except ObjectDoesNotExist:
+    #     result = None
+    # if result:  # update
+    #     print('result.anketa.attempt.finished',result.anketa.attempt.finished)
+    #     print('result.anketa.attempt.schedule.start',result.anketa.attempt.schedule.start)
+    #     print(now())
+    #     print('result.anketa.attempt.schedule.finish',result.anketa.attempt.schedule.finish)
+    #     if result.anketa.attempt.finished:
+    #         ValidationError("Нельзя вносить изменения, если попытыка уже закрыта.")
+    #     elif now() < result.anketa.attempt.schedule.start:
+    #         ValidationError("Срок расписания ещё не наступил.")
+    #     elif now() > result.anketa.attempt.schedule.finish:
+    #         ValidationError("Срок расписания уже завершился.")
+    # else:  # insert
+    #     print('instance.anketa.attempt.schedule.start',instance.anketa.attempt.schedule.start)
+    #     print('instance.anketa.attempt.schedule.finish',instance.anketa.attempt.schedule.finish)
+    #     if now() < instance.anketa.attempt.schedule.start:
+    #         ValidationError("Срок расписания ещё не наступил.")
+    #     elif now() > instance.anketa.attempt.schedule.finish:
+    #         ValidationError("Срок расписания уже завершился.")
 
 
 def finish_attempt(request, attemptid):
@@ -83,6 +132,7 @@ def finish_attempt(request, attemptid):
 
 def generate_anketa(attempt):
     """ Генерирует последовательность Result
+
     1. Выбрать упорядоченные
 select * from querylists_querycontent where ordernum is not null and querylist_id in
 (select id from querylists_querylist where id in
@@ -110,6 +160,10 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
 
     5. BEGIN TRANSACTION ( Создать последовательность Result по [].question.id ) END TRANSACTION
     """
+    try:
+        validate_modify_attempt(attempt)
+    except (AttemptError, ScheduleError) as e:
+        raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e.message))
     task = Task.objects.get(schedule__attempt=attempt)
     ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
     unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
@@ -232,6 +286,10 @@ def render_result_form(query):
 
 def save_result(query, request):
     """ Сохраняет данные из формы без проверки валидности данных на форме """
+    try:
+        validate_modify_attempt(query.attempt)
+    except (AttemptError, ScheduleError) as e:
+        raise ValidationError("Ваш ответ не принят так как {}".format(e))
 
     if query.question.qtype == RADIOBUTTON:
         choice = request.POST.get('choice')
