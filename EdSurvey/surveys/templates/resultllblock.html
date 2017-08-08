@@ -1,4 +1,7 @@
-<i>Для каждого вопроса введите номер наиболее подходящего варианта ответа:</i>
+<ul>
+    <i>Для каждого вопроса введите номер наиболее подходящего варианта ответа:</i>
+    {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
+</ul>
 <input type="hidden" name="cnt" value="{{cnt}}">
 <table border="0"
 {% for content,item,result in data %}

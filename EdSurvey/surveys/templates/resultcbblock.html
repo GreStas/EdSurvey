@@ -1,4 +1,9 @@
 <table border="0"
+<ul>
+    <i>Выберите один или несколько правильных ответов</i>
+    {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
+</ul>
+
 {% for content,result in data %}
     <tr><td>
         <input type="checkbox" name="choice" id="choice{{content.id}}" value="{{content.id}}"

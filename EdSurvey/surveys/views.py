@@ -202,7 +202,8 @@ def get_answer_contents(answer_model, question):
     return ordered_contents + unordered_contents
 
 
-def render_result_form(query):
+def render_result_form(request, query):
+    tooltip = None
 
     if query.question.qtype == RADIOBUTTON:
         contents = get_answer_contents(AnswerRB, query.question)
@@ -215,33 +216,40 @@ def render_result_form(query):
             # Жёстко удаляем всю халтуру! RB должен быть один!!!
             result = None
             Result.objects.all().filter(anketa=query).delete()
+        if result is None:
+            tooltip = "Вам необходимо выбрать один единственный обязательный ответ."
         return render_to_string(
             'resultrbblock.html',
             {
                 'contents': contents,
                 'result': result,
+                'tooltip': tooltip,
             },
         )
 
     elif query.question.qtype == CHECKBOX:
         contents = get_answer_contents(AnswerCB, query.question)
         data = []
+        empty = True
         for content in contents:
             # Вычитать ранее полученный результат, если его нет, то вернуть None
             try:
                 result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
+                empty = False
             except ObjectDoesNotExist:
                 result = None
             except MultipleObjectsReturned:
                 # Жёстко удаляем всю халтуру!
                 Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
             data.append((content,result))
-
+        if empty:
+            tooltip = "Вам необходимо выбрать хотя-бы один ответ."
         return render_to_string(
             'resultcbblock.html',
             {
                 # 'contents': contents,
                 'data': data,
+                'tooltip': tooltip,
             },
         )
 
@@ -277,12 +285,27 @@ def render_result_form(query):
                 pass    # value = None
             data.append((content, answer, value))
 
+        empty = False
+        all_values = set([x+1 for x in range(cnt)])
+        values = set()
+        for (content, answer, value) in data:
+            if value is None:
+                empty = True
+            else:
+                values.add(value)
+
+        if empty:
+            tooltip = "Необходимо заполнить все варианты."
+        elif len(all_values) != len(values):
+            tooltip = "Каждый вариант можно использовать только один раз - повторения недопустимы."
+
         return render_to_string(
             'resultllblock.html',
             {
                 'data': data,
                 'cnt': cnt,
                 'cntlen': cntlen,
+                'tooltip': tooltip,
             },
         )
 
@@ -372,7 +395,7 @@ def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
 
-    form = render_result_form(query)
+    form = render_result_form(request, query)
 
     if request.POST.get("prev_query"):
         save_result(query, request)
