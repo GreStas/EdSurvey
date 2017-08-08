@@ -6,14 +6,17 @@
         <tr>
             <th>Начало</th>
             <th>Конец</th>
-            <th>Примечания</th>
-
+            <th>Описание</th>
+            <th>Примечание</th>
         </tr>
 {% for schedule in opened %}
         <tr>
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
-            <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}"> {{schedule.description}}</a></td>
+            <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}">
+                {{schedule.task.description}} - {{schedule.task.querylist.name}}
+            </a></td>
+            <td>{{schedule.description}}</td>
         </tr>
 {% endfor %}
     </table>
