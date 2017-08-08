@@ -51,6 +51,7 @@ class Schedule(models.Model):
     def __str__(self):
         return "{} {}".format(self.task.description, self.description)
 
+
 def schedule_pre_save(instance, **kwargs):
     """ Validation
     - Нельзя менять расписание, если по нему уже есть начатые попытки.

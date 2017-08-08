@@ -1,5 +1,5 @@
 # from django.db.models.query_utils import Q
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls.base import reverse
@@ -66,9 +66,15 @@ def run_attempt(request, attemptid):
 
 def new_attempt(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
+    # Проверим использование доступных попыток
+    attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False).count()
+    if attempts >= schedule.task.attempts:
+        raise ValidationError("Использованы все доступные попытки.")
     try:
+        # Если есть незавершённая попытка, то используем её
         attempt = Attempt.objects.get(schedule=schedule, finished__isnull=True)
     except ObjectDoesNotExist:
+        # Если нет незавершённой попытки, то создаём новую
         attempt = Attempt(schedule=schedule)
         attempt.save()
     return run_attempt(request, attempt.id)

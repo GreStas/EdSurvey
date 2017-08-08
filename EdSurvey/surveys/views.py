@@ -163,7 +163,7 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
     try:
         validate_modify_attempt(attempt)
     except (AttemptError, ScheduleError) as e:
-        raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e.message))
+        raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e))
     task = Task.objects.get(schedule__attempt=attempt)
     ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
     unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
@@ -182,8 +182,11 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
 
 def run_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
-    # if Anketa.objects.all().filter(attempt=attempt).count() == 0:
-    if len(Anketa.objects.all().filter(attempt=attempt)) == 0:
+    try:
+        validate_modify_attempt(attempt)
+    except (AttemptError, ScheduleError) as e:
+        raise ValidationError("Невозможно использовать эту поптыку, так как {}".format(e))
+    if Anketa.objects.all().filter(attempt=attempt).count() == 0:
         generate_anketa(attempt)
     query = get_object_or_404(Anketa, attempt=attempt, ordernum=1)
     return redirect(reverse('surveys:showquery', args=[query.id]))
