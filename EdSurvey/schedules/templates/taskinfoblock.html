@@ -16,14 +16,14 @@
     </tr>
     <tr>
         <td align="LEFT"><strong>Возможность просмотра:</strong></td>
-        <td>{{task.viewable}}</td>
+        <td>{% if task.viewable %}Да{% else %}Нет{% endif %}</td>
     </tr>
     <tr>
         <td align="LEFT"><strong>Возможность правки:</strong></td>
-        <td>{{task.viewable}}</td>
+        <td>{% if task.editable %}Да{% else %}Нет{% endif %}</td>
     </tr>
     <tr>
         <td align="LEFT"><strong>Автозакрытие:</strong></td>
-        <td>{{task.autoclose}}</td>
+        <td>{% if task.autoclose %}Да{% else %}Нет{% endif %}</td>
     </tr>
 </table>

@@ -10,7 +10,8 @@ class TaskAdmin(admin.ModelAdmin):
     # list_display = ('id', 'description', 'qtype')
     ordering = ('description', 'querylist')
     fieldsets = [
-        (None, {'fields': ['description', 'querylist', 'attempts']}),
+        (None, {'fields': ['description', 'querylist']}),
+        ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose',]})
     ]
     inlines = [
         ScheduleAdmin,

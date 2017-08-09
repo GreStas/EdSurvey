@@ -31,7 +31,7 @@ def validate_modify_attempt(attempt):
     - не в сроках расписания
 
     :param attempt: sueveys.models.Attempt
-    :return:
+    :return: void
     """
     if attempt.finished:
         raise AttemptError("попытыка уже закрыта")
@@ -83,49 +83,21 @@ def finish_attempt(request, attemptid):
             messages.add_message(request, messages.INFO, errmsg)
     if errors:
         # Если была хоть какая-то ошибка, то вернуться обратно на showquery
-        return show_query(
-            request,
-            queryid=Anketa.objects.all().get(attempt=attempt, ordernum=1).id,
-        )
-    attempt.finished=now()
-    attempt.save()
-    # Вернуться на описание задания в расписании
+        return redirect(reverse(
+            'surveys:showquery',
+            args=[Anketa.objects.all().get(attempt=attempt, ordernum=1).id]
+        ))
+    if attempt.schedule.task.autoclose:
+        attempt.finished=now()
+        attempt.save()
     return redirect(reverse(
-        'schedules:scheduleinfo',
-        args=[attempt.schedule.id]
+        'surveys:closeattempt',
+        args=[attemptid]
     ))
 
 
 def generate_anketa(attempt):
-    """ Генерирует последовательность Result
-
-    1. Выбрать упорядоченные
-select * from querylists_querycontent where ordernum is not null and querylist_id in
-(select id from querylists_querylist where id in
-	(select querylist_id from schedules_task where id in
-		(select task_id from schedules_schedule where id in
-			(select schedule_id from schedules_attempt where id = 3)
-		)
-	)
-)
-order by ordernum
-
-    2. Выбрать неупорядоченные
-select * from querylists_querycontent where ordernum is null and querylist_id in
-(select id from querylists_querylist where id in
-	(select querylist_id from schedules_task where id in
-		(select task_id from schedules_schedule where id in
-			(select schedule_id from schedules_attempt where id = 3)
-		)
-	)
-)
-
-    3. Перемешать неупорядоченный список.
-
-    4. Соединить два списка - сначала упорядоченные.
-
-    5. BEGIN TRANSACTION ( Создать последовательность Result по [].question.id ) END TRANSACTION
-    """
+    """ Генерирует последовательность Result """
     try:
         validate_modify_attempt(attempt)
     except (AttemptError, ScheduleError) as e:
@@ -184,21 +156,48 @@ def run_attempt(request, attemptid):
     # Нет вопросов на которые ещё можно ответить
     elif attempt.schedule.task.autoclose:
         # Автоматически закрыть попытку
-        return finish_attempt(request, attemptid)
+        return redirect(reverse('surveys:finishattempt', args=[attemptid]))
     else:
         # Страница с подтверждением закрытия попытки
-        return close_attempt(request, attemptid)
+        return redirect(reverse(
+            'surveys:closeattempt',
+            args=[attemptid]
+        ))
 
 
 def close_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
+    # Обработка формы
+    if request.POST.get("return"):
+        return redirect(reverse(
+            'surveys:runattempt',
+            args=[attempt.id]
+        ))
+    elif request.POST.get("finish"):
+        attempt.finished = now()
+        attempt.save()
+        return redirect(reverse(
+            'schedules:scheduleinfo',
+            args=[attempt.schedule.id]
+        ))
+    # Страница
+    answered_cnt = 0
+    waited_cnt = 0
+    for anketa in Anketa.objects.all().filter(attempt=attempt).order_by('ordernum'):
+        if err_results(anketa):
+            waited_cnt += 1
+        else:
+            answered_cnt += 1
     return render(
         request,
         'closeattempt.html',
         {
             'attempt': attempt,
+            'answered_cnt': answered_cnt,
+            'waited_cnt': waited_cnt,
         }
     )
+
 
 def get_answer_contents(answer_model, question):
     """ Формирует перечень вариантов ответов - list(answer_model objects) """

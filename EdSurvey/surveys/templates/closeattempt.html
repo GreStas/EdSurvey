@@ -1,0 +1,31 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+
+<h3>
+    {{attempt.schedule.task.description}}
+    -
+    {{attempt.schedule.task.querylist.name}} ({{attempt.schedule.description}})
+</h3>
+
+<h4>Статистика ответов:</h4>
+<ul>
+    <li>Дано ответов: {{answered_cnt}}</li>
+    <li>Ответы отсутсвуют или не приняты: {{waited_cnt}}</li>
+</ul>
+
+{% if waited_cnt == 0 and attempt.schedule.task.autoclose %}
+    <h4>Вы ответили на все вопросы и попытка была автоматически завершена.</h4>
+    <h4><a href="{% url 'schedules:scheduleinfo' attempt.schedule.id %}">Вернуться к расписанию</a></h4>
+{% else %}
+    <form action="{% url 'surveys:closeattempt' attempt.id %}" method="post">
+        {% csrf_token %}
+    {% if attempt.schedule.task.editable or attempt.schedule.task.viewable %}
+        <input type="submit" value="Вернуться к ответам" name="return">
+    {% endif %}
+    {% if waited_cnt == 0 %}
+        <input type="submit" value="Подтвердить завершение" name="finish">
+    {% endif %}
+    </form>
+{% endif %}
+
+{% endblock %}
