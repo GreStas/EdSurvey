@@ -80,21 +80,6 @@ def new_attempt(request, scheduleid):
     return run_attempt(request, attempt.id)
 
 
-def close_attempt(request, attemptid):
-    attempt = get_object_or_404(Attempt, pk=attemptid)
-    answered_cnt = 0
-    waited_cnt = 0
-    return render(
-        request,
-        'closeattempt.html',
-        {
-            'attempt': attempt,
-            'answered_cnt': answered_cnt,
-            'waited_cnt': waited_cnt,
-        }
-    )
-
-
 def index(request):
     opened_schedules = Schedule.objects.all().filter(start__lt=now(), finish__gt=now())
     closed_schedules = Schedule.objects.all().filter(finish__lt=now())

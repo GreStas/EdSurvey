@@ -6,5 +6,4 @@ urlpatterns = [
     url(r'^scheduleinfo/(?P<scheduleid>\d+)$', views.schedule_info, name='scheduleinfo'),
     url(r'^newattempt/(?P<scheduleid>\d+)$', views.new_attempt, name='newattempt'),
     url(r'^runattempt/(?P<attemptid>\d+)$', views.run_attempt, name='runattempt'),
-    url(r'^closeattempt/(?P<attemptid>\d+)$', views.close_attempt, name='closeattempt'),
 ]

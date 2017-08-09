@@ -39,30 +39,34 @@ def validate_modify_attempt(attempt):
         raise ScheduleError("срок расписания ещё не наступил")
     elif now() > attempt.schedule.finish:
         raise ScheduleError("срок расписания уже завершился")
-    # print('instance.id=', instance.id)
-    # try:
-    #     result = Result.objects.get(pk=instance.id)
-    #     print('result.id=', result.id)
-    # except ObjectDoesNotExist:
-    #     result = None
-    # if result:  # update
-    #     print('result.anketa.attempt.finished',result.anketa.attempt.finished)
-    #     print('result.anketa.attempt.schedule.start',result.anketa.attempt.schedule.start)
-    #     print(now())
-    #     print('result.anketa.attempt.schedule.finish',result.anketa.attempt.schedule.finish)
-    #     if result.anketa.attempt.finished:
-    #         ValidationError("Нельзя вносить изменения, если попытыка уже закрыта.")
-    #     elif now() < result.anketa.attempt.schedule.start:
-    #         ValidationError("Срок расписания ещё не наступил.")
-    #     elif now() > result.anketa.attempt.schedule.finish:
-    #         ValidationError("Срок расписания уже завершился.")
-    # else:  # insert
-    #     print('instance.anketa.attempt.schedule.start',instance.anketa.attempt.schedule.start)
-    #     print('instance.anketa.attempt.schedule.finish',instance.anketa.attempt.schedule.finish)
-    #     if now() < instance.anketa.attempt.schedule.start:
-    #         ValidationError("Срок расписания ещё не наступил.")
-    #     elif now() > instance.anketa.attempt.schedule.finish:
-    #         ValidationError("Срок расписания уже завершился.")
+
+
+def err_results(query):
+    """ Проверка, что на вопрос дан ответ
+    RB - есть единственный ответ
+    CB - есть хотя-бы один ответ
+    LL - для всех подвопросов выбран вариант и варианты уникальные
+
+    :param query: Anketa
+    :return: errstr or None
+    """
+    # Для простых вопросов (RB и CB) проверяем, что есть хотя-бы один ответ
+    cnt = Result.objects.all().filter(anketa=query).count()
+    qtype = query.question.qtype
+    if qtype == RADIOBUTTON and cnt != 1:
+        return "Для вопроса {} должен быть единственный ответ ({}).".format(query, cnt,)
+    elif qtype == CHECKBOX and cnt == 0:
+        return "Для вопроса {} должен быть хотя-бы один ответ ({}).".format(query, cnt,)
+    elif qtype in (LINKEDLISTS):
+        # Сколько должно быть ответов?
+        answers_cnt = Answer.objects.all().filter(question=query.question).count()
+        results_cnt = ResultLL.objects.all().filter(
+            anketa=query,
+            choice__isnull=False,
+        ).count()
+        if answers_cnt != results_cnt:
+            return "Для вопроса {} должны быть заполены все варианты ({}).".format(query, answers_cnt,)
+    return ''
 
 
 def finish_attempt(request, attemptid):
@@ -73,57 +77,19 @@ def finish_attempt(request, attemptid):
     errors = False
     attempt = get_object_or_404(Attempt, pk=attemptid)
     for query in Anketa.objects.all().filter(attempt=attempt):
-        # Для простых вопросов (RB и CB) проверяем, что есть хотя-бы один ответ
-        cnt = Result.objects.all().filter(anketa=query).count()
-        qtype = query.question.qtype
-        if qtype == RADIOBUTTON and cnt != 1:
+        errmsg = err_results(query)
+        if errmsg:
             errors = True
-            messages.add_message(
-                request,
-                messages.INFO,
-                "Для вопроса {} должен быть единственный ответ ({}).".format(
-                    query,
-                    cnt,
-                )
-            )
-        elif qtype == CHECKBOX and cnt == 0:
-            errors = True
-            messages.add_message(
-                request,
-                messages.INFO,
-                "Для вопроса {} должен быть хотя-бы один ответ ({}).".format(
-                    query,
-                    cnt,
-                )
-            )
-        elif qtype in (LINKEDLISTS):
-            # Сколько должно быть ответов?
-            answers_cnt = Answer.objects.all().filter(question=query.question).count()
-            results_cnt = ResultLL.objects.all().filter(
-                anketa=query,
-                choice__isnull=False,
-            ).count()
-            if answers_cnt != results_cnt:
-                errors = True
-                messages.add_message(
-                    request,
-                    messages.INFO,
-                    "Для вопроса {} должны быть заполены все варианты ({}).".format(
-                        query,
-                        answers_cnt,
-                    )
-                )
-    # Если была хоть какая-то ошибка, то вернуться обратно на showquery
+            messages.add_message(request, messages.INFO, errmsg)
     if errors:
-        print(messages.get_messages(request))
-        # TODO вернуться обратно на showquery
+        # Если была хоть какая-то ошибка, то вернуться обратно на showquery
         return show_query(
             request,
             queryid=Anketa.objects.all().get(attempt=attempt, ordernum=1).id,
         )
     attempt.finished=now()
     attempt.save()
-    # TODO Вернуться на описание задания в расписании
+    # Вернуться на описание задания в расписании
     return redirect(reverse(
         'schedules:scheduleinfo',
         args=[attempt.schedule.id]
@@ -181,16 +147,58 @@ select * from querylists_querycontent where ordernum is null and querylist_id in
 
 
 def run_attempt(request, attemptid):
+    """ Задать следующий возможный вопрос
+    или завершить попытку
+    или предложить завершить попытку
+    """
     attempt = get_object_or_404(Attempt, pk=attemptid)
     try:
         validate_modify_attempt(attempt)
     except (AttemptError, ScheduleError) as e:
         raise ValidationError("Невозможно использовать эту поптыку, так как {}".format(e))
+    # Факт: доступные попытки ещё есть.
+    # Ищем query
+    query = None
     if Anketa.objects.all().filter(attempt=attempt).count() == 0:
+        # Для новой попытки - сгенерировать анкету:
         generate_anketa(attempt)
-    query = get_object_or_404(Anketa, attempt=attempt, ordernum=1)
-    return redirect(reverse('surveys:showquery', args=[query.id]))
+        query = Anketa.objects.get(attempt=attempt, ordernum=1)
+    else:
+        # Продолжение открытой попытки у которой точно уже сформированы вопросы в Anketa.
+        # вычислить первый_неотвеченный_вопрос открытой поптыки
+        query_1st = None
+        for anketa in Anketa.objects.all().filter(attempt=attempt).order_by('ordernum'):
+            if err_results(anketa):
+                query_1st = anketa
+                break
+        if attempt.schedule.task.editable or attempt.schedule.task.viewable:
+            if query_1st:
+                query = query_1st
+            else:
+                query = Anketa.objects.get(attempt=attempt, ordernum=1)
+        else:
+            query = query_1st
+    if query:
+        # Продолжить опрос с найденого в Anketa вопроса
+        return redirect(reverse('surveys:showquery', args=[query.id]))
+    # Нет вопросов на которые ещё можно ответить
+    elif attempt.schedule.task.autoclose:
+        # Автоматически закрыть попытку
+        return finish_attempt(request, attemptid)
+    else:
+        # Страница с подтверждением закрытия попытки
+        return close_attempt(request, attemptid)
 
+
+def close_attempt(request, attemptid):
+    attempt = get_object_or_404(Attempt, pk=attemptid)
+    return render(
+        request,
+        'closeattempt.html',
+        {
+            'attempt': attempt,
+        }
+    )
 
 def get_answer_contents(answer_model, question):
     """ Формирует перечень вариантов ответов - list(answer_model objects) """
@@ -429,10 +437,6 @@ def show_query(request, queryid):
             'query': query,
             'maxquerynum': maxquerynum,
             'form': form,
-            # 'prev_query': render_prev_query_button(query),
-            # 'pause_query': render_pause_button(query),
-            # 'exit_query': render_exit_button(query),
-            # 'next_query': render_next_query_button(query),
         }
     )
 
