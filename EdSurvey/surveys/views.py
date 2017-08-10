@@ -59,13 +59,23 @@ def err_results(query):
         return "Для вопроса {} должен быть хотя-бы один ответ ({}).".format(query, cnt,)
     elif qtype in (LINKEDLISTS):
         # Сколько должно быть ответов?
-        answers_cnt = Answer.objects.all().filter(question=query.question).count()
+        answers_cnt = Answer.objects.all().filter(
+            question=query.question
+        ).count()
+        # Сколько получено вариантов?
         results_cnt = ResultLL.objects.all().filter(
             anketa=query,
             choice__isnull=False,
         ).count()
         if answers_cnt != results_cnt:
             return "Для вопроса {} должны быть заполены все варианты ({}).".format(query, answers_cnt,)
+        # проверим,что есть все варианты
+        answers = set([a.id for a in Answer.objects.all().filter(question=query.question)])
+        results = set([r.choice.id for r in ResultLL.objects.all().filter(anketa=query, choice__isnull=False)])
+        print('Answers:', answers)
+        print('Results:', results)
+        if answers - results:
+            return "Для вопроса '{}' каждый вариант ответа может быть использован только один раз.".format(query.question.description,)
     return ''
 
 
