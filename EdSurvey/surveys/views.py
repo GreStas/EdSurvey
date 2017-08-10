@@ -398,24 +398,62 @@ def save_result(query, request):
                 ResultLL.objects.all().filter(anketa=query, answer=contents[i]).delete()
 
 
+def get_prev_query_ordernum(query):
+    num = query.ordernum-1
+    value = None
+    if num > 0:
+        if query.attempt.schedule.task.editable or query.attempt.schedule.task.viewable:
+            value = num
+        else:
+            # Ищем ближайший вопрос на который не был дан корректный ответ
+            for prev_query in Anketa.objects.all().filter(attempt=query.attempt,
+                                                      ordernum__lte=num).order_by('-ordernum'):
+                if err_results(prev_query):
+                    value = prev_query.ordernum
+                    break
+    return value
+
+
+def get_next_query_ordernum(query):
+    num = query.ordernum + 1
+    maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
+    value = None
+    if num <= maxquerynum:
+        if query.attempt.schedule.task.editable or query.attempt.schedule.task.viewable:
+            value = num
+        else:
+            # Ищем ближайший вопрос на который не был дан корректный ответ
+            for next_query in Anketa.objects.all().filter(attempt=query.attempt,
+                                                      ordernum__gte=num).order_by('ordernum'):
+                if err_results(next_query):
+                    value = next_query.ordernum
+                    break
+    return value
+
+
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
+
+    prev_ordernum = get_prev_query_ordernum(query)
+    next_ordernum = get_next_query_ordernum(query)
 
     form = render_result_form(request, query)
 
     if request.POST.get("prev_query"):
         save_result(query, request)
-        return redirect(reverse(
-            'surveys:showquery',
-            args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum-1).id])
-        )
+        if prev_ordernum:
+            return redirect(reverse(
+                'surveys:showquery',
+                args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=prev_ordernum).id])
+            )
     elif request.POST.get("next_query"):
         save_result(query, request)
-        return redirect(reverse(
-            'surveys:showquery',
-            args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=query.ordernum+1).id])
-        )
+        if next_ordernum:
+            return redirect(reverse(
+                'surveys:showquery',
+                args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=next_ordernum).id])
+            )
     elif request.POST.get("exit_query"):
         save_result(query, request)
         return redirect(reverse(
@@ -436,6 +474,8 @@ def show_query(request, queryid):
             'query': query,
             'maxquerynum': maxquerynum,
             'form': form,
+            'prevordernum': prev_ordernum,
+            'nextordernum': next_ordernum,
         }
     )
 
@@ -461,32 +501,3 @@ def index(request):
             'cnt_done': cnt_done,
         },
     )
-
-
-# def render_prev_query_button(query):
-#     return render_to_string(
-#         '<input type="submit" value="<< Предыдущий" name="prev_query"' + \
-#         (' disabled' if query.ordernum <= 0 else '') + \
-#         '>'
-#     )
-#
-#
-# def render_next_query_button(query):
-#     return '<input type="submit" value="Следующий >>" name="next_query"' + \
-#            (' disabled' if query.ordernum <= 0 else '') + \
-#            '>'
-#
-#
-# def render_pause_button(query):
-#     # TODO проверить, что можно сохранять промежуточные результаты
-#     return '<input type="submit" value="Прервать" name="pause_query">'
-#
-#
-# def render_exit_button(query):
-#     # TODO проверить, что на все вопросы получены ответы
-#     return '<input type="submit" value="Завершить" name="exit_query">'
-#
-#
-# def render_reset(query):
-#     # TODO проверить условия тестирования на возможность изменить уже сохранённый ответ
-#     return '<input type="submit" value="Очистить" name="clear_query">'

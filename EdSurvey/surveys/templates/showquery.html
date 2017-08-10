@@ -46,11 +46,11 @@
     <hr border-color="#7b6b6b">
 
     <div class="page-footer">
-        <input type="submit" value="<< Предыдущий" name="prev_query" {% if query.ordernum <= 1 %} disabled {% endif %} >
+        <input type="submit" value="<< Предыдущий" name="prev_query" {% if not prevordernum %} disabled {% endif %} >
         <input type="submit" value="Очистить" name="clear_query">
         <input type="submit" value="Прервать" name="pause_query">
         <input type="submit" value="Завершить" name="exit_query">
-        <input type="submit" value="Следующий >>" name="next_query" {% if query.ordernum >= maxquerynum %} disabled {% endif %} >
+        <input type="submit" value="Следующий >>" name="next_query" {% if not nextordernum %} disabled {% endif %} >
 
     </div>
 
