@@ -13,6 +13,7 @@
         <td>
             <input type="number" name="choice{{forloop.counter}}" min="1" max="{{cnt}}"
                {% if result %} value="{{result}}" {% endif %}
+               {% if readonly %} readonly {% endif %}
             />
         </td>
         <td align="rigth">

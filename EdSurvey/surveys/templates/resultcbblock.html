@@ -1,7 +1,7 @@
 {% if readonly %}
     <ul>
     {% for content,result in data %}
-        <li>
+        <li type="square">
         {% if content.id == result %} <strong> {% endif %}
             {{content.content|linebreaks}}
         {% if content.id == result %} </strong> {% endif %}
@@ -10,7 +10,7 @@
     </ul>
 
 {% else %}
-<table border="0"
+<table border="0">
 <ul>
     <i>Выберите один или несколько правильных ответов</i>
     {% if tooltip %}<li>{{tooltip}}</li>{% endif %}

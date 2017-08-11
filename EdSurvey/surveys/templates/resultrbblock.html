@@ -1,9 +1,12 @@
 {% if readonly %}
     <ul>
     {% for content in contents %}
-        <li>
-        {% if content.id == result %} <strong> {% endif %}
-            {{content.content|linebreaks}}
+        {% if content.id == result %}
+            <li type="disc"> <strong>
+        {% else %}
+            <li type="circle">
+        {% endif %}
+        {{content.content|linebreaks}}
         {% if content.id == result %} </strong> {% endif %}
         </li>
     {% endfor %}
@@ -13,7 +16,7 @@
     <ul>
         {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
     </ul>
-    <table border="0"
+    <table border="0">
     {% for content in contents %}
        <ul>
        {% if content.id == result %} checked {% endif %}
