@@ -92,10 +92,10 @@ def finish_attempt(request, attemptid):
             errors = True
             messages.add_message(request, messages.INFO, errmsg)
     if errors:
-        # Если была хоть какая-то ошибка, то вернуться обратно на showquery
+        # Если была хоть какая-то ошибка, то вернуться обратно на прохождение опроса
         return redirect(reverse(
-            'surveys:showquery',
-            args=[Anketa.objects.all().get(attempt=attempt, ordernum=1).id]
+            # 'surveys:showquery', args=[Anketa.objects.all().get(attempt=attempt, ordernum=1).id]
+            'surveys:runattempt', args=[attemptid],
         ))
     if attempt.schedule.task.autoclose:
         attempt.finished=now()
