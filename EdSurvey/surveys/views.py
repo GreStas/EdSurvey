@@ -220,6 +220,13 @@ def get_answer_contents(answer_model, question):
 
 
 def render_result_form(request, query):
+    # Validate access
+    editable = query.attempt.schedule.task.editable
+    viewable = query.attempt.schedule.task.viewable
+    has_errs = err_results(query)
+    if not editable and not has_errs and not viewable:
+        raise ObjectDoesNotExist
+
     tooltip = None
 
     if query.question.qtype == RADIOBUTTON:
@@ -444,7 +451,6 @@ def get_next_query_ordernum(query):
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
-
     prev_ordernum = get_prev_query_ordernum(query)
     next_ordernum = get_next_query_ordernum(query)
 
