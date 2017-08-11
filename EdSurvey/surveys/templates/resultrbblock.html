@@ -1,7 +1,3 @@
-<ul>
-    {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
-</ul>
-
 {% if readonly %}
     <ul>
     {% for content in contents %}
@@ -14,6 +10,9 @@
     </ul>
 
 {% else %}
+    <ul>
+        {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
+    </ul>
     <table border="0"
     {% for content in contents %}
        <ul>

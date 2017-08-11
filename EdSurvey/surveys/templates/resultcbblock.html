@@ -1,3 +1,15 @@
+{% if readonly %}
+    <ul>
+    {% for content,result in data %}
+        <li>
+        {% if content.id == result %} <strong> {% endif %}
+            {{content.content|linebreaks}}
+        {% if content.id == result %} </strong> {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+
+{% else %}
 <table border="0"
 <ul>
     <i>Выберите один или несколько правильных ответов</i>
@@ -13,3 +25,5 @@
     </td></tr>
 {% endfor %}
 </table>
+
+{% endif %}
