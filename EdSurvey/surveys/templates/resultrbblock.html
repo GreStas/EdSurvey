@@ -1,14 +1,33 @@
 <ul>
     {% if tooltip %}<li>{{tooltip}}</li>{% endif %}
 </ul>
-<table border="0"
 
-{% for content in contents %}
-    <tr><td>
-        <input type="radio" name="choice" id="choice{{content.id}}" value="{{content.id}}"
-               {% if content.id == result %} checked {% endif %}
-        />
-        <label for="choice{{content.id}}">{{content.content|linebreaks}}</label>
-    </td></tr>
-{% endfor %}
+{% if readonly %}
+    <ul>
+    {% for content in contents %}
+        <li>
+        {% if content.id == result %} <strong> {% endif %}
+            {{content.content|linebreaks}}
+        {% if content.id == result %} </strong> {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+
+{% else %}
+    <table border="0"
+    {% for content in contents %}
+       <ul>
+       {% if content.id == result %} checked {% endif %}
+
+       </ul>
+
+        <tr><td>
+            <input type="radio" name="choice" id="choice{{content.id}}" value="{{content.id}}"
+                   {% if content.id == result %} checked {% endif %}
+            />
+            <label for="choice{{content.id}}">{{content.content|linebreaks}}</label>
+        </td></tr>
+    {% endfor %}
 </table>
+
+{% endif %}

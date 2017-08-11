@@ -219,14 +219,21 @@ def get_answer_contents(answer_model, question):
     return ordered_contents + unordered_contents
 
 
-def render_result_form(request, query):
+def is_readonly(query):
     # Validate access
     editable = query.attempt.schedule.task.editable
     viewable = query.attempt.schedule.task.viewable
     has_errs = err_results(query)
-    if not editable and not has_errs and not viewable:
-        raise ObjectDoesNotExist
+    if not editable and not has_errs:
+        if viewable:
+            return True
+        else:
+            raise ObjectDoesNotExist
+    else:
+        return False
 
+def render_result_form(request, query):
+    readonly = is_readonly(query)
     tooltip = None
 
     if query.question.qtype == RADIOBUTTON:
@@ -248,6 +255,7 @@ def render_result_form(request, query):
                 'contents': contents,
                 'result': result,
                 'tooltip': tooltip,
+                'readonly': readonly,
             },
         )
 
@@ -274,6 +282,7 @@ def render_result_form(request, query):
                 # 'contents': contents,
                 'data': data,
                 'tooltip': tooltip,
+                'readonly': readonly,
             },
         )
 
@@ -330,12 +339,16 @@ def render_result_form(request, query):
                 'cnt': cnt,
                 'cntlen': cntlen,
                 'tooltip': tooltip,
+                'readonly': readonly,
             },
         )
 
 
 def save_result(query, request):
     """ Сохраняет данные из формы без проверки валидности данных на форме """
+    if is_readonly(query):
+        return
+
     try:
         validate_modify_attempt(query.attempt)
     except (AttemptError, ScheduleError) as e:
