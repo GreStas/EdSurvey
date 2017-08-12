@@ -96,7 +96,7 @@ def attempt_pre_save(instance, **kwargs):
         attempt = Attempt.objects.get(pk=instance.id)
     except ObjectDoesNotExist:
         # Создаётся новая попытка, но есть opened_attempt
-        raise ValidationError("Нельзя сделать новую попытку пока существует незавершённая.")
+        raise ValidationError("Нельзя начать новую попытку пока существует незавершённая.")
 
     # Проверяем на внесение изменений
     if attempt.finished:

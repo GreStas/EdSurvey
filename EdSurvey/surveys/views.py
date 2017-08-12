@@ -13,6 +13,7 @@ from random import shuffle
 
 from .models import Anketa, Result, ResultLL  # , ResultRB, ResultCB
 from schedules.models import Schedule, Task, Attempt
+from schedules.views import attempt_auth_or_404
 from querylists.models import QueryContent
 from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
 
@@ -86,7 +87,7 @@ def finish_attempt(request, attemptid):
      Записывает finished=now()
     """
     errors = False
-    attempt = get_object_or_404(Attempt, pk=attemptid)
+    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
     for query in Anketa.objects.all().filter(attempt=attempt):
         errmsg = err_results(query)
         if errmsg:
@@ -134,7 +135,7 @@ def run_attempt(request, attemptid):
     или завершить попытку
     или предложить завершить попытку
     """
-    attempt = get_object_or_404(Attempt, pk=attemptid)
+    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
     if not attempt.schedule.task.viewable:
         try:
             validate_modify_attempt(attempt)
@@ -178,7 +179,7 @@ def run_attempt(request, attemptid):
 
 @login_required(login_url='login')
 def close_attempt(request, attemptid):
-    attempt = get_object_or_404(Attempt, pk=attemptid)
+    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
     readonly = False
     try:
         validate_modify_attempt(attempt)
@@ -476,6 +477,7 @@ def get_next_query_ordernum(query):
 @login_required(login_url='login')
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
+    attempt_auth_or_404(request, query.attempt)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
     prev_ordernum = get_prev_query_ordernum(query)
     next_ordernum = get_next_query_ordernum(query)
