@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
-from django.utils.timezone import now
+from django.contrib.auth.models import User
 
 from querylists.models import QueryList
 
@@ -70,7 +70,7 @@ class Attempt(models.Model):
     schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT)
     started = models.DateTimeField(auto_now_add=True, auto_now=False)
     finished = models.DateTimeField(blank=True, null=True)
-    # user = models.ForeignKey('auth.user')
+    user = models.ForeignKey(User, null=False, blank=False, on_delete=models.PROTECT)
     # status = models.SmallIntegerField()
 
     class Meta:
