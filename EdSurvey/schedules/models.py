@@ -42,7 +42,8 @@ class Schedule(models.Model):
     task = models.ForeignKey(Task, on_delete=models.PROTECT)
     start = models.DateTimeField()
     finish = models.DateTimeField()
-    description = models.CharField(max_length=30, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=30)
     # status = models.SmallIntegerField()
 
     class Meta:
@@ -50,7 +51,7 @@ class Schedule(models.Model):
         verbose_name_plural = 'Расписание заданий'
 
     def __str__(self):
-        return "{} {}".format(self.task.description, self.description)
+        return "{} {}".format(self.task.name, self.name)
 
 
 def schedule_pre_save(instance, **kwargs):
