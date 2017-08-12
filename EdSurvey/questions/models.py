@@ -21,6 +21,7 @@ class Question(models.Model):
         default=RADIOBUTTON,
     )
     description = models.TextField()
+    name = models.CharField(max_length=30)
     # status = models.IntegerField(null=True)
     # content = models.XML - Как лучше хранить форматированный текст?
     # organisation = models.ForeignKey('organisations.organisation')
@@ -31,7 +32,7 @@ class Question(models.Model):
         verbose_name_plural = 'Вопросы'
 
     def __str__(self):
-        return "{}.{}.{}".format(self.id, self.qtype, self.description[:15])
+        return "{}.{}.{}".format(self.id, self.qtype, self.name)
 
 
 def question_pre_save(instance, **kwargs):
