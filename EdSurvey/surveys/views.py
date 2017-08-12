@@ -1,4 +1,5 @@
 # surveys.views
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.db.models.aggregates import Max
 from django.shortcuts import render, get_object_or_404, redirect
@@ -78,7 +79,7 @@ def err_results(query):
             return "Для вопроса '{}' каждый вариант ответа может быть использован только один раз.".format(query.question.name,)
     return ''
 
-
+@login_required(login_url='login')
 def finish_attempt(request, attemptid):
     """ Финализация попытки
      Проверяет, что на все вопросы получены ответы.
@@ -127,7 +128,7 @@ def generate_anketa(attempt):
             )
             a.save()
 
-
+@login_required(login_url='login')
 def run_attempt(request, attemptid):
     """ Задать следующий возможный вопрос
     или завершить попытку
@@ -175,7 +176,7 @@ def run_attempt(request, attemptid):
             args=[attemptid]
         ))
 
-
+@login_required(login_url='login')
 def close_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
     readonly = False
@@ -240,6 +241,8 @@ def is_readonly(query):
     else:
         return False
 
+
+@login_required(login_url='login')
 def render_result_form(request, query):
     readonly = is_readonly(query)
     tooltip = None
@@ -352,6 +355,7 @@ def render_result_form(request, query):
         )
 
 
+# @login_required(login_url='login')
 def save_result(query, request):
     """ Сохраняет данные из формы без проверки валидности данных на форме """
     if is_readonly(query):
@@ -469,6 +473,7 @@ def get_next_query_ordernum(query):
     return value
 
 
+@login_required(login_url='login')
 def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
@@ -517,6 +522,7 @@ def show_query(request, queryid):
     )
 
 
+@login_required(login_url='login')
 def index(request):
     """ Показать количество
     - Назначенных аданий        [подробнее >] переход на view выбора задания choice_run с соответсвующим фильтром

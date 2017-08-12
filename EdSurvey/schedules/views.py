@@ -1,4 +1,4 @@
-# from django.db.models.query_utils import Q
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -36,6 +36,7 @@ def render_attempt_list(schedule):
     return render_to_string('attemptlistblock.html', {'attempts': attempts})
 
 
+@login_required(login_url='login')
 def schedule_info(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
     return render(request,
@@ -60,10 +61,12 @@ def render_task_info(task):
     return render_to_string('taskinfoblock.html', {'task': task})
 
 
+@login_required(login_url='login')
 def run_attempt(request, attemptid):
     return redirect(reverse('surveys:runattempt', args=[attemptid]))
 
 
+@login_required(login_url='login')
 def new_attempt(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
     # Проверим использование доступных попыток
@@ -80,6 +83,7 @@ def new_attempt(request, scheduleid):
     return run_attempt(request, attempt.id)
 
 
+@login_required(login_url='login')
 def index(request):
     opened_schedules = Schedule.objects.all().filter(start__lt=now(), finish__gt=now())
     closed_schedules = Schedule.objects.all().filter(finish__lt=now())
