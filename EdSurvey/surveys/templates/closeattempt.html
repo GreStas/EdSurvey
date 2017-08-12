@@ -23,7 +23,7 @@
         <input type="submit" value="Вернуться к ответам" name="return">
     {% endif %}
     {% if waited_cnt == 0 %}
-        <input type="submit" value="Подтвердить завершение" name="finish">
+        <input type="submit" value="Подтвердить завершение" name="finish" {% if readonly %} disabled {% endif %}>
     {% endif %}
     </form>
 {% endif %}

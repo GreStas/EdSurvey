@@ -134,10 +134,11 @@ def run_attempt(request, attemptid):
     или предложить завершить попытку
     """
     attempt = get_object_or_404(Attempt, pk=attemptid)
-    try:
-        validate_modify_attempt(attempt)
-    except (AttemptError, ScheduleError) as e:
-        raise ValidationError("Невозможно использовать эту поптыку, так как {}".format(e))
+    if not attempt.schedule.task.viewable:
+        try:
+            validate_modify_attempt(attempt)
+        except (AttemptError, ScheduleError) as e:
+            raise ValidationError("Невозможно использовать эту поптыку, так как {}".format(e))
     # Факт: доступные попытки ещё есть.
     # Ищем query
     query = None
@@ -177,13 +178,19 @@ def run_attempt(request, attemptid):
 
 def close_attempt(request, attemptid):
     attempt = get_object_or_404(Attempt, pk=attemptid)
+    readonly = False
+    try:
+        validate_modify_attempt(attempt)
+    except (AttemptError, ScheduleError) as e:
+        readonly = attempt.schedule.task.viewable
+
     # Обработка формы
     if request.POST.get("return"):
         return redirect(reverse(
             'surveys:runattempt',
             args=[attempt.id]
         ))
-    elif request.POST.get("finish"):
+    elif request.POST.get("finish") and not readonly:
         attempt.finished = now()
         attempt.save()
         return redirect(reverse(
@@ -205,6 +212,7 @@ def close_attempt(request, attemptid):
             'attempt': attempt,
             'answered_cnt': answered_cnt,
             'waited_cnt': waited_cnt,
+            'readonly': readonly,
         }
     )
 

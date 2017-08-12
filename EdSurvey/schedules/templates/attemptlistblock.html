@@ -7,7 +7,11 @@
 {% for attempt in attempts %}
     <tr>
         <td>{{attempt.started}}</td>
-        <td>{{attempt.finished|default_if_none:"не завершено"}}</td>
+        <td>
+            {% if attempt.schedule.task.viewable %}<a href="{% url 'surveys:runattempt' attempt.id %}">{% endif %}
+            {{attempt.finished|default_if_none:"не завершено"}}
+            {% if attempt.schedule.task.viewable %}</a>{% endif %}
+        </td>
     </tr>
 {% endfor %}
 </table>
