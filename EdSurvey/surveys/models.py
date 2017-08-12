@@ -4,6 +4,16 @@ from questions.models import Question, Answer, AnswerLL
 from schedules.models import Attempt
 
 
+class AnketaManager(models.Manager):
+    def auth(self, user):
+        res = super().get_queryset().filter(attempt__user=user)
+        return res
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Anketa(models.Model):
     """ Сгенерированые вопросы анкеты """
     attempt = models.ForeignKey(Attempt, on_delete=models.PROTECT)    #   в ходе попытки
@@ -12,6 +22,8 @@ class Anketa(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     ordernum = models.PositiveIntegerField()    # Номер под которым задаётся вопрос.
     # status = models.SmallIntegerField()
+
+    objects = AnketaManager()
 
     class Meta:
         verbose_name = 'Результат'
@@ -23,11 +35,33 @@ class Anketa(models.Model):
         return "#{}.{}".format(self.attempt, str(self.question))
 
 
+class ResultManager(models.Manager):
+    def auth(self, user):
+        res = super().get_queryset().filter(anketa__attempt__user=user)
+        return res
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Result(models.Model):
     anketa = models.ForeignKey(Anketa, on_delete=models.PROTECT)
     answer = models.ForeignKey(Answer, on_delete=models.PROTECT)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    objects = ResultManager()
+
+
+class ResultLLManager(models.Manager):
+    def auth(self, user):
+        res = super().get_queryset().filter(result_ptr__anketa__attempt__user=user)
+        return res
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
 
 
 class ResultLL(Result):
@@ -36,6 +70,8 @@ class ResultLL(Result):
         parent_link=True,
     )
     choice = models.ForeignKey(AnswerLL, on_delete=models.PROTECT)
+
+    objects = ResultManager()
 
     def __str__(self):
         return "id{}.anketa{}.answer{}.choice{}".format(self.result_ptr.id,
