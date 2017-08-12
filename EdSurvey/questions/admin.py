@@ -30,10 +30,10 @@ class AnswerLLAdmin(admin.TabularInline):
 
 class QuestionAdmin(admin.ModelAdmin):
     # model = Question
-    list_display = ('id', 'description', 'qtype')
+    list_display = ('id', 'name', 'description', 'qtype')
     ordering = ('id',)
     fieldsets = [
-        (None,               {'fields': ['description', 'qtype']}),
+        (None,               {'fields': ['name', 'description', 'qtype']}),
     ]
     inlines = [
         AnswerRBAdmin,

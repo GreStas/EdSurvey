@@ -9,26 +9,3 @@ class AnketaAdmin(admin.ModelAdmin):
     model = Anketa
 
 admin.site.register(Anketa, AnketaAdmin)
-
-
-# class ResultRBAdmin(admin.TabularInline):
-#     model = ResultRB
-#
-#
-# class ResultCBAdmin(admin.TabularInline):
-#     model = ResultCB
-#
-#
-# class ResultLLAdmin(admin.TabularInline):
-#     model = ResultLL
-#
-#
-# class ResultAdmin(admin.ModelAdmin):
-#     model = Result
-#     inlines = [
-#         ResultRBAdmin,
-#         ResultCBAdmin,
-#         ResultLLAdmin,
-#     ]
-#
-# admin.site.register(Result, ResultAdmin)

@@ -4,15 +4,17 @@
     <table border="1">
         <tr>
             <th>№</th>
-            <th>Текст вопроса</th>
+            <th>Краткое название</th>
             <th>Тип вопроса</th>
+            <th>Текст вопроса</th>
 
         </tr>
 {% for question in questions %}
         <tr>
             <td>{{question.id}}</td>
-            <td><a href="./answersbyquestion/{{question.id}}"> {{question.description}} </a></td>
+            <td><a href="./answersbyquestion/{{question.id}}"> {{question.name}} </a></td>
             <td>{{question.qtype}}</td>
+            <td>{{question.description}}</td>
         </tr>
 {% endfor %}
     </table>
