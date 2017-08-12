@@ -87,6 +87,7 @@ def attempt_pre_save(instance, **kwargs):
         Attempt.objects.get(
             schedule=instance.schedule,
             finished__isnull=True,
+            user=instance.user,
         )
     except ObjectDoesNotExist:
         # Открытых попыток нет.

@@ -19,6 +19,7 @@ from home.views import index as homepage, log_in, log_out
 
 urlpatterns = [
     url(r'^$', homepage, name='homepage'),
+    # url(r'^login/(?P<next>\S+)$', log_in, name='login'),
     url(r'^login$', log_in, name='login'),
     url(r'^logout$', log_out, name='logout'),
     url(r'^home/', include('home.urls', namespace='home'),),
