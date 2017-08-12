@@ -4,7 +4,7 @@ from questions.models import Question
 
 
 class QueryList(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=30)
     description = models.TextField()
     # status = models.IntegerField(null=True)
     # authors = models.ForeignKey('auth.User')

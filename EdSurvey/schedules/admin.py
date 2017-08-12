@@ -7,10 +7,9 @@ class ScheduleAdmin(admin.TabularInline):
 
 
 class TaskAdmin(admin.ModelAdmin):
-    # list_display = ('id', 'description', 'qtype')
-    ordering = ('description', 'querylist')
+    ordering = ('name', 'querylist')
     fieldsets = [
-        (None, {'fields': ['description', 'querylist']}),
+        (None, {'fields': ['name','description', 'querylist']}),
         ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose',]})
     ]
     inlines = [
@@ -21,10 +20,6 @@ admin.site.register(Task, TaskAdmin)
 
 
 class AttemptAdmin(admin.ModelAdmin):
-    # list_display = ('id', 'description', 'qtype')
     ordering = ('schedule', '-started')
-    # fieldsets = [
-    #     (None, {'fields': ['attempt', 'question', 'answer']}),
-    # ]
 
 admin.site.register(Attempt, AttemptAdmin)

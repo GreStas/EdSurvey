@@ -75,7 +75,7 @@ def err_results(query):
         print('Answers:', answers)
         print('Results:', results)
         if answers - results:
-            return "Для вопроса '{}' каждый вариант ответа может быть использован только один раз.".format(query.question.description,)
+            return "Для вопроса '{}' каждый вариант ответа может быть использован только один раз.".format(query.question.name,)
     return ''
 
 

@@ -7,6 +7,7 @@
             <th>Начало</th>
             <th>Конец</th>
             <th>Описание</th>
+            <th>Расписание</th>
             <th>Примечание</th>
         </tr>
 {% for schedule in opened %}
@@ -14,8 +15,9 @@
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
             <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}">
-                {{schedule.task.description}} - {{schedule.task.querylist.name}}
+                {{schedule.task.name}} - {{schedule.task.querylist.name}}
             </a></td>
+            <td>{{schedule.name}}</td>
             <td>{{schedule.description}}</td>
         </tr>
 {% endfor %}
@@ -31,6 +33,7 @@
         <tr>
             <th>Начало</th>
             <th>Конец</th>
+            <th>Расписание</th>
             <th>Примечания</th>
 
         </tr>
@@ -38,7 +41,8 @@
         <tr>
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
-            <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}"> {{schedule.description}}</a></td>
+            <td><a href="{% url 'schedules:scheduleinfo' schedule.id %}"> {{schedule.name}}</a></td>
+            <td> {{schedule.description}}</td>
         </tr>
 {% endfor %}
     </table>

@@ -12,7 +12,8 @@
 <body>
 
 <div class="page-header">
-    <h2>{{query.attempt.schedule.task.description|linebreaks}}</h2>
+    <h2>{{query.attempt.schedule.task.name}}</h2>
+    <h4>{{query.attempt.schedule.task.description|linebreaks}}</h4>
     <h3>{{query.attempt.schedule.task.querylist.name}}</h3>
     <h4>{{query.attempt.schedule.task.querylist.description|linebreaks}}</h4>
 </div>
@@ -30,7 +31,8 @@
     <h4>Вопрос {{query.ordernum}} из {{maxquerynum}}</h4>
 
 {% block queryblock %}
-    <h3>{{query.question.description|linebreaks}}</h3>
+    <h3>{{query.question.name}}</h3>
+    <h4>{{query.question.description|linebreaks}}</h4>
 {% endblock %}
 
 <hr border-color="#7b6b6b">
