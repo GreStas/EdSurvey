@@ -11,11 +11,11 @@ from django.contrib import messages
 
 from random import shuffle
 
-from .models import Anketa, Result, ResultLL  # , ResultRB, ResultCB
+from .models import Anketa, Result, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from schedules.views import attempt_auth_or_404
 from querylists.models import QueryContent
-from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Question, Answer, AnswerRB, AnswerCB, AnswerLL
+from questions.models import RADIOBUTTON, CHECKBOX, LINKEDLISTS, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
 class AttemptError(RuntimeError):
@@ -255,13 +255,15 @@ def render_result_form(request, query):
         contents = get_answer_contents(AnswerRB, query.question)
         # Вычитать ранее полученный результат, если его нет, то вернуть None
         try:
-            result = Result.objects.get(anketa=query).answer.id
+            # result = Result.objects.get(anketa=query).answer.id
+            result = Result.objects.auth(request.user).get(anketa=query).answer.id
         except ObjectDoesNotExist:
             result = None
         except MultipleObjectsReturned:
             # Жёстко удаляем всю халтуру! RB должен быть один!!!
             result = None
-            Result.objects.all().filter(anketa=query).delete()
+            # Result.objects.all().filter(anketa=query).delete()
+            Result.objects.auth(request.user).filter(anketa=query).delete()
         if result is None:
             tooltip = "Вам необходимо выбрать один единственный обязательный ответ."
         return render_to_string(
@@ -281,13 +283,15 @@ def render_result_form(request, query):
         for content in contents:
             # Вычитать ранее полученный результат, если его нет, то вернуть None
             try:
-                result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
+                # result = Result.objects.get(anketa=query, answer=content.answer_ptr).answer.id
+                result = Result.objects.auth(request.user).get(anketa=query, answer=content.answer_ptr).answer.id
                 empty = False
             except ObjectDoesNotExist:
                 result = None
             except MultipleObjectsReturned:
                 # Жёстко удаляем всю халтуру!
-                Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
+                # Result.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
+                Result.objects.auth(request.user).filter(anketa=query, answer=content.answer_ptr).delete()
             data.append((content,result))
         if empty:
             tooltip = "Вам необходимо выбрать хотя-бы один ответ."
@@ -317,7 +321,8 @@ def render_result_form(request, query):
             # Вычитать ранее полученный результат, если его нет, то вернуть None
             value = None
             try:
-                result = ResultLL.objects.get(anketa=query, answer=content.answer_ptr)  #.answer.id
+                # result = ResultLL.objects.get(anketa=query, answer=content.answer_ptr)  #.answer.id
+                result = ResultLL.objects.auth(request.user).get(anketa=query, answer=content.answer_ptr)  #.answer.id
                 # Если ранее уже давался ответ, то Result.choice уже его хранит
                 # Найти номер соответсвующего ответа в answers
                 for j in range(cnt):
@@ -328,8 +333,6 @@ def render_result_form(request, query):
             except ObjectDoesNotExist:
                 pass    # value = None
             except MultipleObjectsReturned:
-                # # Жёстко удаляем всю халтуру!
-                # ResultLL.objects.all().filter(anketa=query, answer=content.answer_ptr).delete()
                 pass    # value = None
             data.append((content, answer, value))
 
@@ -377,7 +380,8 @@ def save_result(query, request):
             answer = get_object_or_404(Answer, pk=int(request.POST.get('choice')))
             # Найти уже существующй ответ и внести в него правку, если необходимо
             try:
-                result = Result.objects.get(anketa=query)
+                # result = Result.objects.get(anketa=query)
+                result = Result.objects.auth(request.user).get(anketa=query)
                 if result.answer != answer:
                     result.answer = answer
             except ObjectDoesNotExist:
@@ -388,17 +392,20 @@ def save_result(query, request):
                 )
             result.save()
         else:
-            Result.objects.all().filter(anketa=query).delete()
+            # Result.objects.all().filter(anketa=query).delete()
+            Result.objects.auth(request.user).filter(anketa=query).delete()
 
     elif query.question.qtype == CHECKBOX:
         choices = [int(c) for c in request.POST.getlist('choice')]
         # Зачистим те, которые не выбраны в этот раз
-        for result in Result.objects.all().filter(anketa=query):
+        # for result in Result.objects.all().filter(anketa=query):
+        for result in Result.objects.auth(request.user).filter(anketa=query):
             if result.id not in choices:
                 result.delete()
         for answerid in choices:   # answerid - это AnswerCB.id
             try:
-                result = Result.objects.get(anketa=query, answer_id=answerid)
+                # result = Result.objects.get(anketa=query, answer_id=answerid)
+                result = Result.objects.auth(request.user).get(anketa=query, answer_id=answerid)
             except ObjectDoesNotExist:
                 # Такого ответа ранее не было, то создать новый ответ
                 result = Result(
@@ -425,14 +432,13 @@ def save_result(query, request):
             # print('({}) content, mean, answer = {}, {}, {}'.format(forloop_count, contents[i], means[i], answers[i]))
 
         # Проходим по таблице
-        # print('Проходим по таблице')
         for i in range(cnt):
-            # print('({}) content, mean, answer = {}, {}, {}'.format(i, contents[i], means[i], answers[i]))
             if means[i] is not None:
                 answer = get_object_or_404(Answer, pk=contents[i])
                 choice = get_object_or_404(AnswerLL, pk=answers[means[i]])
                 try:
-                    result = ResultLL.objects.get(anketa=query, answer=answer)
+                    # result = ResultLL.objects.get(anketa=query, answer=answer)
+                    result = ResultLL.objects.auth(request.user).get(anketa=query, answer=answer)
                     if result.choice.id != choice.id:
                         result.choice = choice
                         result.save()
@@ -441,10 +447,11 @@ def save_result(query, request):
                     result.save()
             else:
                 # Если ничего не введено, то стереть такие результаты
-                ResultLL.objects.all().filter(anketa=query, answer=contents[i]).delete()
+                # ResultLL.objects.all().filter(anketa=query, answer=contents[i]).delete()
+                ResultLL.objects.auth(request.user).filter(anketa=query, answer=contents[i]).delete()
 
 
-def get_prev_query_ordernum(query):
+def get_prev_query_ordernum(request, query):
     num = query.ordernum-1
     value = None
     if num > 0:
@@ -452,7 +459,8 @@ def get_prev_query_ordernum(query):
             value = num
         else:
             # Ищем ближайший вопрос на который не был дан корректный ответ
-            for prev_query in Anketa.objects.all().filter(attempt=query.attempt,
+            # for prev_query in Anketa.objects.all().filter(attempt=query.attempt,
+            for prev_query in Anketa.objects.auth(request.user).filter(attempt=query.attempt,
                                                       ordernum__lte=num).order_by('-ordernum'):
                 if err_results(prev_query):
                     value = prev_query.ordernum
@@ -460,7 +468,7 @@ def get_prev_query_ordernum(query):
     return value
 
 
-def get_next_query_ordernum(query):
+def get_next_query_ordernum(request, query):
     num = query.ordernum + 1
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
     value = None
@@ -469,7 +477,8 @@ def get_next_query_ordernum(query):
             value = num
         else:
             # Ищем ближайший вопрос на который не был дан корректный ответ
-            for next_query in Anketa.objects.all().filter(attempt=query.attempt,
+            # for next_query in Anketa.objects.all().filter(attempt=query.attempt,
+            for next_query in Anketa.objects.auth(request.user).filter(attempt=query.attempt,
                                                       ordernum__gte=num).order_by('ordernum'):
                 if err_results(next_query):
                     value = next_query.ordernum
@@ -482,8 +491,8 @@ def show_query(request, queryid):
     query = get_object_or_404(Anketa, pk=queryid)
     attempt_auth_or_404(request, query.attempt)
     maxquerynum = Anketa.objects.all().filter(attempt=query.attempt).aggregate(Max('ordernum'))['ordernum__max']
-    prev_ordernum = get_prev_query_ordernum(query)
-    next_ordernum = get_next_query_ordernum(query)
+    prev_ordernum = get_prev_query_ordernum(request, query)
+    next_ordernum = get_next_query_ordernum(request, query)
 
     form = render_result_form(request, query)
 
@@ -492,14 +501,14 @@ def show_query(request, queryid):
         if prev_ordernum:
             return redirect(reverse(
                 'surveys:showquery',
-                args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=prev_ordernum).id])
+                args=[get_object_or_404(Anketa.objects.auth(request.user), attempt=query.attempt, ordernum=prev_ordernum).id])
             )
     elif request.POST.get("next_query"):
         save_result(query, request)
         if next_ordernum:
             return redirect(reverse(
                 'surveys:showquery',
-                args=[get_object_or_404(Anketa, attempt=query.attempt, ordernum=next_ordernum).id])
+                args=[get_object_or_404(Anketa.objects.auth(request.user), attempt=query.attempt, ordernum=next_ordernum).id])
             )
     elif request.POST.get("exit_query"):
         save_result(query, request)
