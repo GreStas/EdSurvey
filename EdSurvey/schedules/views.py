@@ -22,16 +22,17 @@ def render_run_attempt(request, schedule):
     # проверить, что мы в сроках
     if schedule.start < now() < schedule.finish:
         # найти незавершённую попытку
-        attempt = Attempt.objects.all().filter(schedule=schedule,
-                                               finished__isnull=True,
-                                               user=request.user).order_by('-started')
+        # attempt = Attempt.objects.all().filter(schedule=schedule,
+        #                                        finished__isnull=True,
+        #                                        user=request.user).order_by('-started')
+        attempt = Attempt.objects.auth(request.user).filter(schedule=schedule,
+                                               finished__isnull=True).order_by('-started')
         if len(attempt):
             # и вернуть HTML-код запуска теста
             return render_to_string('runattemptblock.html', {'attempt': attempt[0]})
         # Если незавершённой попытки нет, то Вычислить количество доступных попыток
-        elif schedule.task.attempts > Attempt.objects.all().filter(schedule=schedule,
-                                                                   finished__isnull=False,
-                                                                   user=request.user).count():
+        elif schedule.task.attempts > Attempt.objects.auth(request.user).filter(schedule=schedule,
+                                                                   finished__isnull=False).count():
             # Если есть досупные попытки, то вернуть HTML-код запуска теста
             return render_to_string('newattemptblock.html', {'schedule': schedule})
         else:
@@ -43,7 +44,8 @@ def render_run_attempt(request, schedule):
 
 @login_required(login_url='login')
 def render_attempt_list(request, schedule):
-    attempts = Attempt.objects.all().filter(schedule=schedule, user=request.user).order_by('-started')
+    # attempts = Attempt.objects.all().filter(schedule=schedule, user=request.user).order_by('-started')
+    attempts = Attempt.objects.auth(request.user).filter(schedule=schedule).order_by('-started')
     return render_to_string('attemptlistblock.html', {'attempts': attempts})
 
 
@@ -83,12 +85,14 @@ def run_attempt(request, attemptid):
 def new_attempt(request, scheduleid):
     schedule = get_object_or_404(Schedule, pk=scheduleid)
     # Проверим использование доступных попыток
-    attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False, user=request.user).count()
+    # attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False, user=request.user).count()
+    attempts = Attempt.objects.auth(request.user).filter(schedule=schedule, finished__isnull=False).count()
     if attempts >= schedule.task.attempts:
         raise ValidationError("Использованы все доступные попытки.")
     try:
         # Если есть незавершённая попытка, то используем её
-        attempt = Attempt.objects.get(schedule=schedule, finished__isnull=True, user=request.user)
+        # attempt = Attempt.objects.get(schedule=schedule, finished__isnull=True, user=request.user)
+        attempt = Attempt.objects.auth(request.user).get(schedule=schedule, finished__isnull=True)
     except ObjectDoesNotExist:
         # Если нет незавершённой попытки, то создаём новую
         attempt = Attempt(schedule=schedule, user=request.user)

@@ -87,7 +87,8 @@ def finish_attempt(request, attemptid):
      Записывает finished=now()
     """
     errors = False
-    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    # attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    attempt = get_object_or_404(Attempt.objects.auth(request.user), pk=attemptid)
     for query in Anketa.objects.all().filter(attempt=attempt):
         errmsg = err_results(query)
         if errmsg:
@@ -136,6 +137,7 @@ def run_attempt(request, attemptid):
     или предложить завершить попытку
     """
     attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    attempt = get_object_or_404(Attempt.objects.auth(request.user), pk=attemptid)
     if not attempt.schedule.task.viewable:
         try:
             validate_modify_attempt(attempt)
@@ -179,7 +181,8 @@ def run_attempt(request, attemptid):
 
 @login_required(login_url='login')
 def close_attempt(request, attemptid):
-    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    # attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    attempt = get_object_or_404(Attempt.objects.auth(request.user), pk=attemptid)
     readonly = False
     try:
         validate_modify_attempt(attempt)

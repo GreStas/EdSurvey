@@ -15,7 +15,6 @@
 
 {% if waited_cnt == 0 and attempt.schedule.task.autoclose %}
     <h4>Вы ответили на все вопросы и попытка была автоматически завершена.</h4>
-    <h4><a href="{% url 'schedules:scheduleinfo' attempt.schedule.id %}">Вернуться к расписанию</a></h4>
 {% else %}
     <form action="{% url 'surveys:closeattempt' attempt.id %}" method="post">
         {% csrf_token %}
@@ -27,5 +26,6 @@
     {% endif %}
     </form>
 {% endif %}
+<h4><a href="{% url 'schedules:scheduleinfo' attempt.schedule.id %}">Вернуться к расписанию</a></h4>
 
 {% endblock %}

@@ -65,6 +65,16 @@ def schedule_pre_save(instance, **kwargs):
 pre_save.connect(schedule_pre_save, sender=Schedule)
 
 
+class AttemptManager(models.Manager):
+    def auth(self, user):
+        res = super().get_queryset().filter(user=user)
+        return res
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
     schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT)
@@ -72,6 +82,8 @@ class Attempt(models.Model):
     finished = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(User, null=False, blank=False, on_delete=models.PROTECT)
     # status = models.SmallIntegerField()
+
+    objects = AttemptManager()
 
     class Meta:
         verbose_name = 'Попытка пройти тест'
