@@ -1,7 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
-from django.utils.timezone import now
+from django.contrib.auth.models import User
 
 from querylists.models import QueryList
 
@@ -65,13 +65,25 @@ def schedule_pre_save(instance, **kwargs):
 pre_save.connect(schedule_pre_save, sender=Schedule)
 
 
+class AttemptManager(models.Manager):
+    def auth(self, user):
+        res = super().get_queryset().filter(user=user)
+        return res
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Attempt(models.Model):
     """ Попытки сдать тест-кейс """
     schedule = models.ForeignKey(Schedule, on_delete=models.PROTECT)
     started = models.DateTimeField(auto_now_add=True, auto_now=False)
     finished = models.DateTimeField(blank=True, null=True)
-    # user = models.ForeignKey('auth.user')
+    user = models.ForeignKey(User, null=False, blank=False, on_delete=models.PROTECT)
     # status = models.SmallIntegerField()
+
+    objects = AttemptManager()
 
     class Meta:
         verbose_name = 'Попытка пройти тест'
@@ -87,6 +99,7 @@ def attempt_pre_save(instance, **kwargs):
         Attempt.objects.get(
             schedule=instance.schedule,
             finished__isnull=True,
+            user=instance.user,
         )
     except ObjectDoesNotExist:
         # Открытых попыток нет.
@@ -96,7 +109,7 @@ def attempt_pre_save(instance, **kwargs):
         attempt = Attempt.objects.get(pk=instance.id)
     except ObjectDoesNotExist:
         # Создаётся новая попытка, но есть opened_attempt
-        raise ValidationError("Нельзя сделать новую попытку пока существует незавершённая.")
+        raise ValidationError("Нельзя начать новую попытку пока существует незавершённая.")
 
     # Проверяем на внесение изменений
     if attempt.finished:

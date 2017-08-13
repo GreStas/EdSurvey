@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.loader import render_to_string
 
@@ -12,7 +13,9 @@ def index(request):
         {'querylists': querylists},
     )
 
-def render_querylist_info(querylist):
+
+@login_required(login_url='login')
+def render_querylist_info(request, querylist):
     return render_to_string(
         'querylistinfoblock.html',
         {

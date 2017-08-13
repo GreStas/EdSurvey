@@ -18,11 +18,6 @@
     </ul>
     <table border="0">
     {% for content in contents %}
-       <ul>
-       {% if content.id == result %} checked {% endif %}
-
-       </ul>
-
         <tr><td>
             <input type="radio" name="choice" id="choice{{content.id}}" value="{{content.id}}"
                    {% if content.id == result %} checked {% endif %}

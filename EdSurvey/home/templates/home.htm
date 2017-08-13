@@ -12,18 +12,13 @@
     <h1><a href="/">Опросы и тестирование</a></h1>
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
     <div align="right">
-
         [Роль v]
-
         [Организация v]
-
-
         {% if user.username %}
             [ {{user.username}} ] <a href="{% url 'logout' %}">выйти</a>
         {% else %}
             [ <a href="{% url 'login' %}">Войти</a> ]
         {% endif %}
-
     </div>
     Пройти тест |
     <a href="/questions/">Вопросы</a> |
