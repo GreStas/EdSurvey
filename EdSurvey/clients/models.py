@@ -2,12 +2,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
-# ROOT_OWNER_NAME = 'Владелец сайта'
-# ROOT_OWNER_SHORTNAME = 'THE_OWNER'
-# ROOT_DIVISION_NAME = 'Опросы и Тестирование'
-# ROOT_DIVISION_SHORTNAME = 'THE_SITE'
-
-
 class Client(models.Model):
     name = models.CharField('Название', max_length=30)
     shortname = models.CharField('Аббревиатура', max_length=15)

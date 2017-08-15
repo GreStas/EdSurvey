@@ -6,7 +6,6 @@ from .models import Client, Division
 
 class DivisionAdmin(admin.TabularInline):
     model = Division
-    # list_display = ('id', 'client', 'shortname', 'name')
     ordering = ('shortname',)
     fieldsets = [
         (None, {'fields': ['shortname', 'name',]}),
