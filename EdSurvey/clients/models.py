@@ -9,8 +9,9 @@ from django.db import models
 
 
 class Client(models.Model):
-    name = models.CharField(max_length=30)
-    shortname = models.CharField(max_length=15)
+    name = models.CharField('Название', max_length=30)
+    shortname = models.CharField('Аббревиатура', max_length=15)
+    corporate = models.BooleanField('Корпорация', default=False)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
@@ -25,7 +26,6 @@ class Client(models.Model):
         return self.name
 
 
-
 class Division(models.Model):
     """
     public - определяет, что весь контент этой организации будет доступен всем организациями и пользователям сайта.
@@ -35,10 +35,10 @@ class Division(models.Model):
     id==1 - {'public':False, 'private':False, 'client':1} - superorganisation for superclient.
     """
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
-    name = models.CharField(max_length=60)
-    shortname = models.CharField(max_length=15)
-    public = models.BooleanField(default=False)
-    private = models.BooleanField(default=False)
+    name = models.CharField('Название', max_length=60)
+    shortname = models.CharField('Аббревиатура', max_length=15)
+    public = models.BooleanField('Публичный контент', default=False)
+    private = models.BooleanField('Корпоративное управление', default=False)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
