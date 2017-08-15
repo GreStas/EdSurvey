@@ -6,6 +6,7 @@ class Client(models.Model):
     name = models.CharField('Название', max_length=30)
     shortname = models.CharField('Аббревиатура', max_length=15)
     corporate = models.BooleanField('Корпорация', default=False)
+    public = models.BooleanField('Публичный контент', default=True)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
@@ -32,7 +33,7 @@ class Division(models.Model):
     name = models.CharField('Название', max_length=60)
     shortname = models.CharField('Аббревиатура', max_length=15)
     public = models.BooleanField('Публичный контент', default=False)
-    private = models.BooleanField('Корпоративное управление', default=False)
+    private = models.BooleanField('Контент только этого подразделения', default=False)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
