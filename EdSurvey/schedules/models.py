@@ -4,6 +4,7 @@ from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
 
 from querylists.models import QueryList
+from clients.models import Division
 
 
 class Task(models.Model):
@@ -27,6 +28,8 @@ class Task(models.Model):
     autoclose = models.BooleanField(default=True)   # автозакрытие поптыки когда есть ответы на все вопросы
     description = models.TextField()
     name = models.CharField(max_length=30)
+    division = models.ForeignKey(Division, on_delete=models.PROTECT)
+    public = models.BooleanField(default=False)
     # status = models.SmallIntegerField()
 
     class Meta:

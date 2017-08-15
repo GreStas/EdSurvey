@@ -5,7 +5,7 @@ from .models import QueryList, QueryContent
 
 @admin.register(QueryList)
 class QueryListAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description')
+    list_display = ('id', 'name', 'description', 'division', 'public')
 
 
 @admin.register(QueryContent)

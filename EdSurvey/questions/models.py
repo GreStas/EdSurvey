@@ -3,6 +3,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
+from clients.models import Division
+
 
 RADIOBUTTON = 'RB'  # (*) One -from- List
 CHECKBOX = 'CB'  # [v] Some -from- List
@@ -22,9 +24,10 @@ class Question(models.Model):
     )
     description = models.TextField()
     name = models.CharField(max_length=30)
+    division = models.ForeignKey(Division, on_delete=models.PROTECT)
+    public = models.BooleanField(default=False)
     # status = models.IntegerField(null=True)
     # content = models.XML - Как лучше хранить форматированный текст?
-    # organisation = models.ForeignKey('organisations.organisation')
     # authors = models.ForeignKey('auth.User')
 
     class Meta:

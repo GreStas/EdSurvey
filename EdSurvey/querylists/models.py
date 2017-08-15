@@ -1,11 +1,14 @@
 from django.db import models
 
 from questions.models import Question
+from clients.models import Division
 
 
 class QueryList(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
+    division = models.ForeignKey(Division, on_delete=models.PROTECT)
+    public = models.BooleanField(default=False)
     # status = models.IntegerField(null=True)
     # authors = models.ForeignKey('auth.User')
     # params xml

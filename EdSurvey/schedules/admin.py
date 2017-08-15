@@ -9,8 +9,8 @@ class ScheduleAdmin(admin.TabularInline):
 class TaskAdmin(admin.ModelAdmin):
     ordering = ('name', 'querylist')
     fieldsets = [
-        (None, {'fields': ['name','description', 'querylist']}),
-        ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose',]})
+        (None, {'fields': ['name','description', 'querylist', 'division',]}),
+        ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose', 'public']})
     ]
     inlines = [
         ScheduleAdmin,

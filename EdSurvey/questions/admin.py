@@ -33,7 +33,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'description', 'qtype')
     ordering = ('id',)
     fieldsets = [
-        (None,               {'fields': ['name', 'description', 'qtype']}),
+        (None, {'fields': ['name', 'description', 'qtype', 'division', 'public']}),
     ]
     inlines = [
         AnswerRBAdmin,
