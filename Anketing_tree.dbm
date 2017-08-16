@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.1" last-position="378,0" last-zoom="1.1"
+<dbmodel pgmodeler-ver="0.8.1" last-position="0,326" last-zoom="1.1"
 	 default-schema="public" default-owner="postgres">
 <database name="anketing">
 </database>
@@ -15,7 +15,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="postgres"/>
 	<comment><![CDATA[предполагается, что это таблица Django]]></comment>
-	<position x="0" y="411"/>
+	<position x="0" y="716.455"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -46,10 +46,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 </table>
 
-<table name="organisation">
-	<schema name="public"/>
+<table name="division">
+	<schema name="clients"/>
 	<role name="postgres"/>
-	<position x="1573" y="782.75"/>
+	<position x="1206.64" y="770.932"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -63,7 +63,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="smallint"/>
 		<comment><![CDATA[группа супер-пользователей данной организации -> groups.id]]></comment>
 	</column>
-	<constraint name="pk_organisations" type="pk-constr" table="public.organisation">
+	<constraint name="pk_organisations" type="pk-constr" table="clients.division">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -71,7 +71,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="group">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="1814.5" y="437"/>
+	<position x="1855.41" y="489.727"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -86,7 +86,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="usergroups">
 	<schema name="public"/>
 	<role name="postgres"/>
-	<position x="286.25" y="585.75"/>
+	<position x="756.25" y="733.023"/>
 	<column name="user" not-null="true">
 		<type name="smallint"/>
 	</column>
@@ -104,11 +104,11 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<table name="testcase">
-	<schema name="public"/>
+<table name="querylist">
+	<schema name="querylists"/>
 	<role name="postgres"/>
 	<comment><![CDATA[упорядоченость вопросов; возомжность редактировать свои ответы; количество попыток и т.п.]]></comment>
-	<position x="843.75" y="498.75"/>
+	<position x="637.386" y="601.477"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -130,7 +130,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="anketa" not-null="true">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_testcase" type="pk-constr" table="public.testcase">
+	<constraint name="pk_testcase" type="pk-constr" table="querylists.querylist">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -139,7 +139,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="public"/>
 	<role name="postgres"/>
 	<comment><![CDATA[В какие организации входит пользователь.]]></comment>
-	<position x="271.25" y="824.25"/>
+	<position x="238.523" y="814.25"/>
 	<column name="user" not-null="true">
 		<type name="smallint"/>
 	</column>
@@ -155,9 +155,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </table>
 
 <table name="task">
-	<schema name="public"/>
+	<schema name="schedules"/>
 	<role name="postgres"/>
-	<position x="1360.25" y="102.75"/>
+	<position x="994.795" y="137.295"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -176,15 +176,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_tasks" type="pk-constr" table="public.task">
+	<constraint name="pk_tasks" type="pk-constr" table="schedules.task">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="schedule">
-	<schema name="public"/>
+	<schema name="schedules"/>
 	<role name="postgres"/>
-	<position x="958.75" y="155"/>
+	<position x="1001.48" y="25.9091"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -194,15 +194,15 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="duration" not-null="true">
 		<type name="daterange"/>
 	</column>
-	<constraint name="pk_schedules" type="pk-constr" table="public.schedule">
+	<constraint name="pk_schedules" type="pk-constr" table="schedules.schedule">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="question">
-	<schema name="public"/>
+	<schema name="questions"/>
 	<role name="postgres"/>
-	<position x="1048.25" y="306.75"/>
+	<position x="680.068" y="363.114"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -226,32 +226,32 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="smallint"/>
 		<comment><![CDATA[обратный вопрос для кросс-проверок]]></comment>
 	</column>
-	<constraint name="pk_questions" type="pk-constr" table="public.question">
+	<constraint name="pk_questions" type="pk-constr" table="questions.question">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
 <table name="qtype">
-	<schema name="public"/>
+	<schema name="questions"/>
 	<role name="postgres"/>
 	<comment><![CDATA[тип вопроса: radio, check, relations]]></comment>
-	<position x="301.75" y="244.75"/>
+	<position x="678.114" y="500.205"/>
 	<column name="id" not-null="true">
 		<type name="smallint"/>
 	</column>
 	<column name="name" not-null="true">
 		<type name="varchar" length="16"/>
 	</column>
-	<constraint name="pk_qtypes" type="pk-constr" table="public.qtype">
+	<constraint name="pk_qtypes" type="pk-constr" table="questions.qtype">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="testcontent">
-	<schema name="public"/>
+<table name="querycontent">
+	<schema name="querylists"/>
 	<role name="postgres"/>
 	<comment><![CDATA[Контейнер из вопросов для конкретного теста.]]></comment>
-	<position x="300" y="426.5"/>
+	<position x="319.091" y="598.318"/>
 	<column name="test" not-null="true">
 		<type name="smallint"/>
 	</column>
@@ -265,7 +265,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_testcontent" type="pk-constr" table="public.testcontent">
+	<constraint name="pk_testcontent" type="pk-constr" table="querylists.querycontent">
 		<columns names="test,question" ref-type="src-columns"/>
 	</constraint>
 </table>
@@ -292,9 +292,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </table>
 
 <table name="answer">
-	<schema name="public"/>
+	<schema name="questions"/>
 	<role name="postgres"/>
-	<position x="531.25" y="181.5"/>
+	<position x="693.977" y="237.864"/>
 	<column name="id" not-null="true">
 		<type name="serial"/>
 	</column>
@@ -313,16 +313,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_answers" type="pk-constr" table="public.answer">
+	<constraint name="pk_answers" type="pk-constr" table="questions.answer">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<table name="surveys">
-	<schema name="public"/>
+<table name="survey">
+	<schema name="surveys"/>
 	<role name="postgres"/>
 	<comment><![CDATA[Ответы пользователей на анкеты]]></comment>
-	<position x="288.75" y="11.25"/>
+	<position x="306.932" y="138.455"/>
 	<column name="user" not-null="true">
 		<type name="smallint"/>
 	</column>
@@ -345,13 +345,33 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status">
 		<type name="smallint"/>
 	</column>
-	<constraint name="pk_surveys" type="pk-constr" table="public.surveys">
+	<constraint name="pk_surveys" type="pk-constr" table="surveys.survey">
 		<columns names="user,task,question,attempt" ref-type="src-columns"/>
 	</constraint>
 </table>
 
+<schema name="clients" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<schema name="surveys" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<schema name="schedules" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<schema name="querylists" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
+<schema name="questions" rect-visible="true" fill-color="#e1e1e1">
+	<role name="postgres"/>
+</schema>
+
 <constraint name="fk_organisations_supervisors" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.organisation">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="clients.division">
 	<columns names="supervisors" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -369,13 +389,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="fk_usergroups_organisation" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.usergroups">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="clients.division" table="public.usergroups">
 	<columns names="organisation" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_testcase_authors" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.testcase">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="querylists.querylist">
 	<columns names="authors" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -387,103 +407,103 @@ CAUTION: Do not modify this file unless you know what you are doing.
 </constraint>
 
 <constraint name="fk_userorgs_organisation" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.userorgs">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="clients.division" table="public.userorgs">
 	<columns names="organisation" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_tasks_organisation" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.task">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="clients.division" table="schedules.task">
 	<columns names="organisation" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_tasks_teachers" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.task">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="schedules.task">
 	<columns names="teachers" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_tasks_students" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.task">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="schedules.task">
 	<columns names="students" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_tasks_test" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.testcase" table="public.task">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="querylists.querylist" table="schedules.task">
 	<columns names="test" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_schedules_task" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.task" table="public.schedule">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="schedules.task" table="schedules.schedule">
 	<columns names="task" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_questions_qtype" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.qtype" table="public.question">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.qtype" table="questions.question">
 	<columns names="qtype" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_questions_organisation" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.organisation" table="public.question">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="clients.division" table="questions.question">
 	<columns names="organisation" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_questions_authors" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="public.question">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;group&quot;" table="questions.question">
 	<columns names="authors" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_questions_inverse" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.question">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.question" table="questions.question">
 	<columns names="inverse" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_testcontent_question" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.testcontent">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.question" table="querylists.querycontent">
 	<columns names="question" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_testcontent_testcase" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.testcase" table="public.testcontent">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="querylists.querylist" table="querylists.querycontent">
 	<columns names="test" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_answers_question" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.answer">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.question" table="questions.answer">
 	<columns names="question" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_surveys_user" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;user&quot;" table="public.surveys">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.&quot;user&quot;" table="surveys.survey">
 	<columns names="user" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_surveys_task" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.task" table="public.surveys">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="schedules.task" table="surveys.survey">
 	<columns names="task" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_surveys_question" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.question" table="public.surveys">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.question" table="surveys.survey">
 	<columns names="question" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="fk_surveys_answer" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="public.answer" table="public.surveys">
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="questions.answer" table="surveys.survey">
 	<columns names="answer" ref-type="src-columns"/>
 	<columns names="id" ref-type="dst-columns"/>
 </constraint>
@@ -491,12 +511,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <relationship name="rel_usergroups_users" type="relfk"
 	 src-table="public.usergroups"
 	 dst-table="public.&quot;user&quot;"
-	 src-required="false" dst-required="false">
-	<line>
-		<position x="234.85" y="614.35"/>
-	<position x="234.85" y="439.6"/>
-	</line>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_usergroups_groups" type="relfk"
 	 src-table="public.usergroups"
@@ -504,18 +519,18 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_organisations_groups" type="relfk"
-	 src-table="public.organisation"
+	 src-table="clients.division"
 	 dst-table="public.&quot;group&quot;"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_tests_groups" type="relfk"
-	 src-table="public.testcase"
+	 src-table="querylists.querylist"
 	 dst-table="public.&quot;group&quot;"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_usergroups_organisations" type="relfk"
 	 src-table="public.usergroups"
-	 dst-table="public.organisation"
+	 dst-table="clients.division"
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
 		<position x="110.979" y="-15.4485"/>
@@ -525,111 +540,92 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <relationship name="rel_userorgs_users" type="relfk"
 	 src-table="public.userorgs"
 	 dst-table="public.&quot;user&quot;"
-	 src-required="false" dst-required="false">
-	<line>
-		<position x="198.75" y="853.75"/>
-	</line>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_userorgs_organisations" type="relfk"
 	 src-table="public.userorgs"
-	 dst-table="public.organisation"
+	 dst-table="clients.division"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_tasks_organisations" type="relfk"
-	 src-table="public.task"
-	 dst-table="public.organisation"
+	 src-table="schedules.task"
+	 dst-table="clients.division"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_tasks_groups" type="relfk"
-	 src-table="public.task"
+	 src-table="schedules.task"
 	 dst-table="public.&quot;group&quot;"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_tasks_tests" type="relfk"
-	 src-table="public.task"
-	 dst-table="public.testcase"
+	 src-table="schedules.task"
+	 dst-table="querylists.querylist"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_schedules_tasks" type="relfk"
-	 src-table="public.schedule"
-	 dst-table="public.task"
-	 src-required="false" dst-required="false">
-	<line>
-		<position x="1260.83" y="197.6"/>
-	<position x="1260.83" y="131.35"/>
-	</line>
-</relationship>
+	 src-table="schedules.schedule"
+	 dst-table="schedules.task"
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_questions_qtypes" type="relfk"
-	 src-table="public.question"
-	 dst-table="public.qtype"
+	 src-table="questions.question"
+	 dst-table="questions.qtype"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_questions_organisations" type="relfk"
-	 src-table="public.question"
-	 dst-table="public.organisation"
+	 src-table="questions.question"
+	 dst-table="clients.division"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_questions_groups" type="relfk"
-	 src-table="public.question"
+	 src-table="questions.question"
 	 dst-table="public.&quot;group&quot;"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_anketa_questions" type="relfk"
-	 src-table="public.testcontent"
-	 dst-table="public.question"
+	 src-table="querylists.querycontent"
+	 dst-table="questions.question"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_anketas_tests" type="relfk"
-	 src-table="public.testcontent"
-	 dst-table="public.testcase"
+	 src-table="querylists.querycontent"
+	 dst-table="querylists.querylist"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_questions_questions" type="relfk"
-	 src-table="public.question"
-	 dst-table="public.question"
+	 src-table="questions.question"
+	 dst-table="questions.question"
 	 src-required="false" dst-required="false">
 	<line>
-		<position x="1272.02" y="355.31"/>
-	<position x="1272.02" y="296.75"/>
-	<position x="1190.76" y="296.75"/>
+		<position x="903.834" y="411.674"/>
+	<position x="903.834" y="353.114"/>
+	<position x="822.579" y="353.114"/>
 	</line>
 </relationship>
 
 <relationship name="rel_answers_questions" type="relfk"
-	 src-table="public.answer"
-	 dst-table="public.question"
+	 src-table="questions.answer"
+	 dst-table="questions.question"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_surveys_users" type="relfk"
-	 src-table="public.surveys"
+	 src-table="surveys.survey"
 	 dst-table="public.&quot;user&quot;"
-	 src-required="false" dst-required="false">
-	<line>
-		<position x="236.1" y="39.85"/>
-	<position x="256.25" y="435"/>
-	</line>
-</relationship>
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_surveys_tasks" type="relfk"
-	 src-table="public.surveys"
-	 dst-table="public.task"
-	 src-required="false" dst-required="false">
-	<line>
-		<position x="869.764" y="53.85"/>
-	<position x="869.764" y="131.35"/>
-	</line>
-</relationship>
+	 src-table="surveys.survey"
+	 dst-table="schedules.task"
+	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_surveys_questions" type="relfk"
-	 src-table="public.surveys"
-	 dst-table="public.question"
+	 src-table="surveys.survey"
+	 dst-table="questions.question"
 	 src-required="false" dst-required="false"/>
 
 <relationship name="rel_surveys_answers" type="relfk"
-	 src-table="public.surveys"
-	 dst-table="public.answer"
+	 src-table="surveys.survey"
+	 dst-table="questions.answer"
 	 src-required="false" dst-required="false"/>
 
 </dbmodel>

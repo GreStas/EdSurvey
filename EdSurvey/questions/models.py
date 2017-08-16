@@ -17,15 +17,13 @@ QUESTION_TYPE_CHOICES = (
 
 
 class Question(models.Model):
-    qtype = models.CharField(
-        max_length=2,
-        choices=QUESTION_TYPE_CHOICES,
-        default=RADIOBUTTON,
-    )
-    description = models.TextField()
     name = models.CharField(max_length=30)
+    description = models.TextField()
     division = models.ForeignKey(Division, on_delete=models.PROTECT)
     public = models.BooleanField(default=False)
+    qtype = models.CharField(max_length=2,
+                             choices=QUESTION_TYPE_CHOICES,
+                             default=RADIOBUTTON,)
     # status = models.IntegerField(null=True)
     # content = models.XML - Как лучше хранить форматированный текст?
     # authors = models.ForeignKey('auth.User')
