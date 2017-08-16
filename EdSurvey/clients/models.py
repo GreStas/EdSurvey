@@ -38,9 +38,14 @@ class Division(models.Model):
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
-            raise ValidationError("Нельзя удалить Корневую оргструктуру Сайта.")
-        if self.client.division_id == self.id:
-            raise ValidationError("Нельзя удалить Корневую оргструктуру Клиента.")
+            raise ValidationError("Нельзя удалить Корневую организацию Сайта.")
+        try:
+            clientdata = ClientData.objects.get(client_ptr=self.client)
+            if clientdata.rootdivision == self:
+                raise ValidationError("Нельзя удалить Корневую организацию Клиента.")
+        except ObjectDoesNotExist:
+            # Если нет доп.данных, то и проблемы нет.
+            pass
         super(Division, self).delete(*args, **kwargs)
 
     class Meta:
@@ -62,49 +67,34 @@ class ClientData(models.Model):
         parent_link=True,
     )
     fullname = models.CharField('полное наименование', max_length=120)
-    address = models.TextField('почтовый адрес')
+    address = models.TextField('почтовый адрес', null=True, blank=True)
     rootdivision = models.ForeignKey(Division,
                                      on_delete=models.CASCADE,
                                      verbose_name='корневая организация',)
+    def save(self, **kwargs):
+        # print(self.rootdivision.client.id, self.client_ptr.id)
+        if self.rootdivision and self.rootdivision.client.id != self.client_ptr.id:
+            raise ValidationError("Корневое подразделение указано не корректно.")
+        super(ClientData, self).save(**kwargs)
 
     class Meta:
         verbose_name = 'Дополнительная информация о Клиенте'
         verbose_name_plural = 'Дополнительная информация о Клиентах'
 
 
-# # def client_pre_save(instance, **kwargs):
-# #     """ Очистить division_id, если организация не корректна"""
-# #     if instance.division_id:
-# #         try:
-# #             division = Division.objects.get(id=instance.division_id,
-# #                                             client=instance)
-# #         except ObjectDoesNotExist:
-# #             ValueError("Корневое подразделение указано не корректно.")
-# #
-# # pre_save.connect(client_pre_save, sender=Client)
-# #
-# #
-# # def client_post_save(instance, **kwargs):
-# #     """
-# #     Ищем организацию с совпадающими name и shortname
-# #     Если таковая не находится, то создаём её.
-# #     """
-# #     if instance.division_id:
-# #         try:
-# #             division = Division.objects.get(id=instance.division_id,
-# #                                             client=instance)
-# #         except ObjectDoesNotExist:
-# #             ValidationError("Корневое подразделение указано не корректно.")
-# #     else:
-# #         try:
-# #             division = Division.objects.get(client=instance,
-# #                                             name=instance.name,
-# #                                             shortname=instance.shortname)
-# #         except ObjectDoesNotExist:
-# #             division = Division.objects.create(client=instance,
-# #                                                name=instance.name,
-# #                                                shortname=instance.shortname,
-# #                                                )
-# #             # division.save()
-# #
-# # post_save.connect(client_post_save, sender=Client)
+def division_post_save(instance, **kwargs):
+    """
+    Если это первая организация Клиента,
+    то автосоздание и автозаполнение доп.данных Клиента.
+    """
+    # cnt = Division.objects.all().filter(client=instance.client).count()
+    # print(cnt)
+    if Division.objects.all().filter(client=instance.client).count() <= 1:
+        try:
+            clientdata = ClientData.objects.get(client_ptr=instance.client)
+        except ObjectDoesNotExist:
+            ClientData.objects.create(client_ptr=instance.client,
+                                      fullname=instance.client.name,
+                                      rootdivision=instance)
+
+post_save.connect(division_post_save, sender=Division)
