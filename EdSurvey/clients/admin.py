@@ -1,7 +1,7 @@
 #   clients.admin
 from django.contrib import admin
 
-from .models import Client, Division, ClientData, Person
+from .models import Client, Division, ClientData, Person, Role
 
 
 class DivisionAdmin(admin.TabularInline):
@@ -17,7 +17,6 @@ class ClientDataAdmin(admin.TabularInline):
     model = ClientData
     fieldsets = [
         (None, {'fields': ['id', 'rootdivision', 'fullname', 'address',]})
-        # ('Параметры Клиента', {'fields': ['division',]})
     ]
 
 
@@ -37,3 +36,10 @@ class PersonAdmin(admin.ModelAdmin):
     list_display = ('user', 'shortname',)
 
 admin.site.register(Person, PersonAdmin)
+
+
+class RoleAdmin(admin.ModelAdmin):
+    model = Role
+    list_display = ('group','name', 'shortname', 'description')
+
+admin.site.register(Role, RoleAdmin)

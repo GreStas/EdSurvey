@@ -2,14 +2,14 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 
 class Client(models.Model):
-    name = models.CharField('Название', max_length=30)
-    shortname = models.CharField('Аббревиатура', max_length=15)
-    corporate = models.BooleanField('Корпорация', default=False)
-    public = models.BooleanField('Публичный контент', default=True)
+    name = models.CharField('название', max_length=30)
+    shortname = models.CharField('абревиатура', max_length=15)
+    corporate = models.BooleanField('корпорация', default=False)
+    public = models.BooleanField('публичный контент', default=True)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
@@ -17,8 +17,8 @@ class Client(models.Model):
         super(Client, self).delete(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'Клиент'
-        verbose_name_plural = 'Клиенты'
+        verbose_name = 'клиент'
+        verbose_name_plural = 'клиенты'
 
     def __str__(self):
         return self.name
@@ -33,10 +33,10 @@ class Division(models.Model):
     id==1 - {'public':False, 'private':False, 'client':1} - superorganisation for superclient.
     """
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
-    name = models.CharField('Название', max_length=60)
-    shortname = models.CharField('Аббревиатура', max_length=15)
-    public = models.BooleanField('Публичный контент', default=False)
-    private = models.BooleanField('Контент только этого подразделения', default=False)
+    name = models.CharField('название', max_length=60)
+    shortname = models.CharField('абревиатура', max_length=15)
+    public = models.BooleanField('публичный контент', default=False)
+    private = models.BooleanField('контент только этого подразделения', default=False)
 
     def delete(self, *args, **kwargs):
         if self.id == 1:
@@ -51,8 +51,8 @@ class Division(models.Model):
         super(Division, self).delete(*args, **kwargs)
 
     class Meta:
-        verbose_name = 'Организация'
-        verbose_name_plural = 'Организации'
+        verbose_name = 'организация'
+        verbose_name_plural = 'организации'
         unique_together = (
             ('client', 'shortname'),
             ('client', 'name'),
@@ -80,8 +80,8 @@ class ClientData(models.Model):
         super(ClientData, self).save(**kwargs)
 
     class Meta:
-        verbose_name = 'Дополнительная информация о Клиенте'
-        verbose_name_plural = 'Дополнительная информация о Клиентах'
+        verbose_name = 'дополнительная информация о Клиенте'
+        verbose_name_plural = 'дополнительная информация о Клиентах'
 
 
 def division_post_save(instance, **kwargs):
@@ -108,15 +108,40 @@ class Person(models.Model):
     для дальнейшей работы с различными Клиентами
     """
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    shortname = models.CharField(max_length=15)
-
+    shortname = models.CharField('aka', max_length=15)
 
     class Meta:
-        verbose_name = 'Личность'
-        verbose_name_plural = 'Личности'
+        verbose_name = 'личность'
+        verbose_name_plural = 'личности'
+        unique_together = (('user', 'shortname',),)
 
     def __str__(self):
         return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
+
+
+def get_allusers_group():
+    return Group.objects.get(pk=1)
+
+
+class Role(models.Model):
+    """ Role
+    name
+    shortname
+    description
+    group(auth.group, default=allusers) - для фиксированных ролей типа Модератор Сайта, Администратор Сайта, Модератор, Редактор и другие (по мере создания). Должна быть фиксированная группа-Роль "Пользователи сайта", которая будет даваться по-молчанию.
+    """
+    name = models.CharField('название', max_length=30)
+    shortname = models.CharField('абревиатура', max_length=15)
+    description = models.TextField('описание')
+    group = models.ForeignKey(Group, default=get_allusers_group, verbose_name='стандартная группа')
+
+    class Meta:
+        verbose_name = 'роль'
+        verbose_name_plural = 'роли'
+
+    def __str__(self):
+        return "{}{}".format(self.name, " (self.group)" if self.group else '')
+
 
 # class Squad(models.Model):
 #     """ Рабочая группа (бригада) """
