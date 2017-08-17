@@ -143,10 +143,17 @@ class Role(models.Model):
         return "{}{}".format(self.name, " (self.group)" if self.group else '')
 
 
-# class Squad(models.Model):
-#     """ Рабочая группа (бригада) """
-#     name = models.CharField('название', max_length=30)
-#     shortname = models.CharField('абревиатура', max_length=15)
-#     discription = models.TextField('описание', null=True, blank=True)
-#     division = models.ForeignKey(Division, )  # TODO добавить default=корневая()
-#     manager = models.ForeignKey(Person)
+class Squad(models.Model):
+    """ Рабочая группа (бригада) """
+    name = models.CharField('название', max_length=30)
+    shortname = models.CharField('абревиатура', max_length=15)
+    discription = models.TextField('описание', null=True, blank=True)
+    division = models.ForeignKey(Division, verbose_name='организация')
+    manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')
+
+    class Meta:
+        verbose_name = 'рабочая группа'
+        verbose_name_plural = 'рабочие группы'
+
+    def __str__(self):
+        return "{} для {}".format(self.shortname, self.division.shortname)

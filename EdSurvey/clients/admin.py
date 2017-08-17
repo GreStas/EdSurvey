@@ -1,7 +1,7 @@
 #   clients.admin
 from django.contrib import admin
 
-from .models import Client, Division, ClientData, Person, Role
+from .models import Client, Division, ClientData, Person, Role, Squad
 
 
 class DivisionAdmin(admin.TabularInline):
@@ -43,3 +43,15 @@ class RoleAdmin(admin.ModelAdmin):
     list_display = ('group','name', 'shortname', 'description')
 
 admin.site.register(Role, RoleAdmin)
+
+
+class SquadAdmin(admin.ModelAdmin):
+    model = Squad
+    # list_display = ('group','name', 'shortname', 'description')
+    # name = models.CharField('название', max_length=30)
+    # shortname = models.CharField('абревиатура', max_length=15)
+    # discription = models.TextField('описание', null=True, blank=True)
+    # division = models.ForeignKey(Division)
+    # manager = models.ForeignKey(Person, default=get_admin_user, verbose_name='менеджер группы')
+
+admin.site.register(Squad, SquadAdmin)
