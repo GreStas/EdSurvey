@@ -2,6 +2,8 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 
+from django.contrib.auth.models import User
+
 
 class Client(models.Model):
     name = models.CharField('Название', max_length=30)
@@ -98,3 +100,28 @@ def division_post_save(instance, **kwargs):
                                       rootdivision=instance)
 
 post_save.connect(division_post_save, sender=Division)
+
+
+class Person(models.Model):
+    """ Личность
+    Позволяет создать алисы пользователей сайта
+    для дальнейшей работы с различными Клиентами
+    """
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    shortname = models.CharField(max_length=15)
+
+
+    class Meta:
+        verbose_name = 'Личность'
+        verbose_name_plural = 'Личности'
+
+    def __str__(self):
+        return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
+
+# class Squad(models.Model):
+#     """ Рабочая группа (бригада) """
+#     name = models.CharField('название', max_length=30)
+#     shortname = models.CharField('абревиатура', max_length=15)
+#     discription = models.TextField('описание', null=True, blank=True)
+#     division = models.ForeignKey(Division, )  # TODO добавить default=корневая()
+#     manager = models.ForeignKey(Person)
