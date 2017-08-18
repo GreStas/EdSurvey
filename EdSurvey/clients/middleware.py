@@ -1,8 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
-from django.contrib.auth.middleware import AuthenticationMiddleware
-# from django.contrib.messages .middleware import MessageMiddleware
 
 from .models import Person, Role
 
@@ -35,12 +33,11 @@ class PersonMiddleware(MiddlewareMixin):
             if 'person_id' in request.session:
                 del request.session['person_id']
 
-# class PersonMiddleware(object):
-#     def __init__(self, get_response):
-#         self.get_response = get_response
-#
-#     def __call__(self, request):
-#         request.person = SimpleLazyObject(lambda: get_person(request))
-#         response = self.get_response(request)
-#         print("request.person in clients.middleware.PersonMiddleware = ", request.person)
-#         return response
+    # def process_view(self, request, view_func, view_args, view_kwargs):
+    #     if hasattr(request, 'person'):
+    #         if len(view_args) >= 3:
+    #             view_args[2] = request.person
+    #         elif 'person' in view_kwargs:
+    #             view_kwargs['person'] = request.person
+    #     response = view_func(request, *view_args, **view_kwargs)
+    #     return response
