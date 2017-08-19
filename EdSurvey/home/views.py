@@ -6,7 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from django.urls.base import reverse
 
-from clients.models import Person, Role
+from clients.models import Person
 
 
 def log_in(request):

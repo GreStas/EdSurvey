@@ -146,6 +146,18 @@ class Person(models.Model):
         return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
 
 
+class PersonCache(models.Model):
+    person_ptr = models.OneToOneField(
+        Person,
+        on_delete=models.CASCADE,
+        parent_link=True,
+    )
+    client = models.ForeignKey(Client, null=True)
+    division = models.ForeignKey(Division, null=True)
+    role = models.ForeignKey(Role, null=True)
+    used = models.DateTimeField(null=True)
+
+
 class Squad(models.Model):
     """ Рабочая группа (бригада) """
     name = models.CharField('название', max_length=30)
