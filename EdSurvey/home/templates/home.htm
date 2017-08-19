@@ -13,7 +13,7 @@
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
     <div align="right">
         {% if request.person %}
-            Добро пожаловать {{request.person.shortname}}
+            Добро пожаловать, <a href="/clients/aka/">{{person.shortname}}</a>!
         {% else %}
             Кто ты такой, {{user}}?
         {% endif %}
@@ -43,10 +43,14 @@
 {% endif %}
 
 {% block mainblock %}
+    {% if person %}
+        <h3>Добро пожаловать, {{person}}!</h3>
+        <p>({{person.division}} от "{{person.division.client}}")</p>
+    {% else %}
+        <h3>Войдите как пользователь сайта, чтобы получить больше возможностей!</h3>
+    {% endif %}
 
-    Добро пожаловать {{person.shortname}}
-
-    <h2>...тут будет дополнительная информация и новостная лента...</h2>
+    {# ...тут будет дополнительная информация и новостная лента... #}
 {% endblock %}
 </div>
 <hr border-color="#7b6b6b">

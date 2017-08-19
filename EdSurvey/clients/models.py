@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 
 from django.contrib.auth.models import User, Group
+from django.utils.timezone import now
 
 
 class Client(models.Model):
@@ -133,9 +134,12 @@ class Person(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     shortname = models.CharField('aka', max_length=15)
-    clients = models.ManyToManyField(Client, verbose_name='от клиента')
-    divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')
-    roles = models.ManyToManyField(Role, verbose_name='доступная роль')
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='входит в организацию')
+    role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
+    used = models.DateTimeField(auto_now_add=now())
+    # clients = models.ManyToManyField(Client, verbose_name='от клиента')
+    # divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')
+    # roles = models.ManyToManyField(Role, verbose_name='доступная роль')
 
     class Meta:
         verbose_name = 'личность'
@@ -144,18 +148,6 @@ class Person(models.Model):
 
     def __str__(self):
         return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
-
-
-class PersonCache(models.Model):
-    person_ptr = models.OneToOneField(
-        Person,
-        on_delete=models.CASCADE,
-        parent_link=True,
-    )
-    client = models.ForeignKey(Client, null=True)
-    division = models.ForeignKey(Division, null=True)
-    role = models.ForeignKey(Role, null=True)
-    used = models.DateTimeField(null=True)
 
 
 class Squad(models.Model):
@@ -174,3 +166,15 @@ class Squad(models.Model):
 
     def __str__(self):
         return "{} для {}".format(self.shortname, self.division.shortname)
+
+
+# class PersonCache(models.Model):
+#     person_ptr = models.OneToOneField(
+#         Person,
+#         on_delete=models.CASCADE,
+#         parent_link=True,
+#     )
+#     client = models.ForeignKey(Client, null=True)
+#     division = models.ForeignKey(Division, null=True)
+#     role = models.ForeignKey(Role, null=True)
+#     used = models.DateTimeField(null=True)
