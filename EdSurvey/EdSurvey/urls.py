@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^querylists/', include('querylists.urls', namespace='querylists')),
     url(r'^schedules/', include('schedules.urls', namespace='schedules')),
     url(r'^surveys/', include('surveys.urls', namespace='surveys')),
-    # url(r'^clients/', include('clients.urls', namespace='clients')),
+    url(r'^clients/', include('clients.urls', namespace='clients')),
 ]

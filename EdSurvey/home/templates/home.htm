@@ -13,7 +13,7 @@
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
     <div align="right">
         {% if request.person %}
-            Добро пожаловать, <a href="/clients/aka/">{{person.shortname}}</a>!
+            Добро пожаловать, <a href="{% url 'clients:aka' %}">{{person.shortname}}</a>!
         {% else %}
             Кто ты такой, {{user}}?
         {% endif %}

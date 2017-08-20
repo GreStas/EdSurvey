@@ -1,0 +1,15 @@
+{% extends 'home.htm' %}
+{% block mainblock %}
+
+{% if person %}
+    <h3>Вы вошли как {{person}}!</h3>
+    <h4>Выберите другую личину:</h4>
+    {% for person in persons %}
+        <p>{{person.shortname}}</p>
+    {% endfor %}
+{% else %}
+    <h3>Войдите как пользователь сайта, чтобы получить больше возможностей!</h3>
+{% endif %}
+
+
+{% endblock %}

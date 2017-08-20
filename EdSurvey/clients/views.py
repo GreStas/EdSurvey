@@ -67,3 +67,14 @@ def log_out(request):
     #     pass
     # del request.session['role_id']
     return redirect(reverse('homepage'))
+
+
+def aka(request):
+    persons = Person.objects.filter(user=request.user)
+    form = None  # TODO разработать форму с выпадающим списком или RadioButton
+    return render(request,
+                  'aka.html',
+                  {
+                      'form': form,
+                      'persons': persons,
+                  },)
