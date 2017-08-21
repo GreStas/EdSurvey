@@ -124,7 +124,7 @@ class Role(models.Model):
         verbose_name_plural = 'роли'
 
     def __str__(self):
-        return "{}{}".format(self.name, " (self.group)" if self.group else '')
+        return "{}{}".format(self.name, "/{}".format(self.group) if self.group else '')
 
 
 class Person(models.Model):

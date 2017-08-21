@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls.base import reverse
 from django.utils.timezone import now
 
@@ -28,6 +28,8 @@ def touch_person(person):
     person.save()
 
 def log_in(request):
+    form = AuthenticationForm()
+    # form = LoginForm()
     if request.method == 'POST':
         user = authenticate(
             request,
@@ -48,17 +50,15 @@ def log_in(request):
                 return redirect(request.GET['next'])
             except MultiValueDictKeyError:
                 return redirect(reverse('homepage'))
-    else:
-        form = AuthenticationForm()
-        # form = LoginForm()
     return render(request,
                   'login.html',
                   {
                       'form': form,
-                  },)
+                  })
+
 
 def log_out(request):
-    print("request.person in home.view.log_out = ", request.person)
+    # print("request.person in home.view.log_out = ", request.person)
     logout(request)
     # try:
     #     del request.session['person_id']
@@ -70,11 +70,15 @@ def log_out(request):
 
 
 def aka(request):
+    if request.method == 'POST' and request.POST.get("Ok") and request.POST.get('choice'):
+        person_id = request.POST.get('choice')
+        person = get_object_or_404(Person, pk=person_id)
+        touch_person(person)
+        request.session['person_id'] = person.id
+        return redirect(reverse('homepage'))
     persons = Person.objects.filter(user=request.user)
-    form = None  # TODO разработать форму с выпадающим списком или RadioButton
     return render(request,
                   'aka.html',
                   {
-                      'form': form,
                       'persons': persons,
                   },)
