@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from home.views import index as homepage, log_in, log_out
+from home.views import index as homepage
+from clients.views import log_in, log_out
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', homepage, name='homepage'),
-    # url(r'^login/(?P<next>\S+)$', log_in, name='login'),
     url(r'^login$', log_in, name='login'),
     url(r'^logout$', log_out, name='logout'),
     url(r'^home/', include('home.urls', namespace='home'),),
@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^querylists/', include('querylists.urls', namespace='querylists')),
     url(r'^schedules/', include('schedules.urls', namespace='schedules')),
     url(r'^surveys/', include('surveys.urls', namespace='surveys')),
-    # url(r'^clients/', include('clients.urls', namespace='clients')),
+    url(r'^clients/', include('clients.urls', namespace='clients')),
 ]

@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 
 from django.contrib.auth.models import User, Group
+from django.utils.timezone import now
 
 
 class Client(models.Model):
@@ -102,23 +103,6 @@ def division_post_save(instance, **kwargs):
 post_save.connect(division_post_save, sender=Division)
 
 
-class Person(models.Model):
-    """ Личность
-    Позволяет создать алисы пользователей сайта
-    для дальнейшей работы с различными Клиентами
-    """
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
-    shortname = models.CharField('aka', max_length=15)
-
-    class Meta:
-        verbose_name = 'личность'
-        verbose_name_plural = 'личности'
-        unique_together = (('user', 'shortname',),)
-
-    def __str__(self):
-        return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
-
-
 def get_allusers_group():
     return Group.objects.get(pk=1)
 
@@ -140,7 +124,30 @@ class Role(models.Model):
         verbose_name_plural = 'роли'
 
     def __str__(self):
-        return "{}{}".format(self.name, " (self.group)" if self.group else '')
+        return "{}{}".format(self.name, "/{}".format(self.group) if self.group else '')
+
+
+class Person(models.Model):
+    """ Личность
+    Позволяет создать алисы пользователей сайта
+    для дальнейшей работы с различными Клиентами
+    """
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    shortname = models.CharField('aka', max_length=15)
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='входит в организацию')
+    role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
+    used = models.DateTimeField(auto_now_add=now())
+    # clients = models.ManyToManyField(Client, verbose_name='от клиента')
+    # divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')
+    # roles = models.ManyToManyField(Role, verbose_name='доступная роль')
+
+    class Meta:
+        verbose_name = 'личность'
+        verbose_name_plural = 'личности'
+        unique_together = (('user', 'shortname',),)
+
+    def __str__(self):
+        return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
 
 
 class Squad(models.Model):
@@ -149,11 +156,25 @@ class Squad(models.Model):
     shortname = models.CharField('абревиатура', max_length=15)
     discription = models.TextField('описание', null=True, blank=True)
     division = models.ForeignKey(Division, verbose_name='организация')
-    manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')
+    # manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')
+    members = models.ManyToManyField(Person, verbose_name='участники')
 
     class Meta:
         verbose_name = 'рабочая группа'
         verbose_name_plural = 'рабочие группы'
+        unique_together = (('shortname', 'division',),)
 
     def __str__(self):
         return "{} для {}".format(self.shortname, self.division.shortname)
+
+
+# class PersonCache(models.Model):
+#     person_ptr = models.OneToOneField(
+#         Person,
+#         on_delete=models.CASCADE,
+#         parent_link=True,
+#     )
+#     client = models.ForeignKey(Client, null=True)
+#     division = models.ForeignKey(Division, null=True)
+#     role = models.ForeignKey(Role, null=True)
+#     used = models.DateTimeField(null=True)

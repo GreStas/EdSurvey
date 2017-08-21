@@ -12,13 +12,17 @@
     <h1><a href="/">Опросы и тестирование</a></h1>
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
     <div align="right">
-        [Роль v]
-        [Организация v]
+        {% if request.person %}
+            Добро пожаловать, <a href="{% url 'clients:aka' %}">{{person.shortname}}</a>!
+        {% else %}
+            Кто ты такой, {{user}}?
+        {% endif %}
         {% if user.username %}
             [ {{user.username}} ] <a href="{% url 'logout' %}">выйти</a>
         {% else %}
             [ <a href="{% url 'login' %}">Войти</a> ]
         {% endif %}
+        Роль: {{active_role}}
     </div>
     Пройти тест |
     <a href="/questions/">Вопросы</a> |
@@ -39,7 +43,14 @@
 {% endif %}
 
 {% block mainblock %}
-    <h2>...тут будет дополнительная информация и новостная лента...</h2>
+    {% if person %}
+        <h3>Добро пожаловать, {{person}}!</h3>
+        <p>({{person.division}} от "{{person.division.client}}")</p>
+    {% else %}
+        <h3>Войдите как пользователь сайта, чтобы получить больше возможностей!</h3>
+    {% endif %}
+
+    {# ...тут будет дополнительная информация и новостная лента... #}
 {% endblock %}
 </div>
 <hr border-color="#7b6b6b">
