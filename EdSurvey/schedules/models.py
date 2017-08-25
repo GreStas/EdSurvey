@@ -27,7 +27,7 @@ class Task(models.Model):
     editable = models.BooleanField(default=False)   # можно-ли редактировать уже данные ответы
     autoclose = models.BooleanField(default=True)   # автозакрытие поптыки когда есть ответы на все вопросы
     description = models.TextField()
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     division = models.ForeignKey(Division, on_delete=models.PROTECT)
     public = models.BooleanField(default=False)
     # status = models.SmallIntegerField()
@@ -46,7 +46,7 @@ class Schedule(models.Model):
     start = models.DateTimeField()
     finish = models.DateTimeField()
     description = models.TextField(blank=True, null=True)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     # status = models.SmallIntegerField()
 
     class Meta:

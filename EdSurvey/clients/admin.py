@@ -1,7 +1,7 @@
 #   clients.admin
 from django.contrib import admin
 
-from .models import Client, Division, ClientData, Person, Role, Squad, RolePermision
+from .models import Client, Division, ClientData, Person, Role, Squad, RolePermission
 
 
 class DivisionAdmin(admin.TabularInline):
@@ -33,13 +33,13 @@ admin.site.register(Client, ClientAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
     model = Person
-    list_display = ('user', 'shortname',)
+    list_display = ('user', 'shortname', 'division', 'role',)
 
 admin.site.register(Person, PersonAdmin)
 
 
 class RolePermissionAdmin(admin.TabularInline):
-    model = RolePermision
+    model = RolePermission
     extra = 2  # how many rows to show
 
 

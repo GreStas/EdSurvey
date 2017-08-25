@@ -1,4 +1,7 @@
 # clients.context_processors
+# from clients.admin import RolePermissionAdmin
+
+
 def person(request):
     """
     Returns context variables required by apps that use personalization system.
@@ -7,9 +10,11 @@ def person(request):
     """
     if hasattr(request, 'person'):
         person = request.person
+        # role_permission = RolePermissionAdmin.objects.filter(role=person.role)
     else:
         person = None
 
     return {
         'person': person,
+        # 'role_permission': role_permission,
     }

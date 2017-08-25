@@ -7,8 +7,8 @@ from django.utils.timezone import now
 
 
 class Client(models.Model):
-    name = models.CharField('название', max_length=30)
-    shortname = models.CharField('абревиатура', max_length=15)
+    name = models.CharField('название', max_length=60)
+    shortname = models.CharField('абревиатура', max_length=30)
     corporate = models.BooleanField('корпорация', default=False)
     public = models.BooleanField('публичный контент', default=True)
 
@@ -104,7 +104,7 @@ post_save.connect(division_post_save, sender=Division)
 
 
 class DataType(models.Model):
-    name = models.CharField('название', max_length=30, unique=True)
+    name = models.CharField('название', max_length=60, unique=True)
     description = models.TextField('описание')
     applabel = models.CharField(max_length=100, null=True, blank=True)
     model = models.CharField(max_length=100, null=True, blank=True)
@@ -116,10 +116,6 @@ class DataType(models.Model):
         return "{}".format(self.name)
 
 
-def get_allusers_group():
-    return Group.objects.get(pk=1)
-
-
 class Role(models.Model):
     """ Role
     name
@@ -127,11 +123,10 @@ class Role(models.Model):
     description
     group(auth.group, default=allusers) - для фиксированных ролей типа Модератор Сайта, Администратор Сайта, Модератор, Редактор и другие (по мере создания). Должна быть фиксированная группа-Роль "Пользователи сайта", которая будет даваться по-молчанию.
     """
-    name = models.CharField('название', max_length=30, unique=True)
-    shortname = models.CharField('абревиатура', max_length=15, unique=True)
+    name = models.CharField('название', max_length=60, unique=True)
+    shortname = models.CharField('абревиатура', max_length=30, unique=True)
     description = models.TextField('описание')
-    acls = models.ManyToManyField(DataType, through='RolePermision')
-    # group = models.ForeignKey(Group, default=get_allusers_group, verbose_name='стандартная группа')
+    acls = models.ManyToManyField(DataType, through='RolePermission')
 
     class Meta:
         verbose_name = 'роль'
@@ -142,7 +137,7 @@ class Role(models.Model):
         return "{}".format(self.name)
 
 
-class RolePermision(models.Model):
+class RolePermission(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE)
     datatype = models.ForeignKey(DataType, on_delete=models.CASCADE)
     acl = models.CharField(max_length=10)
@@ -160,7 +155,7 @@ class Person(models.Model):
     для дальнейшей работы с различными Клиентами
     """
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    shortname = models.CharField('aka', max_length=15)
+    shortname = models.CharField('aka', max_length=30)
     division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='входит в организацию')
     role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
     used = models.DateTimeField(auto_now_add=now())
@@ -189,8 +184,8 @@ class Person(models.Model):
 
 class Squad(models.Model):
     """ Рабочая группа (бригада) """
-    name = models.CharField('название', max_length=30)
-    shortname = models.CharField('абревиатура', max_length=15)
+    name = models.CharField('название', max_length=60)
+    shortname = models.CharField('абревиатура', max_length=30)
     discription = models.TextField('описание', null=True, blank=True)
     division = models.ForeignKey(Division, verbose_name='организация')
     # manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')

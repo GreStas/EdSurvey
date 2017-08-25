@@ -93,10 +93,15 @@ administrator = Role.objects.create(
 #
 #   clients RolePermision
 #
-from clients.models import RolePermision
+from clients.models import RolePermission
 
-RolePermision.objects.create(
+RolePermission.objects.create(
     role = allusers,
     datatype = questions_question,
     acl = 'R'
+)
+RolePermission.objects.create(
+    role = moderator,
+    datatype = questions_question,
+    acl = 'L'
 )

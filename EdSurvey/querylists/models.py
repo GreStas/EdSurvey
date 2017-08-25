@@ -5,7 +5,7 @@ from clients.models import Division
 
 
 class QueryList(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     description = models.TextField()
     division = models.ForeignKey(Division, on_delete=models.PROTECT)
     public = models.BooleanField(default=False)
@@ -14,8 +14,8 @@ class QueryList(models.Model):
     # params xml
 
     class Meta:
-        verbose_name = 'Анкета'
-        verbose_name_plural = 'Анкеты'
+        verbose_name = 'Опросник'
+        verbose_name_plural = 'Опросники'
 
     def __str__(self):
         return "{}.{}".format(self.id, self.name)
@@ -28,8 +28,8 @@ class QueryContent(models.Model):
     # status = models.IntegerField(null=True)
 
     class Meta:
-        verbose_name = 'Состав Анкеты'
-        verbose_name_plural = 'Состав Анкет'
+        verbose_name = 'Наполнение опросника'
+        verbose_name_plural = 'Наполнение опросников'
         unique_together = ('querylist', 'question')
 
     def __str__(self):
