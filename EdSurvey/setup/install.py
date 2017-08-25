@@ -101,6 +101,11 @@ RolePermission.objects.create(
     acl = 'R'
 )
 RolePermission.objects.create(
+    role = editor,
+    datatype = questions_question,
+    acl = 'LRCUD'
+)
+RolePermission.objects.create(
     role = moderator,
     datatype = questions_question,
     acl = 'L'

@@ -7,18 +7,7 @@ from .models import Question, RADIOBUTTON, CHECKBOX, LINKEDLISTS, Answer, Answer
 
 def index(request):
     person = Person.objects.get(pk=request.session['person_id'])
-    qowner = Question.objects.all().filter(owner=person)
-    qpublic = Question.objects.all().filter(public=True)
-    try:
-        perms = RolePermission.objects.all().get(role=person.role, datatype__applabel='questions', datatype__model='Question')
-        print(perms.acl)
-        if 'L' in perms.acl:
-            qdivision = Question.objects.all().filter(division=person.division)
-            questions = qowner.union(qpublic).union(qdivision)
-        else:
-            questions = qowner.union(qpublic)
-    except ObjectDoesNotExist:
-        questions = qowner.union(qpublic)
+    questions = Question.objects.perm(person=person, acl='L')
     return render(
         request,
         'questions.html',

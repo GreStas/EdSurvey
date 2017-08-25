@@ -1,9 +1,9 @@
 from django.db.models.signals import pre_save
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
-from clients.models import Division, Person
+from clients.models import Division, Person, RolePermission
 
 RADIOBUTTON = 'RB'  # (*) One -from- List
 CHECKBOX = 'CB'  # [v] Some -from- List
@@ -13,6 +13,30 @@ QUESTION_TYPE_CHOICES = (
     (CHECKBOX, 'Несколько из ...'),
     (LINKEDLISTS, "Путанка"),
 )
+
+
+class QuestionManager(models.Manager):
+    def perm(self, person, acl):
+        qowner = super().get_queryset().filter(owner=person)
+        qpublic = super().get_queryset().filter(public=True)
+        try:
+            perms = RolePermission.objects.all().get(role=person.role,
+                                                     datatype__applabel='questions',
+                                                     datatype__model='Question')
+            for i in acl:
+                if i in perms.acl:
+                    qdivision = super().get_queryset().filter(division=person.division)
+                    questions = qowner.union(qpublic).union(qdivision)
+                    break
+            else:
+                questions = qowner.union(qpublic)
+        except ObjectDoesNotExist:
+            questions = qowner.union(qpublic)
+        return questions
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
 
 
 class Question(models.Model):
@@ -28,6 +52,8 @@ class Question(models.Model):
     # authors = models.ForeignKey('auth.User')
     # status = models.IntegerField(null=True)
     # content = models.XML - Как лучше хранить форматированный текст?
+
+    objects = QuestionManager()
 
     class Meta:
         verbose_name = 'Вопрос'
