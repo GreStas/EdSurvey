@@ -16,21 +16,21 @@ class Migration(migrations.Migration):
             model_name='squad',
             name='manager',
         ),
-        migrations.AddField(
-            model_name='person',
-            name='clients',
-            field=models.ManyToManyField(to='clients.Client', verbose_name='от клиента'),
-        ),
-        migrations.AddField(
-            model_name='person',
-            name='divisions',
-            field=models.ManyToManyField(to='clients.Division', verbose_name='входит в организацию'),
-        ),
-        migrations.AddField(
-            model_name='person',
-            name='roles',
-            field=models.ManyToManyField(to='clients.Role', verbose_name='доступная роль'),
-        ),
+        # migrations.AddField(
+        #     model_name='person',
+        #     name='clients',
+        #     field=models.ManyToManyField(to='clients.Client', verbose_name='от клиента'),
+        # ),
+        # migrations.AddField(
+        #     model_name='person',
+        #     name='divisions',
+        #     field=models.ManyToManyField(to='clients.Division', verbose_name='входит в организацию'),
+        # ),
+        # migrations.AddField(
+        #     model_name='person',
+        #     name='roles',
+        #     field=models.ManyToManyField(to='clients.Role', verbose_name='доступная роль'),
+        # ),
         migrations.AddField(
             model_name='squad',
             name='members',
