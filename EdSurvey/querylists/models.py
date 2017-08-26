@@ -1,7 +1,7 @@
 from django.db import models
 
 from questions.models import Question
-from clients.models import Division
+from clients.models import Division, Person
 
 
 class QueryList(models.Model):
@@ -9,6 +9,7 @@ class QueryList(models.Model):
     description = models.TextField()
     division = models.ForeignKey(Division, on_delete=models.PROTECT)
     public = models.BooleanField(default=False)
+    owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
     # status = models.IntegerField(null=True)
     # authors = models.ForeignKey('auth.User')
     # params xml
