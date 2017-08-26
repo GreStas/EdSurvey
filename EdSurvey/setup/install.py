@@ -1,1 +1,1 @@
-# from .home import install
+from .surveys import install

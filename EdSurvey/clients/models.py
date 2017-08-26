@@ -67,12 +67,13 @@ class ClientData(models.Model):
     client_ptr = models.OneToOneField(
         Client,
         on_delete=models.CASCADE,
-        parent_link=True,
+        primary_key=True
+        # parent_link=True,
     )
     fullname = models.CharField('полное наименование', max_length=120)
     address = models.TextField('почтовый адрес', null=True, blank=True)
     rootdivision = models.ForeignKey(Division,
-                                     on_delete=models.CASCADE,
+                                     on_delete=models.PROTECT,
                                      verbose_name='корневая организация',)
     def save(self, **kwargs):
         # print(self.rootdivision.client.id, self.client_ptr.id)
