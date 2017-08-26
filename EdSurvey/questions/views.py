@@ -1,10 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 
 from clients.models import Person, RolePermission
 from .models import Question, RADIOBUTTON, CHECKBOX, LINKEDLISTS, Answer, AnswerRB, AnswerCB, AnswerLL
 
 
+@login_required(login_url='login')
 def index(request):
     person = Person.objects.get(pk=request.session['person_id'])
     questions = Question.objects.perm(person=person, acl='L')
