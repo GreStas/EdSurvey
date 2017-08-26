@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=30, verbose_name='название')),
                 ('shortname', models.CharField(max_length=15, verbose_name='абревиатура')),
                 ('description', models.TextField(verbose_name='описание')),
-                ('group', models.ForeignKey(default=clients.models.get_allusers_group, on_delete=django.db.models.deletion.CASCADE, to='auth.Group', verbose_name='стандартная группа')),
+                ('group', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='auth.Group', verbose_name='стандартная группа')),
             ],
             options={
                 'verbose_name': 'роль',

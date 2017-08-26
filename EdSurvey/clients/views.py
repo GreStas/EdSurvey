@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls.base import reverse
 from django.utils.timezone import now
 
-from clients.models import Division, Role, get_allusers_group
+from clients.models import Division, Role
 from .models import Person
 # from .forms import LoginForm
 

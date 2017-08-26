@@ -19,15 +19,16 @@ class PersonMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         if hasattr(request, 'person'):
-            print("request.person in clients.middleware.PersonMiddleware before = ",
-                  request.person)
+            # print("request.person in clients.middleware.PersonMiddleware before = ",
+            #       request.person)
+            pass
         else:
             print("request.person isn't in clients.middleware.PersonMiddleware before")
         value = SimpleLazyObject(lambda: get_person(request))
         if value:
             request.person = value
-            print("request.person in clients.middleware.PersonMiddleware after = ",
-                  request.person)
+            # print("request.person in clients.middleware.PersonMiddleware after = ",
+            #       request.person)
         elif hasattr(request, 'person'):
             del request.person
             if 'person_id' in request.session:

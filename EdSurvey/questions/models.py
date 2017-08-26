@@ -1,10 +1,10 @@
 from django.db.models.signals import pre_save
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.db.models import Q
 
-from clients.models import Division
-
+from clients.models import Division, Person, RolePermission
 
 RADIOBUTTON = 'RB'  # (*) One -from- List
 CHECKBOX = 'CB'  # [v] Some -from- List
@@ -16,17 +16,41 @@ QUESTION_TYPE_CHOICES = (
 )
 
 
+class QuestionManager(models.Manager):
+    def perm(self, person, acl):
+        qset = Q(owner=person) | Q(public=True)
+        try:
+            perms = RolePermission.objects.all().get(role=person.role,
+                                                     datatype__applabel='questions',
+                                                     datatype__model='Question')
+            for i in acl:
+                if i in perms.acl:
+                    qset |= Q(division=person.division)
+                    break
+        except ObjectDoesNotExist:
+            pass
+        return super().get_queryset().filter(qset)
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Question(models.Model):
-    name = models.CharField(max_length=30)
-    description = models.TextField()
-    division = models.ForeignKey(Division, on_delete=models.PROTECT)
-    public = models.BooleanField(default=False)
+    name = models.CharField('наименование', max_length=60)
+    description = models.TextField('полное описание')
+    division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='организация')
+    public = models.BooleanField('публичное', default=False)
     qtype = models.CharField(max_length=2,
                              choices=QUESTION_TYPE_CHOICES,
-                             default=RADIOBUTTON,)
+                             default=RADIOBUTTON,
+                             verbose_name='Тип вопроса',)
+    owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
+    # authors = models.ForeignKey('auth.User')
     # status = models.IntegerField(null=True)
     # content = models.XML - Как лучше хранить форматированный текст?
-    # authors = models.ForeignKey('auth.User')
+
+    objects = QuestionManager()
 
     class Meta:
         verbose_name = 'Вопрос'
