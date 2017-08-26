@@ -2,6 +2,7 @@ from django.db.models.signals import pre_save
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
+from django.db.models import Q
 
 from clients.models import Division, Person, RolePermission
 
@@ -17,22 +18,18 @@ QUESTION_TYPE_CHOICES = (
 
 class QuestionManager(models.Manager):
     def perm(self, person, acl):
-        qowner = super().get_queryset().filter(owner=person)
-        qpublic = super().get_queryset().filter(public=True)
+        qset = Q(owner=person) | Q(public=True)
         try:
             perms = RolePermission.objects.all().get(role=person.role,
                                                      datatype__applabel='questions',
                                                      datatype__model='Question')
             for i in acl:
                 if i in perms.acl:
-                    qdivision = super().get_queryset().filter(division=person.division)
-                    questions = qowner.union(qpublic).union(qdivision)
+                    qset |= Q(division=person.division)
                     break
-            else:
-                questions = qowner.union(qpublic)
         except ObjectDoesNotExist:
-            questions = qowner.union(qpublic)
-        return questions
+            pass
+        return super().get_queryset().filter(qset)
 
     def get_queryset(self):
         res = super().get_queryset()
