@@ -116,19 +116,25 @@ def generate_anketa(attempt):
     except (AttemptError, ScheduleError) as e:
         raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e))
     task = Task.objects.get(schedule__attempt=attempt)
-    ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
-    unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
-    shuffle(unordered_contents)
-    contents = ordered_contents.union(unordered_contents)
-
-    with transaction.atomic():
-        for i,content in enumerate(contents):
-            a = Anketa(
-                attempt=attempt,
-                question=content.question,
-                ordernum=i+1,
-            )
-            a.save()
+    # ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
+    # unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
+    # shuffle(unordered_contents)
+    # contents = ordered_contents.union(unordered_contents)
+    ordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)]
+    unordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)]
+    if unordered_contents:
+        shuffle(unordered_contents)
+    ordered_contents.extend(unordered_contents)
+    contents = ordered_contents
+    if contents:
+        with transaction.atomic():
+            for i,content in enumerate(contents):
+                a = Anketa(
+                    attempt=attempt,
+                    question=content.question,
+                    ordernum=i+1,
+                )
+                a.save()
 
 @login_required(login_url='login')
 def run_attempt(request, attemptid):
@@ -149,7 +155,10 @@ def run_attempt(request, attemptid):
     if Anketa.objects.all().filter(attempt=attempt).count() == 0:
         # Для новой попытки - сгенерировать анкету:
         generate_anketa(attempt)
-        query = Anketa.objects.get(attempt=attempt, ordernum=1)
+        try:
+            query = Anketa.objects.get(attempt=attempt, ordernum=1)
+        except ObjectDoesNotExist:
+            pass
     else:
         # Продолжение открытой попытки у которой точно уже сформированы вопросы в Anketa.
         # вычислить первый_неотвеченный_вопрос открытой поптыки

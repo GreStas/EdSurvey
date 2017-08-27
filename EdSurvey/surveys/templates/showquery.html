@@ -12,6 +12,20 @@
 <body>
 
 <div class="page-header">
+    <div align="right">
+        {% if request.person %}
+            Вы проходите тестирование как <a href="{% url 'clients:aka' %}">{{person.shortname}}</a>!
+            ({{person.role}} в {{person.division}})
+        {% else %}
+            Кто ты такой, {{user}}?
+        {% endif %}
+        {% if user.username %}
+            [ {{user.username}} ] <a href="{% url 'logout' %}">выйти</a>
+        {% else %}
+            [ <a href="{% url 'login' %}">Войти</a> ]
+        {% endif %}
+        Роль: {{active_role}}
+    </div>
     <h2>{{query.attempt.schedule.task.name}}</h2>
     <h4>{{query.attempt.schedule.task.description|linebreaks}}</h4>
     <h3>{{query.attempt.schedule.task.querylist.name}}</h3>
