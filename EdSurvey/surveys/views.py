@@ -109,6 +109,7 @@ def finish_attempt(request, attemptid):
     ))
 
 
+@login_required(login_url='login')
 def generate_anketa(attempt):
     """ Генерирует последовательность Result """
     try:

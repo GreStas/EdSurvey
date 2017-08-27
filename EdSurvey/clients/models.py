@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 
 from django.contrib.auth.models import User, Group
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import now
 
 
@@ -150,6 +151,34 @@ class RolePermission(models.Model):
         return "{} - {} - {}".format(self.role.shortname, self.datatype.name, self.acl)
 
 
+def has_permission(person, applabel, model, acl, exact=False):
+    """    Проверка на наличие запрошенных прав.
+    Если exact==True, то отсутвие любого права - это отсутсвие прав.
+    Если exact==False, то наличие хотя-бы одно права - это наличие прав.
+    :param person: Личность
+    :param applabel: Приложение
+    :param model: Модель
+    :param acl: Запрошенные для проверки права
+    :param exact: Полное наличие всех запрошенных прав?
+    :return: права из таблицы прав или None
+    """
+    try:
+        acls = RolePermission.objects.all().get(role=person.role, datatype__applabel=applabel, datatype__model=model).acl
+    except ObjectDoesNotExist:
+        return None
+    for r in acl:
+        if r in acls:
+            if not exact:
+                # Если не требуется точное наличие всех запрошенных прав, то дальше можно и не проверять.
+                break
+        elif exact:
+            # Если требуется точное наличие всех запрошенных прав и хотя-бо одно право не найдено,
+            # то дальше можно и не проверять и возвращаем None.
+            acls = None
+            break
+    return acls
+
+
 class Person(models.Model):
     """ Личность
     Позволяет создать алисы пользователей сайта
@@ -181,6 +210,10 @@ class Person(models.Model):
 
     def __str__(self):
         return '{} {} aka "{}"'.format(self.user.first_name, self.user.last_name, self.shortname)
+
+
+def get_active_person(request):
+    return get_object_or_404(Person, pk=request.session['person_id'])
 
 
 class Squad(models.Model):

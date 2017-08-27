@@ -1,7 +1,28 @@
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 
 from questions.models import Question
-from clients.models import Division, Person
+from clients.models import Division, Person, RolePermission
+
+class QueryListManager(models.Manager):
+    def perm(self, person, acl):
+        qset = Q(owner=person) | Q(public=True)
+        try:
+            perms = RolePermission.objects.all().get(role=person.role,
+                                                     datatype__applabel='querylists',
+                                                     datatype__model='QueryList')
+            for i in acl:
+                if i in perms.acl:
+                    qset |= Q(division=person.division)
+                    break
+        except ObjectDoesNotExist:
+            pass
+        return super().get_queryset().filter(qset)
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
 
 
 class QueryList(models.Model):
@@ -13,6 +34,8 @@ class QueryList(models.Model):
     # status = models.IntegerField(null=True)
     # authors = models.ForeignKey('auth.User')
     # params xml
+
+    objects = QueryListManager()
 
     class Meta:
         verbose_name = 'Опросник'
