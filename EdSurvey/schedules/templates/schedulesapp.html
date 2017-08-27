@@ -1,5 +1,42 @@
 {% extends 'home.htm' %}
 {% block mainblock %}
+
+{% if tasks %}
+    <h2>Задания</h2>
+    <table border="2">
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Опросник</th>
+            <th>Попыток</th>
+            <th>Просмотр</th>
+            <th>Повторно</th>
+            <th>Авто-закрытие</th>
+            <th>Публичное</th>
+            <th>Организация</th>
+        </tr>
+{% for task in tasks %}
+        <tr>
+            <td>{{task.id}}</td>
+            <td>{{task.name}}</td>
+            <td>{{task.description}}</td>
+            <td>{{task.querylist.name}}</td>
+            <td>{{task.attempts}}</td>
+            <td>{{task.viewable}}</td>
+            <td>{{task.editable}}</td>
+            <td>{{task.autoclose}}</td>
+            <td>{{task.public}}</td>
+            <td>{{task.division.name}}</td>
+        </tr>
+{% endfor %}
+    </table>
+{% else %}
+    <h2>Задач не найдено.</h2>
+{% endif %}
+
+
+
 {% if opened %}
     <h2>Расписание активных заданий</h2>
     <table border="1">

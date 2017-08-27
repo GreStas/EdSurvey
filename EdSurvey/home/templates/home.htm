@@ -24,11 +24,11 @@
             [ <a href="{% url 'login' %}">Войти</a> ]
         {% endif %}
     </div>
-    Пройти тест |
+    <a href="/surveys/">Пройти тест</a> |
     <a href="/questions/">Вопросы</a> |
     <a href="/querylists/">Опросники</a> |
-    Задания |
-    <a href="/schedules/">Расписание</a> |
+    <a href="{% url 'schedules:task' %}">Задания</a> |
+    <a href="{% url 'schedules:schedule' %}">Расписания</a> |
     <a href="/admin/" target="_blank">Админка</a>
 </div>
 
@@ -55,11 +55,11 @@
 </div>
 <hr border-color="#7b6b6b">
 <footer class="page-footer">
-    Пройти тест |
+    <a href="/surveys/">Пройти тест</a> |
     <a href="/questions/">Вопросы</a> |
     <a href="/querylists/">Опросники</a> |
-    Задания |
-    <a href="/schedules/">Расписание</a> |
+    <a href="/schedules/task/">Задания</a> |
+    <a href="/schedules/schedule/">Расписания</a> |
     <a href="/admin/" target="_blank">Админка</a>
     <h6><i>Самый простой способ получить ответ - задать вопрос.</i></h6>
     <h6>

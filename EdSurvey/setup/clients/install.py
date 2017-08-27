@@ -122,33 +122,103 @@ from clients.models import DataType
 
 questions_question = DataType.objects.create(
     name='Вопрос',
-    description='Формулировка и свойства вопроса',
+    description="""Формулировка и свойства вопроса""",
     applabel='questions',
     model='Question',
 )
 questions_answer = DataType.objects.create(
     name='Ответ',
-    description='Формулировка и свойства ответа',
+    description="""Формулировка и свойства ответа""",
     applabel='questions',
     model='Answer',
 )
 
 querylists_querylist = DataType.objects.create(
         name='Опросный лист',
-        description='Опросный лист',
+        description="""Опросный лист""",
         applabel='querylists',
         model='QueryList',
     )
 querylists_querycontent = DataType.objects.create(
     name='Список вопросов',
-    description='Вопросы в опросном листе',
+    description="""Вопросы в опросном листе""",
     applabel='querylists',
     model='QueryContent',
+)
+
+schedules_task = DataType.objects.create(
+    name='Задание',
+    description="""Формулировка и свойства задания на тестирвоание""",
+    applabel='schedules',
+    model='Task',
+)
+schedules_schedule = DataType.objects.create(
+    name='Расписание',
+    description="""Расписание - временные параметры для Задания""",
+    applabel='schedules',
+    model='Schedule',
+)
+schedules_attempt = DataType.objects.create(
+    name='Попытка',
+    description="""Поптыка пройти задание""",
+    applabel='schedules',
+    model='Attempt',
+)
+
+surveys_anketa = DataType.objects.create(
+    name='Анкета',
+    description="""Сгенерированный на основе Опросника Задания список вопросов""",
+    applabel='surveys',
+    model='Anketa',
+)
+surveys_result = DataType.objects.create(
+    name='Результат',
+    description="""результат - это ответ, данный на пункт Анкеты""",
+    applabel='surveys',
+    model='Result',
+)
+clients_client = DataType.objects.create(
+    name='Клиент',
+    description="""Базовые параметры Клиента""",
+    applabel='clients',
+    model='Client',
+)
+clients_clientdata = DataType.objects.create(
+    name='доп.данные Клиента',
+    description="""Дополнительные параметры Клиента""",
+    applabel='clients',
+    model='ClientData',
+)
+clients_division = DataType.objects.create(
+    name='Организация',
+    description="""Огранизация или подразделение Клиента с признаком Корпорация""",
+    applabel='clients',
+    model='Division',
+)
+clients_role = DataType.objects.create(
+    name='Роль',
+    description="""Роль""",
+    applabel='clients',
+    model='Role',
+)
+clients_person = DataType.objects.create(
+    name='Личность',
+    description="""Личность определяет Роль Пользователя в Организации""",
+    applabel='clients',
+    model='Person',
+)
+clients_squad = DataType.objects.create(
+    name='Бригада',
+    description="""Бригада - это рабочая группа, которую можно использовать для наделения правами:
+    - прохождения теста
+    - (в будущем) авторства экземпляров модели - аналога owner""",
+    applabel='clients',
+    model='Squad',
 )
 """
  = DataType.objects.create(
     name='',
-    description='',
+    description="""""",
     applabel='',
     model='',
 )
@@ -212,23 +282,169 @@ role_administrator = Role.objects.create(
 #   clients RolePermision
 #
 from clients.models import RolePermission
+"""
+RolePermission.objects.create(role=role_, datatype=s_, acl='LRCUDM')
+"""
+# RolePermission.objects.create(role=role_user, datatype=questions_answer, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=questions_question, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=querylists_querylist, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=querylists_querycontent, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=schedules_task, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=schedules_schedule, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=schedules_attempt, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=surveys_anketa, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=surveys_result, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=clients_client, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=clients_clientdata, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=clients_division, acl='LRCUDM')
+RolePermission.objects.create(role=role_user, datatype=clients_role, acl='LR')
+# RolePermission.objects.create(role=role_user, datatype=clients_person, acl='LRCUDM')
+# RolePermission.objects.create(role=role_user, datatype=clients_squad, acl='LRCUDM')
 
-RolePermission.objects.create(
-    role = role_user,
-    datatype = questions_question,
-    acl = 'R'
-)
-RolePermission.objects.create(
-    role = role_editor,
-    datatype = questions_question,
-    acl = 'LRCUD'
-)
-RolePermission.objects.create(
-    role = role_moderator,
-    datatype = questions_question,
-    acl = 'L'
-)
+RolePermission.objects.create(role=role_editor, datatype=questions_answer, acl='LRCUD')
+RolePermission.objects.create(role=role_editor, datatype=questions_question, acl='LRCUD')
+RolePermission.objects.create(role=role_editor, datatype=querylists_querylist, acl='LRCUD')
+RolePermission.objects.create(role=role_editor, datatype=querylists_querycontent, acl='LRCUD')
+# RolePermission.objects.create(role=role_editor, datatype=schedules_task, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=schedules_schedule, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=schedules_attempt, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=surveys_anketa, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=surveys_result, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_client, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_clientdata, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_division, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_role, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_person, acl='LRCUDM')
+# RolePermission.objects.create(role=role_editor, datatype=clients_squad, acl='LRCUDM')
 
+RolePermission.objects.create(role=role_content_manager, datatype=questions_answer, acl='M')
+RolePermission.objects.create(role=role_content_manager, datatype=questions_question, acl='M')
+RolePermission.objects.create(role=role_content_manager, datatype=querylists_querylist, acl='M')
+RolePermission.objects.create(role=role_content_manager, datatype=querylists_querycontent, acl='M')
+RolePermission.objects.create(role=role_content_manager, datatype=schedules_task, acl='R')
+RolePermission.objects.create(role=role_content_manager, datatype=schedules_schedule, acl='R')
+RolePermission.objects.create(role=role_content_manager, datatype=schedules_attempt, acl='L')
+RolePermission.objects.create(role=role_content_manager, datatype=surveys_anketa, acl='L')
+# RolePermission.objects.create(role=role_content_manager, datatype=surveys_result, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_client, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_clientdata, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_division, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_role, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_person, acl='LRCUDM')
+# RolePermission.objects.create(role=role_content_manager, datatype=clients_squad, acl='LRCUDM')
+
+# RolePermission.objects.create(role=role_schedule_manager, datatype=questions_answer, acl='LRCUDM')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=questions_question, acl='LRCUDM')
+RolePermission.objects.create(role=role_schedule_manager, datatype=querylists_querylist, acl='L')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=querylists_querycontent, acl='LRCUDM')
+RolePermission.objects.create(role=role_schedule_manager, datatype=schedules_task, acl='LRCUD')
+RolePermission.objects.create(role=role_schedule_manager, datatype=schedules_schedule, acl='LRCUD')
+RolePermission.objects.create(role=role_schedule_manager, datatype=schedules_attempt, acl='L')
+RolePermission.objects.create(role=role_schedule_manager, datatype=surveys_anketa, acl='L')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=surveys_result, acl='LRCUDM')
+RolePermission.objects.create(role=role_schedule_manager, datatype=clients_client, acl='L')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=clients_clientdata, acl='LRCUDM')
+RolePermission.objects.create(role=role_schedule_manager, datatype=clients_division, acl='L')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=clients_role, acl='LRCUDM')
+# RolePermission.objects.create(role=role_schedule_manager, datatype=clients_person, acl='LRCUDM')
+RolePermission.objects.create(role=role_schedule_manager, datatype=clients_squad, acl='L')
+
+# RolePermission.objects.create(role=role_account_manager, datatype=questions_answer, acl='LRCUDM')
+# RolePermission.objects.create(role=role_account_manager, datatype=questions_question, acl='LRCUDM')
+# RolePermission.objects.create(role=role_account_manager, datatype=querylists_querylist, acl='LRCUDM')
+# RolePermission.objects.create(role=role_account_manager, datatype=querylists_querycontent, acl='LRCUDM')
+RolePermission.objects.create(role=role_account_manager, datatype=schedules_task, acl='R')
+RolePermission.objects.create(role=role_account_manager, datatype=schedules_schedule, acl='R')
+RolePermission.objects.create(role=role_account_manager, datatype=schedules_attempt, acl='R')
+# RolePermission.objects.create(role=role_account_manager, datatype=surveys_anketa, acl='LRCUDM')
+# RolePermission.objects.create(role=role_account_manager, datatype=surveys_result, acl='LRCUDM')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_client, acl='L')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_clientdata, acl='L')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_division, acl='L')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_role, acl='L')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_person, acl='LRCUD')
+RolePermission.objects.create(role=role_account_manager, datatype=clients_squad, acl='LRCUD')
+
+# RolePermission.objects.create(role=role_client_manager, datatype=questions_answer, acl='LRCUDM')
+# RolePermission.objects.create(role=role_client_manager, datatype=questions_question, acl='LRCUDM')
+# RolePermission.objects.create(role=role_client_manager, datatype=querylists_querylist, acl='LRCUDM')
+# RolePermission.objects.create(role=role_client_manager, datatype=querylists_querycontent, acl='LRCUDM')
+RolePermission.objects.create(role=role_client_manager, datatype=schedules_task, acl='L')
+RolePermission.objects.create(role=role_client_manager, datatype=schedules_schedule, acl='L')
+# RolePermission.objects.create(role=role_client_manager, datatype=schedules_attempt, acl='LRCUDM')
+# RolePermission.objects.create(role=role_client_manager, datatype=surveys_anketa, acl='LRCUDM')
+# RolePermission.objects.create(role=role_client_manager, datatype=surveys_result, acl='LRCUDM')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_client, acl='R')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_clientdata, acl='R')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_division, acl='LRCUD')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_role, acl='R')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_person, acl='M')
+RolePermission.objects.create(role=role_client_manager, datatype=clients_squad, acl='M')
+
+# RolePermission.objects.create(role=role_moderator, datatype=questions_answer, acl='LRCUDM')
+RolePermission.objects.create(role=role_moderator, datatype=questions_question, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=querylists_querylist, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=querylists_querycontent, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=schedules_task, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=schedules_schedule, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=schedules_attempt, acl='L')
+RolePermission.objects.create(role=role_moderator, datatype=surveys_anketa, acl='L')
+# RolePermission.objects.create(role=role_moderator, datatype=surveys_result, acl='LRCUDM')
+RolePermission.objects.create(role=role_moderator, datatype=clients_client, acl='R')
+RolePermission.objects.create(role=role_moderator, datatype=clients_clientdata, acl='LRCUD')
+RolePermission.objects.create(role=role_moderator, datatype=clients_division, acl='LRCUD')
+RolePermission.objects.create(role=role_moderator, datatype=clients_role, acl='R')
+# RolePermission.objects.create(role=role_moderator, datatype=clients_person, acl='LRCUDM')
+# RolePermission.objects.create(role=role_moderator, datatype=clients_squad, acl='LRCUDM')
+
+RolePermission.objects.create(role=role_analyst, datatype=questions_answer, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=questions_question, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=querylists_querylist, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=querylists_querycontent, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=schedules_task, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=schedules_schedule, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=schedules_attempt, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=surveys_anketa, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=surveys_result, acl='R')
+RolePermission.objects.create(role=role_analyst, datatype=clients_client, acl='L')
+RolePermission.objects.create(role=role_analyst, datatype=clients_clientdata, acl='L')
+RolePermission.objects.create(role=role_analyst, datatype=clients_division, acl='L')
+RolePermission.objects.create(role=role_analyst, datatype=clients_role, acl='L')
+RolePermission.objects.create(role=role_analyst, datatype=clients_person, acl='L')
+RolePermission.objects.create(role=role_analyst, datatype=clients_squad, acl='L')
+
+RolePermission.objects.create(role=role_administrator, datatype=questions_answer, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=questions_question, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=querylists_querylist, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=querylists_querycontent, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=schedules_task, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=schedules_schedule, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=schedules_attempt, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=surveys_anketa, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=surveys_result, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=clients_client, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=clients_clientdata, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=clients_division, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=clients_role, acl='LRCUD')
+RolePermission.objects.create(role=role_administrator, datatype=clients_person, acl='M')
+RolePermission.objects.create(role=role_administrator, datatype=clients_squad, acl='M')
+"""
+RolePermission.objects.create(role=role_, datatype=questions_answer, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=questions_question, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=querylists_querylist, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=querylists_querycontent, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=schedules_task, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=schedules_schedule, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=schedules_attempt, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=surveys_anketa, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=surveys_result, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_client, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_clientdata, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_division, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_role, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_person, acl='LRCUDM')
+RolePermission.objects.create(role=role_, datatype=clients_squad, acl='LRCUDM')
+"""
 
 #
 #   clients Person

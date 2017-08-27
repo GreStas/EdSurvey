@@ -14,7 +14,9 @@
         <tr>
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
-            <td>{{schedule.task.name}} - {{schedule.task.querylist.name}}</td>
+            <td><a href="{% url 'surveys:scheduleinfo' schedule.id %}">
+                {{schedule.task.name}} - {{schedule.task.querylist.name}}
+            </a></td>
             <td>{{schedule.name}}</td>
             <td>{{schedule.description}}</td>
         </tr>
@@ -39,7 +41,7 @@
         <tr>
             <td>{{schedule.start}}</td>
             <td>{{schedule.finish}}</td>
-            <td>{{schedule.name}}</td>
+            <td><a href="{% url 'surveys:scheduleinfo' schedule.id %}"> {{schedule.name}}</a></td>
             <td> {{schedule.description}}</td>
         </tr>
 {% endfor %}
