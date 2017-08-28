@@ -194,11 +194,19 @@ class Person(models.Model):
     # divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')
     # roles = models.ManyToManyField(Role, verbose_name='доступная роль')
 
+    def get_permissions(self, datatype):
+        """ Получить эффективные права на основе всех доступных ролей
+
+        :param datatype:
+        :return: string of rights
+        """
+        acls = set()
+        for perm in RolePermission.objects.all().filter(datatype=datatype, role__in=self.roles.all()):
+            acls = acls.union({r for r in perm.acl})
+        return ''.join(acls)
+
     def has_permissions(self, datatype, acl):
-        try:
-            effective_acl = self.role.acls.get(datatype=datatype).acl
-        except ObjectDoesNotExist:
-            return False
+        effective_acl = self.get_permissions(datatype)
         for i in acl:
             if i not in effective_acl:
                 return False
