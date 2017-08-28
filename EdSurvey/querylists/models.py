@@ -1,23 +1,15 @@
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Q
 
 from questions.models import Question
-from clients.models import Division, Person, RolePermission
+from clients.models import Division, Person
+
 
 class QueryListManager(models.Manager):
     def perm(self, person, acl):
         qset = Q(owner=person) | Q(public=True)
-        try:
-            perms = RolePermission.objects.all().get(role=person.role,
-                                                     datatype__applabel='querylists',
-                                                     datatype__model='QueryList')
-            for i in acl:
-                if i in perms.acl:
-                    qset |= Q(division=person.division)
-                    break
-        except ObjectDoesNotExist:
-            pass
+        if person.has_perms('querylists', 'QueryList', acl):
+            qset |= Q(division=person.division)
         return super().get_queryset().filter(qset)
 
     def get_queryset(self):

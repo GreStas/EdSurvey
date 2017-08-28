@@ -9,5 +9,5 @@ class QueryListAdmin(admin.ModelAdmin):
 
 
 @admin.register(QueryContent)
-class TestContentAdmin(admin.ModelAdmin):
+class QueryContentAdmin(admin.ModelAdmin):
     list_display = ('querylist', 'question', 'ordernum')

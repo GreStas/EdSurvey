@@ -187,21 +187,36 @@ class Person(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     shortname = models.CharField('aka', max_length=30)
     division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='входит в организацию')
-    role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
+    # role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
+    roles = models.ManyToManyField(Role, null=True, blank=True, verbose_name='роли')
     used = models.DateTimeField(auto_now_add=now())
     # clients = models.ManyToManyField(Client, verbose_name='от клиента')
     # divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')
     # roles = models.ManyToManyField(Role, verbose_name='доступная роль')
 
+    def get_permissions(self, datatype):
+        """ Получить эффективные права на основе всех доступных ролей
+
+        :param datatype:
+        :return: string of rights
+        """
+        acls = set()
+        for perm in RolePermission.objects.all().filter(datatype=datatype, role__in=self.roles.all()):
+            acls = acls.union({r for r in perm.acl})
+        return ''.join(acls)
+
+    def get_perms(self, applabel, model):
+        return self.get_permissions(DataType.objects.all().get(applabel=applabel, model=model))
+
     def has_permissions(self, datatype, acl):
-        try:
-            effective_acl = self.role.acls.get(datatype=datatype).acl
-        except ObjectDoesNotExist:
-            return False
+        effective_acl = self.get_permissions(datatype)
         for i in acl:
             if i not in effective_acl:
                 return False
         return True
+
+    def has_perms(self, applabel, model, acl):
+        return self.has_permissions(DataType.objects.all().get(applabel=applabel, model=model), acl)
 
     class Meta:
         verbose_name = 'личность'
