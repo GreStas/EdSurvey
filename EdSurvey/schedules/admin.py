@@ -6,7 +6,7 @@ from .models import Task, Schedule, Attempt
 class ScheduleAdmin(admin.StackedInline):
     model = Schedule
     fieldsets = [
-        (None, {'fields': ['name','start', 'finish', 'owner', 'description',]}),
+        (None, {'fields': ['name', 'squads', 'start', 'finish', 'owner', 'description',]}),
     ]
 
 

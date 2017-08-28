@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from querylists.models import QueryList
-from clients.models import Division, Person
+from clients.models import Division, Person, Squad
 
 
 class TaskManager(models.Manager):
@@ -76,6 +76,7 @@ class Schedule(models.Model):
     description = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=60)
     owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
+    squads = models.ManyToManyField(Squad, blank=True, verbose_name='назначение')
     # status = models.SmallIntegerField()
 
     objects = ScheduleManager()
