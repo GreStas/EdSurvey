@@ -8,6 +8,7 @@ class ScheduleAdmin(admin.StackedInline):
     fieldsets = [
         (None, {'fields': ['name', 'squads', 'start', 'finish', 'owner', 'description',]}),
     ]
+    extra = 1  # how many rows to show
 
 
 class TaskAdmin(admin.ModelAdmin):

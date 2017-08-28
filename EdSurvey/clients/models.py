@@ -235,7 +235,7 @@ class Squad(models.Model):
     """ Рабочая группа (бригада) """
     name = models.CharField('название', max_length=60)
     shortname = models.CharField('абревиатура', max_length=30)
-    discription = models.TextField('описание', null=True, blank=True)
+    description = models.TextField('описание', null=True, blank=True)
     division = models.ForeignKey(Division, verbose_name='организация')
     # manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')
     members = models.ManyToManyField(Person, verbose_name='участники')

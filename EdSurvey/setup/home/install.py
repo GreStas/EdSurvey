@@ -23,6 +23,17 @@ user_sbrf1 = User.objects.create_user(
 user_sbrf1.set_password('qwer1234')
 user_sbrf1.save()
 
+user_sbrf2 = User.objects.create_user(
+    username = 'sbrf2',
+    first_name = 'Петро',
+    last_name = 'Порошенко',
+    email = 'sbrf2@sbrf.com',
+    is_staff = False,
+    is_active = True,
+)
+user_sbrf2.set_password('qwer1234')
+user_sbrf2.save()
+
 user_freebee = User.objects.create_user(
     username='freebee',
     first_name='Иван',

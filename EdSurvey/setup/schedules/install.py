@@ -6,11 +6,26 @@ from ..querylists import install
 from ..querylists.install import querylist1, querylist2, querylist3
 from ..clients.install import \
     division_the_site, site1_user, \
-    division_sbrf, sbrf1_user, sbrf1_schedule_manager, \
-    division_freebee, freebee_user, freebee_superuser
+    division_sbrf, sbrf1_user, sbrf2_user, sbrf1_schedule_manager, squad_sbrf_users, \
+    division_freebee, freebee_user, freebee_superuser, squad_freebee_users, squad_freebee_all
 
 from schedules.models import Task, Schedule
 
+
+def add_schedule(task, start, finish, name, description, owner, squads):
+    print("Adding schedule: task={}, name={} ".format(task, name))
+    print("         squads:", ", ".join(('"{}"'.format(r) for r in squads)))
+    schedule = Schedule(
+        task=task,
+        start=start,
+        finish=finish,
+        name=name,
+        description=description,
+        owner=owner,
+    )
+    schedule.save()
+    schedule.squads.add(*squads)
+    return schedule
 
 task1 = Task.objects.create(
     querylist=querylist1,
@@ -24,36 +39,39 @@ task1 = Task.objects.create(
     public=True,
     owner=site1_user,
 )
-task1_sched1 = Schedule.objects.create(
+task1_sched1 = add_schedule(
     task=task1,
     start=now(),
     finish=now() + timedelta(hours=1),
     name="на 1 час",
     description="""доступен в течении 1 часа""",
     owner=site1_user,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
-task1_sched2 = Schedule.objects.create(
+task1_sched2 = add_schedule(
     task=task1,
     start=now(),
     finish=now() + timedelta(days=1),
     name="на 1 день",
     description="""доступен в течении суток""",
     owner=site1_user,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
-# task1_sched3 = Schedule.objects.create(
+# task1_sched3 = add_schedule(
 #     task=task1,
 #     start=now(),
 #     finish=now() + timedelta(days=1),
 #     name="до конца дня",
 #     description="""доступен до полуночи""",
 # )
-task1_sched4 = Schedule.objects.create(
+task1_sched4 = add_schedule(
     task=task1,
     start=now(),
     finish=now() + timedelta(days=31),
     name="на 1 месяц",
     description="""доступен в течении месяца""",
     owner=site1_user,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
 
 task2 = Task.objects.create(
@@ -68,13 +86,14 @@ task2 = Task.objects.create(
     public=False,
     owner=sbrf1_user,
 )
-task2_sched1 = Schedule.objects.create(
+task2_sched1 = add_schedule(
     task=task2,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=sbrf1_user,
+    squads=(squad_sbrf_users,),
 )
 
 task3 = Task.objects.create(
@@ -89,13 +108,14 @@ task3 = Task.objects.create(
     public=True,
     owner=sbrf1_schedule_manager,
 )
-task3_sched1 = Schedule.objects.create(
+task3_sched1 = add_schedule(
     task=task3,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=sbrf1_schedule_manager,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
 
 task4 = Task.objects.create(
@@ -110,13 +130,14 @@ task4 = Task.objects.create(
     public=True,
     owner=sbrf1_schedule_manager,
 )
-task4_sched1 = Schedule.objects.create(
+task4_sched1 = add_schedule(
     task=task4,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=sbrf1_user,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
 
 task5 = Task.objects.create(
@@ -131,13 +152,14 @@ task5 = Task.objects.create(
     public=True,
     owner=sbrf1_schedule_manager,
 )
-task5_sched1 = Schedule.objects.create(
+task5_sched1 = add_schedule(
     task=task5,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=sbrf1_schedule_manager,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )
 
 task6 = Task.objects.create(
@@ -148,17 +170,18 @@ task6 = Task.objects.create(
     autoclose=False,
     description="""Для отладки Editable Viewable Autoclose""",
     name="NoEdit NoView NoAuto",
-    division=division_the_site,
+    division=division_freebee,
     public=True,
     owner=freebee_user,
 )
-task6_sched1 = Schedule.objects.create(
+task6_sched1 = add_schedule(
     task=task6,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=freebee_user,
+    squads=(squad_freebee_users,),
 )
 
 task7 = Task.objects.create(
@@ -173,11 +196,12 @@ task7 = Task.objects.create(
     public=True,
     owner=freebee_superuser,
 )
-task7_sched1 = Schedule.objects.create(
+task7_sched1 = add_schedule(
     task=task7,
     start=now(),
     finish=now() + timedelta(days=31),
     name="для отладки",
     description="""доступен в течении месяца""",
     owner=freebee_user,
+    squads=(squad_freebee_users, squad_sbrf_users,),
 )

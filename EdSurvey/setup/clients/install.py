@@ -450,11 +450,11 @@ RolePermission.objects.create(role=role_, datatype=clients_squad, acl='LRCUDM')
 #   clients Person
 #
 from clients.models import Person
-from ..home.install import user_site1, user_sbrf1, user_freebee
+from ..home.install import user_site1, user_sbrf1, user_sbrf2, user_freebee
 
 def add_person(user, shortname, division, roles):
     print("Adding: user={}, shortname={}, division={}".format(user, shortname, division))
-    print(" roles:", *roles)
+    print(" roles:", ", ".join(('"{}"'.format(r) for r in roles)))
     person = Person(
         user=user,
         shortname=shortname,
@@ -526,6 +526,13 @@ sbrf1_schedule_manager = add_person(
     roles=(role_schedule_manager,),
 )
 
+sbrf2_user = add_person(
+    user=user_sbrf2,
+    shortname='Петруха',
+    division=division_sbrf,
+    roles=(role_user,),
+)
+
 freebee_user =  add_person(
     user=user_freebee,
     shortname='Пользователь',
@@ -553,3 +560,40 @@ freebee_superuser =  add_person(
 #   clients Squad
 #
 from clients.models import Squad
+
+def add_squad(name, shortname, description, division, members):
+    print("Adding squad: name={}, shortname={}, division={}".format(name, shortname, division))
+    print("     members:", ", ".join(('"{}"'.format(r) for r in members)))
+    squad = Squad(
+        name=name,
+        shortname=shortname,
+        description=description,
+        division=division,
+    )
+    squad.save()
+    squad.members.add(*members)
+    return squad
+
+squad_sbrf_users = add_squad(
+    name='Весь СБЕРБАНК',
+    shortname='SBRF_USERS',
+    description="""Все Личности СБЕРБАНКА с ролью Пользователь""",
+    division=division_sbrf,
+    members=(sbrf1_user, sbrf2_user,),
+)
+
+squad_freebee_all = add_squad(
+    name='Весь FreeBee',
+    shortname='FREEBEE_ALL',
+    description="""Все Личности FreeBee""",
+    division=division_freebee,
+    members=(freebee_user, freebee_superuser,),
+)
+
+squad_freebee_users = add_squad(
+    name='Пользователи FreeBee',
+    shortname='FREEBEE_USERS',
+    description="""Все Личности FreeBee с ролью Пользователь""",
+    division=division_freebee,
+    members=(freebee_user,),
+)

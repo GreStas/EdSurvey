@@ -11,6 +11,7 @@ class DivisionAdmin(admin.TabularInline):
         (None, {'fields': ['shortname', 'name',]}),
         ('Параметры', {'fields': ['public', 'private',]})
     ]
+    extra = 1  # how many rows to show
 
 
 class ClientDataAdmin(admin.TabularInline):
@@ -18,6 +19,7 @@ class ClientDataAdmin(admin.TabularInline):
     fieldsets = [
         (None, {'fields': ['id', 'rootdivision', 'fullname', 'address',]})
     ]
+    extra = 1  # how many rows to show
 
 
 class ClientAdmin(admin.ModelAdmin):
@@ -40,7 +42,7 @@ admin.site.register(Person, PersonAdmin)
 
 class RolePermissionAdmin(admin.TabularInline):
     model = RolePermission
-    extra = 2  # how many rows to show
+    extra = 1  # how many rows to show
 
 
 class RoleAdmin(admin.ModelAdmin):
