@@ -188,7 +188,7 @@ class Person(models.Model):
     shortname = models.CharField('aka', max_length=30)
     division = models.ForeignKey(Division, on_delete=models.PROTECT, verbose_name='входит в организацию')
     # role = models.ForeignKey(Role, on_delete=models.PROTECT, verbose_name='доступная роль')
-    roles = models.ManyToManyField(Role, null=True, blank=True, verbose_name='роли')
+    roles = models.ManyToManyField(Role, blank=True, verbose_name='роли')
     used = models.DateTimeField(auto_now_add=now())
     # clients = models.ManyToManyField(Client, verbose_name='от клиента')
     # divisions = models.ManyToManyField(Division, verbose_name='входит в организацию')

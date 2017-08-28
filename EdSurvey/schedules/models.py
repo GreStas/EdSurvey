@@ -2,9 +2,22 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 from django.db.models.signals import pre_save
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 from querylists.models import QueryList
-from clients.models import Division
+from clients.models import Division, Person
+
+
+class TaskManager(models.Manager):
+    def perm(self, person, acl):
+        qset = Q(owner=person) | Q(public=True)
+        if person.has_perms('schedules', 'Task', acl):
+            qset |= Q(division=person.division)
+        return super().get_queryset().filter(qset)
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
 
 
 class Task(models.Model):
@@ -30,7 +43,10 @@ class Task(models.Model):
     name = models.CharField(max_length=60)
     division = models.ForeignKey(Division, on_delete=models.PROTECT)
     public = models.BooleanField(default=False)
+    owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
     # status = models.SmallIntegerField()
+
+    objects = TaskManager()
 
     class Meta:
         verbose_name = 'Задание на тестирование'
@@ -40,6 +56,18 @@ class Task(models.Model):
         return "{}({})".format(self.name, self.querylist.name)
 
 
+class ScheduleManager(models.Manager):
+    def perm(self, person, acl):
+        qset = Q(owner=person)  # | Q(public=True)
+        if person.has_perms('schedules', 'Schedule', acl):
+            qset |= Q(task__division=person.division)
+        return super().get_queryset().filter(qset)
+
+    def get_queryset(self):
+        res = super().get_queryset()
+        return res
+
+
 class Schedule(models.Model):
     """ Расписание задач """
     task = models.ForeignKey(Task, on_delete=models.PROTECT)
@@ -47,7 +75,10 @@ class Schedule(models.Model):
     finish = models.DateTimeField()
     description = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=60)
+    owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
     # status = models.SmallIntegerField()
+
+    objects = ScheduleManager()
 
     class Meta:
         verbose_name = 'Назначеное тестирование'

@@ -1,2 +1,2 @@
-from . import uninstall
-from . import install
+# from . import uninstall
+# from . import install

@@ -470,6 +470,7 @@ site1_user = add_person(
     division=division_the_site,
     roles=(role_user,),
 )
+
 sbrf1_user = add_person(
     user=user_sbrf1,
     shortname='Николай',

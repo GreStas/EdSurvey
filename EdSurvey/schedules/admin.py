@@ -2,15 +2,21 @@ from django.contrib import admin
 from .models import Task, Schedule, Attempt
 
 
-class ScheduleAdmin(admin.TabularInline):
+# class ScheduleAdmin(admin.TabularInline):
+class ScheduleAdmin(admin.StackedInline):
     model = Schedule
+    fieldsets = [
+        (None, {'fields': ['name','start', 'finish', 'owner', 'description',]}),
+    ]
 
 
 class TaskAdmin(admin.ModelAdmin):
+    list_display = ('name', 'querylist','division', 'owner',)
     ordering = ('name', 'querylist')
     fieldsets = [
-        (None, {'fields': ['name','description', 'querylist', 'division',]}),
-        ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose', 'public']})
+        (None, {'fields': ['name', 'querylist', 'description',]}),
+        ('Доступы', {'fields': ['division', 'owner', 'public',]}),
+        ('Параметры', {'fields': ['attempts', 'editable', 'viewable', 'autoclose',]})
     ]
     inlines = [
         ScheduleAdmin,
