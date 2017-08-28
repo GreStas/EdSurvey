@@ -1,4 +1,5 @@
 # surveys.views
+from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.db.models.aggregates import Max
@@ -11,6 +12,7 @@ from django.contrib import messages
 
 from random import shuffle
 
+from clients.models import get_active_person
 from .models import Anketa, Result, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from schedules.views import attempt_auth_or_404
@@ -193,7 +195,7 @@ def run_attempt(request, attemptid):
 
 @login_required(login_url='login')
 def new_attempt(request, scheduleid):
-    schedule = get_object_or_404(Schedule, pk=scheduleid)
+    schedule = get_object_or_404(Schedule.objects.squad(get_user(request)), pk=scheduleid)
     # Проверим использование доступных попыток
     # attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False, user=request.user).count()
     attempts = Attempt.objects.auth(request.user).filter(schedule=schedule, finished__isnull=False).count()
