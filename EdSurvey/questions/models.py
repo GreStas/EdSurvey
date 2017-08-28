@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models import Q
 
-from clients.models import Division, Person, RolePermission
+from clients.models import Division, Person, RolePermission, DataType
 
 RADIOBUTTON = 'RB'  # (*) One -from- List
 CHECKBOX = 'CB'  # [v] Some -from- List
@@ -19,16 +19,8 @@ QUESTION_TYPE_CHOICES = (
 class QuestionManager(models.Manager):
     def perm(self, person, acl):
         qset = Q(owner=person) | Q(public=True)
-        try:
-            perms = RolePermission.objects.all().get(role=person.role,
-                                                     datatype__applabel='questions',
-                                                     datatype__model='Question')
-            for i in acl:
-                if i in perms.acl:
-                    qset |= Q(division=person.division)
-                    break
-        except ObjectDoesNotExist:
-            pass
+        if person.has_perms('questions', 'Question', acl):
+            qset |= Q(division=person.division)
         return super().get_queryset().filter(qset)
 
     def get_queryset(self):

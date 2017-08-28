@@ -205,12 +205,18 @@ class Person(models.Model):
             acls = acls.union({r for r in perm.acl})
         return ''.join(acls)
 
+    def get_perms(self, applabel, model):
+        return self.get_permissions(DataType.objects.all().get(applabel=applabel, model=model))
+
     def has_permissions(self, datatype, acl):
         effective_acl = self.get_permissions(datatype)
         for i in acl:
             if i not in effective_acl:
                 return False
         return True
+
+    def has_perms(self, applabel, model, acl):
+        return self.has_permissions(DataType.objects.all().get(applabel=applabel, model=model), acl)
 
     class Meta:
         verbose_name = 'личность'
