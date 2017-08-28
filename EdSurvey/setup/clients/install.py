@@ -450,70 +450,103 @@ RolePermission.objects.create(role=role_, datatype=clients_squad, acl='LRCUDM')
 #   clients Person
 #
 from clients.models import Person
-from ..home.install import user_site1, user_sbrf1
+from ..home.install import user_site1, user_sbrf1, user_freebee
 
-site1_user = Person.objects.create(
+def add_person(user, shortname, division, roles):
+    print("Adding: user={}, shortname={}, division={}".format(user, shortname, division))
+    print(" roles:", *roles)
+    person = Person(
+        user=user,
+        shortname=shortname,
+        division=division,
+    )
+    person.save()
+    person.roles.add(*roles)
+    return person
+
+site1_user = add_person(
     user=user_site1,
     shortname='Первый',
     division=division_the_site,
-    role=role_user,
+    roles=(role_user,),
 )
-
-sbrf1_user = Person.objects.create(
+sbrf1_user = add_person(
     user=user_sbrf1,
     shortname='Николай',
     division=division_sbrf,
-    role=role_user,
+    roles=(role_user,),
 )
-sbrf1_ = Person.objects.create(
+sbrf1_account_manager = add_person(
     user=user_sbrf1,
     shortname=role_account_manager.name,
     division=division_sbrf,
-    role=role_account_manager,
+    roles=(role_account_manager,),
 )
-sbrf1_administrator = Person.objects.create(
+sbrf1_administrator = add_person(
     user=user_sbrf1,
     shortname=role_administrator.name,
     division=division_sbrf,
-    role=role_administrator,
+    roles=(role_administrator,),
 )
-sbrf1_analyst = Person.objects.create(
+sbrf1_analyst = add_person(
     user=user_sbrf1,
     shortname=role_analyst.name,
     division=division_sbrf,
-    role=role_analyst,
+    roles=(role_analyst,),
 )
-sbrf1_client_manager = Person.objects.create(
+sbrf1_client_manager = add_person(
     user=user_sbrf1,
     shortname=role_client_manager.name,
     division=division_sbrf,
-    role=role_client_manager,
+    roles=(role_client_manager,),
 )
-sbrf1_content_manager = Person.objects.create(
+sbrf1_content_manager = add_person(
     user=user_sbrf1,
     shortname=role_content_manager.name,
     division=division_sbrf,
-    role=role_content_manager,
+    roles=(role_content_manager,),
 )
-sbrf1_editor = Person.objects.create(
+sbrf1_editor = add_person(
     user=user_sbrf1,
     shortname=role_editor.name,
     division=division_sbrf,
-    role=role_editor,
+    roles=(role_editor,),
 )
-sbrf1_moderator = Person.objects.create(
+sbrf1_moderator = add_person(
     user=user_sbrf1,
     shortname=role_moderator.name,
     division=division_sbrf,
-    role=role_moderator,
+    roles=(role_moderator,),
 )
-sbrf1_schedule_manager = Person.objects.create(
+sbrf1_schedule_manager = add_person(
     user=user_sbrf1,
     shortname=role_schedule_manager.name,
     division=division_sbrf,
-    role=role_schedule_manager,
+    roles=(role_schedule_manager,),
 )
 
+freebee_user =  add_person(
+    user=user_freebee,
+    shortname='Пользователь',
+    division=division_freebee,
+    roles=(role_user,),
+)
+freebee_superuser =  add_person(
+    user=user_freebee,
+    shortname='Супермен',
+    division=division_freebee,
+    roles=(
+        # role_user,
+        role_account_manager,
+        role_administrator,
+        role_analyst,
+        role_client_manager,
+        role_content_manager,
+        role_editor,
+        role_moderator,
+        role_schedule_manager
+    ),
+)
 
 #
 #   clients Squad

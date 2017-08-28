@@ -33,7 +33,7 @@ admin.site.register(Client, ClientAdmin)
 
 class PersonAdmin(admin.ModelAdmin):
     model = Person
-    list_display = ('user', 'shortname', 'division', 'role',)
+    list_display = ('user', 'shortname', 'division',)   #  'roles',
 
 admin.site.register(Person, PersonAdmin)
 
