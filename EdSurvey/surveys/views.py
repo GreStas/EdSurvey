@@ -120,10 +120,6 @@ def generate_anketa(attempt):
     except (AttemptError, ScheduleError) as e:
         raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e))
     task = Task.objects.get(schedule__attempt=attempt)
-    # ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
-    # unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
-    # shuffle(unordered_contents)
-    # contents = ordered_contents.union(unordered_contents)
     ordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)]
     unordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)]
     if unordered_contents:
@@ -195,7 +191,7 @@ def run_attempt(request, attemptid):
 
 @login_required(login_url='login')
 def new_attempt(request, scheduleid):
-    schedule = get_object_or_404(Schedule.objects.squad(get_user(request)), pk=scheduleid)
+    schedule = get_object_or_404(Schedule.objects.auth(request.user), pk=scheduleid)
     # Проверим использование доступных попыток
     # attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False, user=request.user).count()
     attempts = Attempt.objects.auth(request.user).filter(schedule=schedule, finished__isnull=False).count()
@@ -613,14 +609,13 @@ def render_run_attempt(request, schedule):
 
 @login_required(login_url='login')
 def render_attempt_list(request, schedule):
-    # attempts = Attempt.objects.all().filter(schedule=schedule, user=request.user).order_by('-started')
     attempts = Attempt.objects.auth(request.user).filter(schedule=schedule).order_by('-started')
     return render_to_string('attemptlistblock.html', {'attempts': attempts})
 
 
 @login_required(login_url='login')
 def schedule_info(request, scheduleid):
-    schedule = get_object_or_404(Schedule, pk=scheduleid)
+    schedule = get_object_or_404(Schedule.objects.auth(request.user), pk=scheduleid)
     return render(request,
                   'scheduleinfo.html',
                   {

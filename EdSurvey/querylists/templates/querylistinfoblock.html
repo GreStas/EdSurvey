@@ -7,8 +7,10 @@
         <td></td>
         <td align="LEFT" valign="TOP">{{querylist.description|linebreaks}}</td>
     </tr>
+    {% if questionscnt %}
     <tr>
         <td align="LEFT"><strong>Вопросов:</strong></td>
         <td>{{questionscnt}}</td>
     </tr>
+    {% endif %}
 </table>
