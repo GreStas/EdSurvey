@@ -635,8 +635,8 @@ def schedule_info(request, scheduleid):
 
 @login_required(login_url='login')
 def index(request):
-    opened_schedules = Schedule.objects.all().filter(start__lt=now(), finish__gt=now())
-    closed_schedules = Schedule.objects.all().filter(finish__lt=now())
+    opened_schedules = Schedule.objects.auth(request.user).filter(start__lt=now(), finish__gt=now())
+    closed_schedules = Schedule.objects.auth(request.user).filter(finish__lt=now())
     return render(
         request,
         'listschedules.html',

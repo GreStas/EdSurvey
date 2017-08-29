@@ -63,9 +63,9 @@ class ScheduleManager(models.Manager):
             qset |= Q(task__division=person.division)
         return super().get_queryset().filter(qset)
 
-    def squad(self, user):
+    def auth(self, user):
         """ Пользователь через Личность входит в Бригаду """
-        return super().get_queryset(squads__members__user=user)
+        return super().get_queryset().filter(squads__members__user=user)
 
     def get_queryset(self):
         res = super().get_queryset()
