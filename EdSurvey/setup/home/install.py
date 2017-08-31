@@ -44,3 +44,14 @@ user_freebee = User.objects.create_user(
 )
 user_freebee.set_password("zxasqw12")
 user_freebee.save()
+
+user_freebee1 = User.objects.create_user(
+    username='freebee1',
+    first_name='Степан',
+    last_name='Помидоров',
+    email='freebee1@edsurvey.org',
+    is_staff=False,
+    is_active=True,
+)
+user_freebee1.set_password("zxasqw12")
+user_freebee1.save()
