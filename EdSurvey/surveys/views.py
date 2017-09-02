@@ -119,6 +119,7 @@ def generate_anketa(attempt):
         validate_modify_attempt(attempt)
     except (AttemptError, ScheduleError) as e:
         raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e))
+    # Находим Задание через реверсивные связки по ForeignKey: Task <- Schedule <-Attempt
     task = Task.objects.get(schedule__attempt=attempt)
     ordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)]
     unordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)]
@@ -142,7 +143,7 @@ def run_attempt(request, attemptid):
     или завершить попытку
     или предложить завершить попытку
     """
-    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    # attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
     attempt = get_object_or_404(Attempt.objects.auth(request.user), pk=attemptid)
     if not attempt.schedule.task.viewable:
         try:
@@ -262,15 +263,16 @@ def get_answer_contents(answer_model, question):
 
 
 def is_readonly(query):
-    # Validate access
+    closed = query.attempt.finished or query.attempt.schedule.finish < now()
     editable = query.attempt.schedule.task.editable
     viewable = query.attempt.schedule.task.viewable
     has_errs = err_results(query)
-    if not editable and not has_errs:
-        if viewable:
-            return True
-        else:
-            raise ObjectDoesNotExist
+    if (closed and not viewable) or \
+            (not closed and not editable and not viewable):
+        raise ObjectDoesNotExist
+    elif (viewable and closed) or \
+            (not has_errs and not editable and viewable and not closed):
+        return True
     else:
         return False
 
@@ -400,7 +402,8 @@ def save_result(query, request):
     try:
         validate_modify_attempt(query.attempt)
     except (AttemptError, ScheduleError) as e:
-        raise ValidationError("Ваш ответ не принят так как {}".format(e))
+        # raise ValidationError("Ваш ответ не принят так как {}".format(e))
+        messages.add_message(request, messages.INFO, "Ваш ответ не принят так как {}".format(e))
 
     if query.question.qtype == RADIOBUTTON:
         choice = request.POST.get('choice')

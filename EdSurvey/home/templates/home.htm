@@ -29,7 +29,9 @@
     <a href="/querylists/">Опросники</a> |
     <a href="{% url 'schedules:task' %}">Задания</a> |
     <a href="{% url 'schedules:schedule' %}">Расписания</a> |
-    <a href="/admin/" target="_blank">Админка</a>
+    <a href="/admin/" target="_blank">Админка</a> |
+    <a href="{% url 'home:contacts' %}">Контакты</a> |
+    <a href="{% url 'home:manuals' %}" target="_blank">Руководство</a>
 </div>
 
 {% if messages %}

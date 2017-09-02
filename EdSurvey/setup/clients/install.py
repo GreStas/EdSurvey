@@ -7,7 +7,7 @@ from ..home import install
 from clients.models import Client
 
 client_the_site = Client.objects.create(
-    id=1,
+    id=0,
     name='Опросы и Тестирование',
     shortname='THE SITE',
     corporate=True,
@@ -33,7 +33,7 @@ client_freebee = Client.objects.create(
 from clients.models import Division
 
 division_the_site = Division.objects.create(
-    id=1,
+    id=0,
     client=client_the_site,
     name=client_the_site.name,
     shortname=client_the_site.shortname,
@@ -230,17 +230,17 @@ clients_squad = DataType.objects.create(
 #
 from clients.models import Role
 
-role_user = Role.objects.create(
-    id=0,
-    name='Пользователь',
-    shortname='USER',
-    description="""Предопределённая Роль - могут создавать свой персональный контент и использовать публичный.""",
-)
 role_testee = Role.objects.create(
-    id=1,
+    id=0,
     name='Тестируемый',
     shortname='TESTEE',
     description="""Предопределённая Роль - могут проходить назначенные и публичные опросы.""",
+)
+role_user = Role.objects.create(
+    id=1,
+    name='Пользователь',
+    shortname='USER',
+    description="""Предопределённая Роль - могут создавать свой персональный контент и использовать публичный.""",
 )
 role_editor = Role.objects.create(
     name='Редактор',

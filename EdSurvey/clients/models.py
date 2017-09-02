@@ -73,6 +73,7 @@ class ClientData(models.Model):
     )
     fullname = models.CharField('полное наименование', max_length=120)
     address = models.TextField('почтовый адрес', null=True, blank=True)
+    # domain = models.CharField('корпоративный почтовый домен', null=True, blank=True)
     rootdivision = models.ForeignKey(Division,
                                      on_delete=models.PROTECT,
                                      verbose_name='корневая организация',)
