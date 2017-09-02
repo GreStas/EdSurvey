@@ -24,9 +24,9 @@ SECRET_KEY = '__mp7jg#a+s#i56idzqa5456h5d7$83v3==n=vxt*xzrcc(4l4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = []
+#ALLOWED_HOSTS = []
 #DEBUG = False
-#ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost','grestas.pythonanywhere.com']
 
 
 # Application definition
@@ -129,3 +129,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = '/var/www/grestas.pythonanywhere.com/static/'
