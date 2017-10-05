@@ -1,6 +1,8 @@
 {% extends 'home.htm' %}
+{% load static from staticfiles %}
 {% block mainblock %}
 <h1>Руководство рользователя</h1>
+<a href="{% static 'specification.html' %}" target="_blank">Полная спецификация</a>
 <h2>Личности и Роли по-умолчанию</h2>
 
 <h3>Пользователь "Сайта"</h3>
