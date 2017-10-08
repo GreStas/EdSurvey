@@ -1,4 +1,5 @@
 # surveys.views
+from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.db.models.aggregates import Max
@@ -11,6 +12,7 @@ from django.contrib import messages
 
 from random import shuffle
 
+from clients.models import get_active_person
 from .models import Anketa, Result, ResultLL
 from schedules.models import Schedule, Task, Attempt
 from schedules.views import attempt_auth_or_404
@@ -117,11 +119,8 @@ def generate_anketa(attempt):
         validate_modify_attempt(attempt)
     except (AttemptError, ScheduleError) as e:
         raise ValidationError("Невозможно создать анкету для данного опроса так как {}".format(e))
+    # Находим Задание через реверсивные связки по ForeignKey: Task <- Schedule <-Attempt
     task = Task.objects.get(schedule__attempt=attempt)
-    # ordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)
-    # unordered_contents = QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)
-    # shuffle(unordered_contents)
-    # contents = ordered_contents.union(unordered_contents)
     ordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=False)]
     unordered_contents = [q for q in QueryContent.objects.all().filter(querylist=task.querylist, ordernum__isnull=True)]
     if unordered_contents:
@@ -144,7 +143,7 @@ def run_attempt(request, attemptid):
     или завершить попытку
     или предложить завершить попытку
     """
-    attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
+    # attempt = get_object_or_404(Attempt, pk=attemptid, user=request.user)
     attempt = get_object_or_404(Attempt.objects.auth(request.user), pk=attemptid)
     if not attempt.schedule.task.viewable:
         try:
@@ -193,7 +192,7 @@ def run_attempt(request, attemptid):
 
 @login_required(login_url='login')
 def new_attempt(request, scheduleid):
-    schedule = get_object_or_404(Schedule, pk=scheduleid)
+    schedule = get_object_or_404(Schedule.objects.auth(request.user), pk=scheduleid)
     # Проверим использование доступных попыток
     # attempts = Attempt.objects.all().filter(schedule=schedule, finished__isnull=False, user=request.user).count()
     attempts = Attempt.objects.auth(request.user).filter(schedule=schedule, finished__isnull=False).count()
@@ -264,15 +263,16 @@ def get_answer_contents(answer_model, question):
 
 
 def is_readonly(query):
-    # Validate access
+    closed = query.attempt.finished or query.attempt.schedule.finish < now()
     editable = query.attempt.schedule.task.editable
     viewable = query.attempt.schedule.task.viewable
     has_errs = err_results(query)
-    if not editable and not has_errs:
-        if viewable:
-            return True
-        else:
-            raise ObjectDoesNotExist
+    if (closed and not viewable) or \
+            (not closed and not editable and not viewable):
+        raise ObjectDoesNotExist
+    elif (viewable and closed) or \
+            (not has_errs and not editable and viewable and not closed):
+        return True
     else:
         return False
 
@@ -402,7 +402,8 @@ def save_result(query, request):
     try:
         validate_modify_attempt(query.attempt)
     except (AttemptError, ScheduleError) as e:
-        raise ValidationError("Ваш ответ не принят так как {}".format(e))
+        # raise ValidationError("Ваш ответ не принят так как {}".format(e))
+        messages.add_message(request, messages.INFO, "Ваш ответ не принят так как {}".format(e))
 
     if query.question.qtype == RADIOBUTTON:
         choice = request.POST.get('choice')
@@ -611,14 +612,13 @@ def render_run_attempt(request, schedule):
 
 @login_required(login_url='login')
 def render_attempt_list(request, schedule):
-    # attempts = Attempt.objects.all().filter(schedule=schedule, user=request.user).order_by('-started')
     attempts = Attempt.objects.auth(request.user).filter(schedule=schedule).order_by('-started')
     return render_to_string('attemptlistblock.html', {'attempts': attempts})
 
 
 @login_required(login_url='login')
 def schedule_info(request, scheduleid):
-    schedule = get_object_or_404(Schedule, pk=scheduleid)
+    schedule = get_object_or_404(Schedule.objects.auth(request.user), pk=scheduleid)
     return render(request,
                   'scheduleinfo.html',
                   {
@@ -633,8 +633,8 @@ def schedule_info(request, scheduleid):
 
 @login_required(login_url='login')
 def index(request):
-    opened_schedules = Schedule.objects.all().filter(start__lt=now(), finish__gt=now())
-    closed_schedules = Schedule.objects.all().filter(finish__lt=now())
+    opened_schedules = Schedule.objects.auth(request.user).filter(start__lt=now(), finish__gt=now())
+    closed_schedules = Schedule.objects.auth(request.user).filter(finish__lt=now())
     return render(
         request,
         'listschedules.html',

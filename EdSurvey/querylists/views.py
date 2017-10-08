@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 
 from .models import QueryList, QueryContent
-from clients.models import Person, get_active_person, has_permission
+from clients.models import Person, get_active_person
 
 
 @login_required(login_url='login')
@@ -31,7 +31,7 @@ def render_querylist_info(request, querylist, perm=False):
     person = get_active_person(request)
 
     def render_info_block():
-        if has_permission(person=person, applabel='querylists', model='QueryContent', acl='L'):
+        if person.has_perms(applabel='querylists', model='QueryContent', acl='L'):
             questionscnt = QueryContent.objects.all().filter(querylist=querylist).count(),
         else:
             questionscnt = None
@@ -40,7 +40,7 @@ def render_querylist_info(request, querylist, perm=False):
                                  'questionscnt': questionscnt,},)
 
     if perm:
-        if has_permission(person=person, applabel='querylists', model='QueryList', acl='R'):
+        if person.has_perms(applabel='querylists', model='QueryList', acl='R'):
             return render_info_block()
         else:
             return render_to_string('emptyinfoblock.html', {'notice': 'информация по анкете отсутсвует'})

@@ -10,6 +10,8 @@ class AnswerAdmin(admin.ModelAdmin):
 class AnswerRBAdmin(admin.TabularInline):
     # list_display = ('id', 'question', 'score', 'ordernum', 'content')
     model = AnswerRB
+    extra = 1  # how many rows to show
+
 
 # admin.site.register(AnswerRB, AnswerRBAdmin)
 
@@ -17,15 +19,13 @@ class AnswerRBAdmin(admin.TabularInline):
 class AnswerCBAdmin(admin.TabularInline):
     # list_display = ('id', 'question', 'score', 'ordernum', 'content')
     model = AnswerCB
-
-# admin.site.register(AnswerCB, AnswerCBAdmin)
+    extra = 1  # how many rows to show
 
 
 class AnswerLLAdmin(admin.TabularInline):
     # list_display = ('id', 'question', 'score', 'ordernum', 'content', 'linkeditem', 'ordernumitem')
     model = AnswerLL
-
-# admin.site.register(AnswerLL, AnswerLLAdmin)
+    extra = 1  # how many rows to show
 
 
 class QuestionAdmin(admin.ModelAdmin):

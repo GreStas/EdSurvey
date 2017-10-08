@@ -73,6 +73,7 @@ class ClientData(models.Model):
     )
     fullname = models.CharField('полное наименование', max_length=120)
     address = models.TextField('почтовый адрес', null=True, blank=True)
+    # domain = models.CharField('корпоративный почтовый домен', null=True, blank=True)
     rootdivision = models.ForeignKey(Division,
                                      on_delete=models.PROTECT,
                                      verbose_name='корневая организация',)
@@ -151,32 +152,32 @@ class RolePermission(models.Model):
         return "{} - {} - {}".format(self.role.shortname, self.datatype.name, self.acl)
 
 
-def has_permission(person, applabel, model, acl, exact=False):
-    """    Проверка на наличие запрошенных прав.
-    Если exact==True, то отсутвие любого права - это отсутсвие прав.
-    Если exact==False, то наличие хотя-бы одно права - это наличие прав.
-    :param person: Личность
-    :param applabel: Приложение
-    :param model: Модель
-    :param acl: Запрошенные для проверки права
-    :param exact: Полное наличие всех запрошенных прав?
-    :return: права из таблицы прав или None
-    """
-    try:
-        acls = RolePermission.objects.all().get(role=person.role, datatype__applabel=applabel, datatype__model=model).acl
-    except ObjectDoesNotExist:
-        return None
-    for r in acl:
-        if r in acls:
-            if not exact:
-                # Если не требуется точное наличие всех запрошенных прав, то дальше можно и не проверять.
-                break
-        elif exact:
-            # Если требуется точное наличие всех запрошенных прав и хотя-бо одно право не найдено,
-            # то дальше можно и не проверять и возвращаем None.
-            acls = None
-            break
-    return acls
+# def has_permission(person, applabel, model, acl, exact=False):
+#     """    Проверка на наличие запрошенных прав.
+#     Если exact==True, то отсутвие любого права - это отсутсвие прав.
+#     Если exact==False, то наличие хотя-бы одно права - это наличие прав.
+#     :param person: Личность
+#     :param applabel: Приложение
+#     :param model: Модель
+#     :param acl: Запрошенные для проверки права
+#     :param exact: Полное наличие всех запрошенных прав?
+#     :return: права из таблицы прав или None
+#     """
+#     try:
+#         acls = RolePermission.objects.all().get(role=person.role, datatype__applabel=applabel, datatype__model=model).acl
+#     except ObjectDoesNotExist:
+#         return None
+#     for r in acl:
+#         if r in acls:
+#             if not exact:
+#                 # Если не требуется точное наличие всех запрошенных прав, то дальше можно и не проверять.
+#                 break
+#         elif exact:
+#             # Если требуется точное наличие всех запрошенных прав и хотя-бо одно право не найдено,
+#             # то дальше можно и не проверять и возвращаем None.
+#             acls = None
+#             break
+#     return acls
 
 
 class Person(models.Model):
@@ -235,7 +236,7 @@ class Squad(models.Model):
     """ Рабочая группа (бригада) """
     name = models.CharField('название', max_length=60)
     shortname = models.CharField('абревиатура', max_length=30)
-    discription = models.TextField('описание', null=True, blank=True)
+    description = models.TextField('описание', null=True, blank=True)
     division = models.ForeignKey(Division, verbose_name='организация')
     # manager = models.ForeignKey(Person, blank=True, null=True, verbose_name='менеджер группы')
     members = models.ManyToManyField(Person, verbose_name='участники')

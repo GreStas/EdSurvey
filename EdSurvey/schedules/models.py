@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 from querylists.models import QueryList
-from clients.models import Division, Person
+from clients.models import Division, Person, Squad
 
 
 class TaskManager(models.Manager):
@@ -63,6 +63,10 @@ class ScheduleManager(models.Manager):
             qset |= Q(task__division=person.division)
         return super().get_queryset().filter(qset)
 
+    def auth(self, user):
+        """ Пользователь через Личность входит в Бригаду """
+        return super().get_queryset().filter(squads__members__user=user)
+
     def get_queryset(self):
         res = super().get_queryset()
         return res
@@ -76,6 +80,7 @@ class Schedule(models.Model):
     description = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=60)
     owner = models.ForeignKey(Person, on_delete=models.PROTECT, verbose_name='владелец')
+    squads = models.ManyToManyField(Squad, blank=True, verbose_name='назначение')
     # status = models.SmallIntegerField()
 
     objects = ScheduleManager()

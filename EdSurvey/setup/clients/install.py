@@ -7,7 +7,7 @@ from ..home import install
 from clients.models import Client
 
 client_the_site = Client.objects.create(
-    id=1,
+    id=0,
     name='Опросы и Тестирование',
     shortname='THE SITE',
     corporate=True,
@@ -33,7 +33,7 @@ client_freebee = Client.objects.create(
 from clients.models import Division
 
 division_the_site = Division.objects.create(
-    id=1,
+    id=0,
     client=client_the_site,
     name=client_the_site.name,
     shortname=client_the_site.shortname,
@@ -230,11 +230,17 @@ clients_squad = DataType.objects.create(
 #
 from clients.models import Role
 
+role_testee = Role.objects.create(
+    id=0,
+    name='Тестируемый',
+    shortname='TESTEE',
+    description="""Предопределённая Роль - могут проходить назначенные и публичные опросы.""",
+)
 role_user = Role.objects.create(
     id=1,
     name='Пользователь',
     shortname='USER',
-    description="""Все пользователия сайта, прошедшие регистрацию, которые могут создавать свой персональный контент.""",
+    description="""Предопределённая Роль - могут создавать свой персональный контент и использовать публичный.""",
 )
 role_editor = Role.objects.create(
     name='Редактор',
@@ -285,21 +291,37 @@ from clients.models import RolePermission
 """
 RolePermission.objects.create(role=role_, datatype=s_, acl='LRCUDM')
 """
-# RolePermission.objects.create(role=role_user, datatype=questions_answer, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=questions_question, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=querylists_querylist, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=querylists_querycontent, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=schedules_task, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=schedules_schedule, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=schedules_attempt, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=surveys_anketa, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=surveys_result, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=clients_client, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=clients_clientdata, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=clients_division, acl='LRCUDM')
-RolePermission.objects.create(role=role_user, datatype=clients_role, acl='LR')
-# RolePermission.objects.create(role=role_user, datatype=clients_person, acl='LRCUDM')
-# RolePermission.objects.create(role=role_user, datatype=clients_squad, acl='LRCUDM')
+RolePermission.objects.create(role=role_user, datatype=questions_answer, acl='O')
+RolePermission.objects.create(role=role_user, datatype=questions_question, acl='O')
+RolePermission.objects.create(role=role_user, datatype=querylists_querylist, acl='O')
+RolePermission.objects.create(role=role_user, datatype=querylists_querycontent, acl='O')
+RolePermission.objects.create(role=role_user, datatype=schedules_task, acl='O')
+RolePermission.objects.create(role=role_user, datatype=schedules_schedule, acl='O')
+RolePermission.objects.create(role=role_user, datatype=schedules_attempt, acl='O')
+RolePermission.objects.create(role=role_user, datatype=surveys_anketa, acl='O')
+RolePermission.objects.create(role=role_user, datatype=surveys_result, acl='O')
+# RolePermission.objects.create(role=role_siteuser, datatype=clients_client, acl='O')
+# RolePermission.objects.create(role=role_siteuser, datatype=clients_clientdata, acl='O')
+# RolePermission.objects.create(role=role_siteuser, datatype=clients_division, acl='O')
+RolePermission.objects.create(role=role_user, datatype=clients_role, acl='O')
+RolePermission.objects.create(role=role_user, datatype=clients_person, acl='O')
+RolePermission.objects.create(role=role_user, datatype=clients_squad, acl='O')
+
+RolePermission.objects.create(role=role_testee, datatype=questions_answer, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=questions_question, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=querylists_querylist, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=querylists_querycontent, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=schedules_task, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=schedules_schedule, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=schedules_attempt, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=surveys_anketa, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=surveys_result, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_client, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_clientdata, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_division, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_role, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_person, acl='T')
+RolePermission.objects.create(role=role_testee, datatype=clients_squad, acl='T')
 
 RolePermission.objects.create(role=role_editor, datatype=questions_answer, acl='LRCUD')
 RolePermission.objects.create(role=role_editor, datatype=questions_question, acl='LRCUD')
@@ -450,11 +472,11 @@ RolePermission.objects.create(role=role_, datatype=clients_squad, acl='LRCUDM')
 #   clients Person
 #
 from clients.models import Person
-from ..home.install import user_site1, user_sbrf1, user_freebee
+from ..home.install import user_site1, user_sbrf1, user_sbrf2, user_freebee, user_freebee1
 
 def add_person(user, shortname, division, roles):
     print("Adding: user={}, shortname={}, division={}".format(user, shortname, division))
-    print(" roles:", *roles)
+    print(" roles:", ", ".join(('"{}"'.format(r) for r in roles)))
     person = Person(
         user=user,
         shortname=shortname,
@@ -468,7 +490,7 @@ site1_user = add_person(
     user=user_site1,
     shortname='Первый',
     division=division_the_site,
-    roles=(role_user,),
+    roles=(role_user, role_testee,),
 )
 
 sbrf1_user = add_person(
@@ -476,6 +498,12 @@ sbrf1_user = add_person(
     shortname='Николай',
     division=division_sbrf,
     roles=(role_user,),
+)
+sbrf1_testee = add_person(
+    user=user_sbrf1,
+    shortname=user_sbrf1.username,
+    division=division_sbrf,
+    roles=(role_testee,),
 )
 sbrf1_account_manager = add_person(
     user=user_sbrf1,
@@ -526,9 +554,16 @@ sbrf1_schedule_manager = add_person(
     roles=(role_schedule_manager,),
 )
 
+sbrf2_user = add_person(
+    user=user_sbrf2,
+    shortname='Петруха',
+    division=division_sbrf,
+    roles=(role_testee,),
+)
+
 freebee_user =  add_person(
     user=user_freebee,
-    shortname='Пользователь',
+    shortname=user_freebee.username,
     division=division_freebee,
     roles=(role_user,),
 )
@@ -549,7 +584,51 @@ freebee_superuser =  add_person(
     ),
 )
 
+freebee_testee =  add_person(
+    user=user_freebee1,
+    shortname='Пользователь',
+    division=division_freebee,
+    roles=(role_testee,),
+)
+
 #
 #   clients Squad
 #
 from clients.models import Squad
+
+def add_squad(name, shortname, description, division, members):
+    print("Adding squad: name={}, shortname={}, division={}".format(name, shortname, division))
+    print("     members:", ", ".join(('"{}"'.format(r) for r in members)))
+    squad = Squad(
+        name=name,
+        shortname=shortname,
+        description=description,
+        division=division,
+    )
+    squad.save()
+    squad.members.add(*members)
+    return squad
+
+squad_sbrf_users = add_squad(
+    name='Весь СБЕРБАНК',
+    shortname='SBRF_USERS',
+    description="""Все Личности СБЕРБАНКА с ролью Пользователь""",
+    division=division_sbrf,
+    members=(sbrf1_user, sbrf2_user,),
+)
+
+squad_freebee_all = add_squad(
+    name='Весь FreeBee',
+    shortname='FREEBEE_ALL',
+    description="""Все Личности FreeBee""",
+    division=division_freebee,
+    members=(freebee_user, freebee_superuser,),
+)
+
+squad_freebee_users = add_squad(
+    name='Пользователи FreeBee',
+    shortname='FREEBEE_USERS',
+    description="""Все Личности FreeBee с ролью Пользователь""",
+    division=division_freebee,
+    members=(freebee_testee,),
+)
