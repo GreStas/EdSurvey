@@ -267,9 +267,10 @@ def is_readonly(query):
     editable = query.attempt.schedule.task.editable
     viewable = query.attempt.schedule.task.viewable
     has_errs = err_results(query)
-    if (closed and not viewable) or \
-            (not closed and not editable and not viewable):
-        raise ObjectDoesNotExist
+    if (closed and not viewable):
+        raise ObjectDoesNotExist("Доступ к закрытой попытке или завершившемуся расписанию закрыт")
+    elif not closed:
+        return False
     elif (viewable and closed) or \
             (not has_errs and not editable and viewable and not closed):
         return True
