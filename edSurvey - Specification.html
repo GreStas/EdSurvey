@@ -6,7 +6,7 @@
 	<meta name="generator" content="LibreOffice 5.1.6.2 (Linux)"/>
 	<meta name="created" content="2017-09-24T13:10:57.062000000"/>
 	<meta name="changedby" content="Stanislav Grebenyuk"/>
-	<meta name="changed" content="2017-10-09T14:45:54.991294695"/>
+	<meta name="changed" content="2017-10-10T22:30:40.572206510"/>
 	<meta name="Language" content="Russian"/>
 	<style type="text/css">
 		@page { size: 8.5in 11in; margin: 0.79in }
@@ -45,9 +45,11 @@
 <body lang="ru-RU" dir="ltr">
 <p align="center" style="margin-top: 0.17in; margin-bottom: 0.08in; line-height: 100%; page-break-after: avoid">
 <font face="Liberation Sans, sans-serif"><font size="6" style="font-size: 28pt"><b>Учебный
-проект edSurvey</b></font></font></p>
+проект edSurvey <span style="background: #ffff00">изменеие
+заголовка</span></b></font></font></p>
 <p align="center" style="margin-top: 0.04in; margin-bottom: 0.08in; line-height: 100%; page-break-after: avoid">
-<font face="Liberation Sans, sans-serif"><font size="5" style="font-size: 18pt">Django</font></font></p>
+<font face="Liberation Sans, sans-serif"><font size="5" style="font-size: 18pt">Django
+изменение</font></font></p>
 <h1 class="western">Назначение документа.</h1>
 <p>Документ описывает общие потребности
 Пользователя в системе, особенности
@@ -55,30 +57,31 @@
 <p>При создании документа использована
 методика <a href="https://habrahabr.ru/post/335924/">https://habrahabr.ru/post/335924/</a></p>
 <h2 class="western">Термины и определения.</h2>
-<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Сайт</font></strong>
+<blockquote><strong><font face="Calibri, sans-serif">Сайт</font></strong>
 – совокупность вычислительных и
 организационных ресурсов, предоставляющая
-систему в пользование.</p>
+систему в пользование. изменение стиля
+изменение стиля</blockquote>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Пользователь</font></strong>
 (user) — лицо, зарегистрированное в системе.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Личность</font></strong>
-(person) — Пользователь расширенным набором
+(pPerson) — Пользователь расширенным набором
 атрибутов.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Вопрос</font></strong>
 — связка вопрос (question) и вариантов выбора
 (answer) пользователя на связанный вопрос.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Опросник</font></strong>
-(querylist) — контейнер, связывающий несколько
+(qQuerylist) — контейнер, связывающий несколько
 Вопросов в последовательность.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Задание</font></strong>
-(task) — Опросник с параметрами прохождения
+(tTask) — Опросник с параметрами прохождения
 опроса и назначением конкретным
 пользователям и Бригадам.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Расписание</font></strong>
 (schedule) — Задание, определённое во времени
 прохождения.</p>
-<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Бригада</font></strong>
-(squad) — группа Пользователей.</p>
+<p class="hanging-indent"><a name="Бригада"></a><strong><font face="Calibri, sans-serif">Бригада</font></strong>
+(squadSquad) — группа Пользователей.</p>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Опрос</font></strong>
  — серия вопросов без оценки правильности
 ответов.</p>
@@ -108,7 +111,7 @@
 	<li/>
 <p class="list-1-end-western">на прохождение в
 	рамках Заданий — Пользователям в рамках
-	назначенной Бригады в которую они
+	назначенной Бригада в которую они
 	включены.</p>
 </ul>
 <p class="hanging-indent"><strong><font face="Calibri, sans-serif">Публичный
@@ -230,6 +233,14 @@ UC1.1. Создание Вопроса.</h3>
 			<p>2. Запись вариантов ответов в БД.</p>
 		</td>
 	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>1</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Добавление строки</p>
+		</td>
+	</tr>
 </table>
 <h4 class="western">Предусловия и условия
 выполнения процесса</h4>
@@ -294,61 +305,90 @@ UC1.1. Создание Вопроса.</h3>
 <h3 class="western"><a name="UC1.2. Изменение Вопроса"></a>
 UC1.2. Изменение Вопроса.</h3>
 <table width="665" cellpadding="4" cellspacing="0">
-	<col width="135">
-	<col width="512">
+	<col width="72">
+	<col width="284">
+	<col width="283">
 	<tr valign="top">
-		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p><b>Атрибуты</b></p>
 		</td>
-		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+		<td width="284" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p><b>Значения</b></p>
 		</td>
+		<td width="283" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Добавление колонки</b></p>
+		</td>
 	</tr>
 	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p>Выполняется</p>
 		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+		<td width="284" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><br/>
+
+			</p>
+		</td>
+		<td width="283" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p><br/>
 
 			</p>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p>Цель процесса</p>
 		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+		<td width="284" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><br/>
+
+			</p>
+		</td>
+		<td width="283" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p><br/>
 
 			</p>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p>Входящие данные</p>
 		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+		<td width="284" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><br/>
+
+			</p>
+		</td>
+		<td width="283" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p><br/>
 
 			</p>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p>Источники данных</p>
 		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+		<td width="284" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><br/>
+
+			</p>
+		</td>
+		<td width="283" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p><br/>
 
 			</p>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+		<td width="72" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
 			<p>Исходящие данные</p>
 		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+		<td width="284" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><br/>
+
+			</p>
+		</td>
+		<td width="283" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
 			<p><br/>
 
 			</p>
@@ -937,68 +977,7 @@ UC1.2. Изменение Вопроса.</h3>
 <p align="center" style="margin-top: 0.17in; margin-bottom: 0.08in; line-height: 100%; page-break-before: always; page-break-after: avoid">
 <font face="Liberation Sans, sans-serif"><font size="6" style="font-size: 28pt"><b>Шаблоны</b></font></font></p>
 <h3 class="western">UC1.1. Сценарий использования.</h3>
-<table width="665" cellpadding="4" cellspacing="0">
-	<col width="135">
-	<col width="512">
-	<tr valign="top">
-		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p><b>Атрибуты</b></p>
-		</td>
-		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
-			<p><b>Значения</b></p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p>Выполняется</p>
-		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p>Цель процесса</p>
-		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p>Входящие данные</p>
-		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p>Источники данных</p>
-		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
-			<p>Исходящие данные</p>
-		</td>
-		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
-			<p><br/>
-
-			</p>
-		</td>
-	</tr>
-</table>
+<p>Удаление таблицы</p>
 <h4 class="western">Предусловия и условия
 выполнения процесса</h4>
 <p>.</p>
