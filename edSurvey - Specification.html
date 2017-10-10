@@ -1,0 +1,1016 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 5.1.6.2 (Linux)"/>
+	<meta name="created" content="2017-09-24T13:10:57.062000000"/>
+	<meta name="changedby" content="Stanislav Grebenyuk"/>
+	<meta name="changed" content="2017-10-09T14:45:54.991294695"/>
+	<meta name="Language" content="Russian"/>
+	<style type="text/css">
+		@page { size: 8.5in 11in; margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 120% }
+		p.list-cjk { font-size: 12pt }
+		p.list-ctl { font-family: "Arial", sans-serif }
+		h1 { margin-bottom: 0.08in }
+		h1.western { font-family: "Liberation Serif", serif }
+		h1.cjk { font-family: "SimSun"; font-size: 24pt }
+		h1.ctl { font-family: "Arial"; font-size: 24pt }
+		h2.cjk { font-family: "SimSun" }
+		h2.ctl { font-family: "Arial" }
+		h3.cjk { font-family: "SimSun" }
+		h3.ctl { font-family: "Arial" }
+		td p { margin-bottom: 0in }
+		h4.western { font-family: "Liberation Sans", sans-serif; font-size: 13pt; font-style: italic }
+		h4.cjk { font-family: "Microsoft YaHei"; font-size: 13pt; font-style: italic }
+		h4.ctl { font-family: "Arial"; font-size: 13pt; font-style: italic }
+		h5.western { font-family: "Liberation Sans", sans-serif; font-size: 11pt }
+		h5.cjk { font-family: "Microsoft YaHei"; font-size: 11pt }
+		h5.ctl { font-family: "Arial"; font-size: 11pt }
+		p.hanging-indent { margin-left: 0.39in; text-indent: -0.2in }
+		p.list-1-cont--western { margin-left: 0.25in; margin-bottom: 0.08in }
+		p.list-1-cont--cjk { margin-left: 0.25in; margin-bottom: 0.08in; font-size: 12pt }
+		p.list-1-cont--ctl { margin-left: 0.25in; margin-bottom: 0.08in; font-family: "Arial", sans-serif }
+		p.list-1-start-western { margin-left: 0.25in; text-indent: -0.25in; margin-top: 0.17in; margin-bottom: 0.08in }
+		p.list-1-start-cjk { margin-left: 0.25in; text-indent: -0.25in; margin-top: 0.17in; margin-bottom: 0.08in; font-size: 12pt }
+		p.list-1-start-ctl { margin-left: 0.25in; text-indent: -0.25in; margin-top: 0.17in; margin-bottom: 0.08in; font-family: "Arial", sans-serif }
+		p.list-1-end-western { margin-left: 0.25in; text-indent: -0.25in; margin-bottom: 0.17in }
+		p.list-1-end-cjk { margin-left: 0.25in; text-indent: -0.25in; margin-bottom: 0.17in; font-size: 12pt }
+		p.list-1-end-ctl { margin-left: 0.25in; text-indent: -0.25in; margin-bottom: 0.17in; font-family: "Arial", sans-serif }
+		a:link { so-language: zxx }
+		a.sdfootnoteanc { font-size: 57% }
+	</style>
+</head>
+<body lang="ru-RU" dir="ltr">
+<p align="center" style="margin-top: 0.17in; margin-bottom: 0.08in; line-height: 100%; page-break-after: avoid">
+<font face="Liberation Sans, sans-serif"><font size="6" style="font-size: 28pt"><b>Учебный
+проект edSurvey</b></font></font></p>
+<p align="center" style="margin-top: 0.04in; margin-bottom: 0.08in; line-height: 100%; page-break-after: avoid">
+<font face="Liberation Sans, sans-serif"><font size="5" style="font-size: 18pt">Django</font></font></p>
+<h1 class="western">Назначение документа.</h1>
+<p>Документ описывает общие потребности
+Пользователя в системе, особенности
+реализаци.</p>
+<p>При создании документа использована
+методика <a href="https://habrahabr.ru/post/335924/">https://habrahabr.ru/post/335924/</a></p>
+<h2 class="western">Термины и определения.</h2>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Сайт</font></strong>
+– совокупность вычислительных и
+организационных ресурсов, предоставляющая
+систему в пользование.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Пользователь</font></strong>
+(user) — лицо, зарегистрированное в системе.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Личность</font></strong>
+(person) — Пользователь расширенным набором
+атрибутов.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Вопрос</font></strong>
+— связка вопрос (question) и вариантов выбора
+(answer) пользователя на связанный вопрос.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Опросник</font></strong>
+(querylist) — контейнер, связывающий несколько
+Вопросов в последовательность.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Задание</font></strong>
+(task) — Опросник с параметрами прохождения
+опроса и назначением конкретным
+пользователям и Бригадам.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Расписание</font></strong>
+(schedule) — Задание, определённое во времени
+прохождения.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Бригада</font></strong>
+(squad) — группа Пользователей.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Опрос</font></strong>
+ — серия вопросов без оценки правильности
+ответов.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Анкета</font></strong>
+— серия вопросов с оценкой ожидаемых
+или предпочтительных ответов.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Тест</font></strong>
+— серия вопросов с оценкой правильных
+ответов и ограничением проходного балла
+или % правильных ответов.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Контент</font></strong>
+— Вопросы, Опросники, Задания, учебные
+материалы, созданные и/или хранящиеся
+на Сайте.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Владелец</font></strong>
+— Пользователь Системы, который обладает
+полными правами на объект. Обычно
+создатель Контента сразу становится
+его Владельцем.</p>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Приватный
+контент</font></strong> — Контент, который
+доступен:</p>
+<ul>
+	<li/>
+<p class="list-1-start-western">на изменение только
+	его Владельцу;</p>
+	<li/>
+<p class="list-1-end-western">на прохождение в
+	рамках Заданий — Пользователям в рамках
+	назначенной Бригады в которую они
+	включены.</p>
+</ul>
+<p class="hanging-indent"><strong><font face="Calibri, sans-serif">Публичный
+контент</font></strong> — любая часть Контента,
+которая может быть использована любым
+Пользователем как напрямую, так и через
+механизм копирования с ссылкой на
+использованный Контент. Публичный
+контент не может быть использован
+напрямую в Приватном контенте, а только
+через механизм копирования с ссылкой
+на использованный Контент.</p>
+<h1 class="western" style="page-break-before: always">ND. Общее
+описание системы.</h1>
+<h3 class="western">Проводить Опросы, Анкетирование,
+Тестирование.</h3>
+<h2 class="western">ND1. Общие потребности.</h2>
+<h3 class="western">ND1.1. Определять мнение
+Пользователей в заданной области.</h3>
+<h3 class="western">ND1.2. Определять уровень знаний
+в заданной области.</h3>
+<h3 class="western">ND1.3. Определять уровень
+отклонений от ожидаемых ответов.</h3>
+<h3 class="western">ND1.4. Определять по итогам
+выполненных Заданий сложность материала
+для конкретного Пользователя и/или
+целевой группы.</h3>
+<h2 class="western">ND2. Особые потребности.</h2>
+<h3 class="western">ND2.1. Разделять любой контент
+на Публичный и Приватный.</h3>
+<h3 class="western">ND2.2. Использовать доступный
+на момент создания Контент.</h3>
+<h3 class="western">ND2.3. Блокировать изменение
+использованного Контента.</h3>
+<h3 class="western">ND2.4. Отслеживать авторские
+права на Контент внутри системы.</h3>
+<h3 class="western">ND2.5. Делать Публичный контент
+невидимым.</h3>
+<h3 class="western">ND2.6. Деактивировать Контент.</h3>
+<p>Удаление или архивирование (в случае
+его использования) Контента, делая
+невозможным его дальнейшее использование,
+кроме как в уже запущенных Расписаниях.</p>
+<h2 class="western">ND3. Ограничения.</h2>
+<h3 class="western">ND3.1.Иерархии корпоративного
+типа остутсвуют, т.е. все Пользователи
+равноценны.</h3>
+<h3 class="western">ND3.2. Задания выдаются только
+по уникальной ссылке, сгенерированной
+сайтом для каждого Расписания.</h3>
+<h3 class="western">ND3.3. Приватное Задание можно
+пройти только по запросу.</h3>
+<h3 class="western">ND3.4. Все пользователи могут
+создавать как Публичный, так и Приватный
+контент.</h3>
+<h1 class="western">AD. Архитектура системы.</h1>
+<h2 class="western">AD1. Компоненты.</h2>
+<h2 class="western">AD2. Потоки данных.</h2>
+<h2 class="western">AD3. Интерфейсы.</h2>
+<h2 class="western">AD4. Структуры данных.</h2>
+<h1 class="western" style="page-break-before: always">UC. Сценарии
+использоваания. (User cases)</h1>
+<h2 class="western"><a name="UC1. Вопросы"></a>UC1. Вопросы.</h2>
+<h3 class="western"><a name="UC1.1. Создание Вопроса"></a>
+UC1.1. Создание Вопроса.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняет</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Редактор<a class="sdfootnoteanc" name="sdfootnote1anc" href="#sdfootnote1sym"><sup>1</sup></a></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Зарегистрировать в Системе новый
+			Вопрос</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. Элементы Контента для Вопроса.</p>
+			<p>2. Тип вопроса.</p>
+			<p>3. Принадлежность Организации.</p>
+			<p>4. Публичный, Приватный</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. Внешняя среда.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. Запись вопроса в БД.</p>
+			<p>2. Запись вариантов ответов в БД.</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Вопрос может быть одним из предопределённых
+типов: &quot;Одиночный выбор&quot; (RadioButton),
+Множественный выбор (CheckBox), &quot;Путанка&quot;
+(LinkedLinks).</p>
+<h4 class="western">Описание процесса</h4>
+<p>Пользователь входит в пункт меню
+&quot;Вопросы&quot; и переходит на страницу
+&quot;Вопросы&quot;.</p>
+<p>На странице &quot;Вопросы&quot; пользователь
+использует элемент интерфейса &quot;Новый
+вопрос&quot;.</p>
+<h5 class="western">UC1.1.1. Создание карточки
+Вопроса.</h5>
+<p>Пользователь заполняет параметры
+Вопроса:</p>
+<ul>
+	<li/>
+<p class="list-1-start-western">Название;</p>
+	<li/>
+<p class="list-1-cont--western">Полное описание;</p>
+	<li/>
+<p class="list-1-cont--western">выбирает значение
+	атрибута &quot;Публичное&quot;, если доступен
+	выбор;</p>
+	<li/>
+<p class="list-1-cont--western">выбирает значение
+	атрибута &quot;Организация&quot;, если
+	доступен выбор;</p>
+	<li/>
+<p class="list-1-end-western">при необходимости
+	устанавливает атрибут &quot;Авторы&quot;.</p>
+</ul>
+<p>После проверки всех параметров Вопроса,
+Пользователь использует элемент
+интерфейса:</p>
+<ul>
+	<li/>
+<p class="list-1-start-western">&quot;Сохранить&quot;
+	- чтобы сохранить запись Вопроса в БД
+	и остаться на форме Вопроса в режиме
+	редактирования;</p>
+	<li/>
+<p class="list-1-cont--western">&quot;Очистить&quot; -
+	чтобы сбросить все атрибуты и параметры
+	в начальное состояние и продолжить
+	создание Вопроса;</p>
+	<li/>
+<p class="list-1-end-western">&quot;Завершить&quot; -
+	чтобы вернуться к странице &quot;Вопросы&quot;.</p>
+</ul>
+<h5 class="western">UC1.1.2. Добавление нового
+варианта ответа.</h5>
+<p>После сохранения параметров Вопроса,
+Пользователь получает возможность
+использовать элемент интерфейса
+&quot;Добавить вариант ответа&quot;. При его
+использовании отрабатывает один из
+сценариев из раздела  UC2. Варианты ответа.</p>
+<h3 class="western"><a name="UC1.2. Изменение Вопроса"></a>
+UC1.2. Изменение Вопроса.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Вопрос существует. Пользователь
+обладает достаточными правами доступа
+для просмотра и изменения Вопроса.</p>
+<p>Вопрос не был использован на в одном
+Опроснике.</p>
+<p>На странице &quot;Вопросы&quot; пользователь
+вызывает элемент интерфейса &quot;Изменить&quot;
+для конкретного Вопроса.</p>
+<h3 class="western">UC1.3. Удаление Вопроса.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Вопрос существует. Пользователь
+обладает достаточными правами доступа
+для просмотра и удаления Вопроса.</p>
+<p>Вопрос не был использован ни в одном
+Опроснике.</p>
+<p>Данный Вопрос не использован в качестве
+Базового контента.</p>
+<p>На странице &quot;Вопросы&quot; пользователь
+вызывает элемент интерфейса &quot;Удалить&quot;
+для конкретного Вопроса.</p>
+<h3 class="western">UC1.4. Архивирование Вопроса.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Вопрос существует. Пользователь
+обладает достаточными правами доступа
+для просмотра и удаления Вопроса.</p>
+<p>На странице &quot;Вопросы&quot; пользователь
+вызывает элемент интерфейса &quot;Архивировать&quot;
+для конкретного Вопроса.</p>
+<h3 class="western">UC1.5. Копирование Вопроса.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Редактор</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Зарегистрировать в Системе новый
+			Вопрос на базе уже существующего
+			Вопроса</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Ссылка на Базовый контент.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Существующий доступный Пользователю
+			Контент.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Запись о связи Вопроса с использованным
+			Базовым контентом (в случае копирования).</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Вопрос существует. Пользователь
+обладает достаточными правами доступа
+для просмотра Вопроса.</p>
+<p>На странице &quot;Вопросы&quot; пользователь
+вызывает элемент интерфейса &quot;Дублировать&quot;
+для конкретного Вопроса.</p>
+<h3 class="western">UC1.6. Фильтрация Вопросов.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>На странице «Вопросы» существуют поля
+ввода параметров фильтрации:</p>
+<ul>
+	<li/>
+<p class="list-1-start-western">«Владелец» = текущая
+	Личность Пользователя;</p>
+	<li/>
+<p class="list-1-cont--western">«Организация» =
+	текущая Организация Личности»;</p>
+	<li/>
+<p class="list-1-cont--western">«Публичный» = в
+	зависимости от типов Клиента и
+	Организации;</p>
+	<li/>
+<p class="list-1-cont--western">«Частный» = в
+	зависимости от типов Клиента и
+	Организации;</p>
+	<li/>
+<p class="list-1-cont--western">«Авторы»;</p>
+	<li/>
+<p class="list-1-end-western">«Тип вопроса»;</p>
+</ul>
+<h4 class="western">Описание процесса</h4>
+<p>На странице &quot;Вопросы&quot; Пользователь
+заполняет параметры фильтрации и
+вызывает элемент интерфейса &quot;Поиск&quot;.</p>
+<p>Для сброса параметров в значения
+по-умолчанию Пользователь вызывает
+элемент интерфейса «Сброс».</p>
+<p>Для отображения всех доступных Вопросов
+Пользователь вызывает элемент интерфейса
+«ВСЕ вопросы».</p>
+<h2 class="western"><a name="UC2. Варианты ответа"></a>UC2.
+Варианты ответа.</h2>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>Пользователь входит в пункт меню
+&quot;Вопросы&quot; и переходит на страницу
+&quot;Вопросы&quot;, выбирает Вопрос (&quot;<span style="background: #ffff00">UC?.Выбор
+вопроса</span>&quot; или &quot;<span style="background: #ffff00">UC?.Поиск
+вопроса</span>&quot;) либо уже находится на
+форме создания Вопроса после его
+успешного сохранения.</p>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Редактор</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>Связать Вопросы в единое множетсво</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. Вопросы</p>
+			<p>2. Номер вопроса или его отсутвие для
+			случайной последовательности</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. Внешняя среда.</p>
+			<p>2. Существующий доступный Пользователю
+			Контент.</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p>1. 
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Описание процесса</h4>
+<p>.</p>
+<h5 class="western">UC1.1.1. Описание процедуры
+процесса.</h5>
+<p>.</p>
+<h3 class="western">UC1.3. Создание Задания.</h3>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>.</p>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Описание процесса</h4>
+<p>.</p>
+<h5 class="western">UC1.1.1. Описание процедуры
+процесса.</h5>
+<p>.</p>
+<h3 class="western">UC1.4. Назначение Расписания.</h3>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>.</p>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Описание процесса</h4>
+<p>.</p>
+<h5 class="western">UC1.1.1. Описание процедуры
+процесса.</h5>
+<p>.</p>
+<h1 class="western" style="page-break-before: always">FR.
+Функциональные требоваания.</h1>
+<h2 class="western">FR1. Основные действия системы
+(относятся к основному предназначению)</h2>
+<p>Создавать контент типа вопрос-ответ
+(далее Вопросы).</p>
+<p>Группировать Вопросы в Опросники.</p>
+<p>Определять Задание как Опросник с
+параметрами прохождения.</p>
+<p>Назначать Задания группам участников.</p>
+<p>FR1.1 Модуль&nbsp;</p>
+<p>FR1.2 Модуль</p>
+<p>FR2. Дополнителные действия системы.</p>
+<p>FR2.1. Автоматическое ...</p>
+<p>FR2.2. Поиск подобного контента.</p>
+<p>FR2.3. Поиск контента.</p>
+<p>FR3. Вспомогательные действия системы.</p>
+<p>FR3.1. Добавление Базовой Организации.</p>
+<p>FR3.2. Добавление Базовой Личности.</p>
+<p>FR4. Разграничение доступа.</p>
+<p>FR4.1. Роли.</p>
+<p>FR4.1.1. Фиксированные роли.</p>
+<p>FR4.1.2. Составные роли.</p>
+<p>FR4.2. Рабочие группы.</p>
+<p>FR4.2.1. Предопределённые Рабочие группы.</p>
+<p>FR4.2.2. Плоские Рабочие группы.</p>
+<p>FR4.2.3. Рабочие группы из Рабочих групп.</p>
+<p>FR4.3. Организационная структура
+корпоративных клиентов.</p>
+<p>FR5. Доступ к сущностям системы.</p>
+<p>FR5. Доступ к функциям системы.</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<h1 class="western" style="page-break-before: always">UI. Интерфейс
+пользователя системы. (User Interfaces)</h1>
+<p>UI1. Работа Вопросами-ответами</p>
+<p>UI2.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p align="center" style="margin-top: 0.17in; margin-bottom: 0.08in; line-height: 100%; page-break-before: always; page-break-after: avoid">
+<font face="Liberation Sans, sans-serif"><font size="6" style="font-size: 28pt"><b>Шаблоны</b></font></font></p>
+<h3 class="western">UC1.1. Сценарий использования.</h3>
+<table width="665" cellpadding="4" cellspacing="0">
+	<col width="135">
+	<col width="512">
+	<tr valign="top">
+		<td width="135" bgcolor="#cccccc" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0.04in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p><b>Атрибуты</b></p>
+		</td>
+		<td width="512" bgcolor="#cccccc" style="border: 1px solid #000000; padding: 0.04in">
+			<p><b>Значения</b></p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Выполняется</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Цель процесса</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Входящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Источники данных</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="135" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: none; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0in">
+			<p>Исходящие данные</p>
+		</td>
+		<td width="512" style="border-top: none; border-bottom: 1px solid #000000; border-left: 1px solid #000000; border-right: 1px solid #000000; padding-top: 0in; padding-bottom: 0.04in; padding-left: 0.04in; padding-right: 0.04in">
+			<p><br/>
+
+			</p>
+		</td>
+	</tr>
+</table>
+<h4 class="western">Предусловия и условия
+выполнения процесса</h4>
+<p>.</p>
+<h4 class="western">Описание процесса</h4>
+<p>.</p>
+<h5 class="western">UC1.1.1. Описание процедуры
+процесса.</h5>
+<p>.</p>
+<div id="sdfootnote1">
+	<p><a class="sdfootnotesym" name="sdfootnote1sym" href="#sdfootnote1anc">1</a>вставить
+	ссылку на описание требования роли
+	Редактор</p>
+</div>
+</body>
+</html>
